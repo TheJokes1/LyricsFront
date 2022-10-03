@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, VERSION } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, ElementRef, OnInit, VERSION, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
-
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 
 export interface Lyric {
@@ -15,8 +16,8 @@ export interface Lyric {
 export interface Performer {
   performerId: number;
   name: string;
-  lyrics: Lyric[];
-  favouritePerformers: FavouritePerformer[];
+  lyrics?: Lyric[];
+  favouritePerformers?: FavouritePerformer[];
 }
 
 export interface Player {
@@ -42,19 +43,22 @@ export interface FavouritePerformer {
   performer: Performer;
 }
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent //implements OnInit
+export class AppComponent
 {
+  @ViewChild("labelType") labelType: ElementRef = {} as ElementRef;
+  displayText : boolean = false;
+  disablePerformer: boolean = false;
   makeFilter = new FormControl('');
   performers : Observable<Performer[]>;
 
   constructor(private client: HttpClient) {
-    console.log('helloo');
     this.performers = this.makeFilter.valueChanges
       .pipe(
         startWith(''),
@@ -62,5 +66,22 @@ export class AppComponent //implements OnInit
         switchMap(q => this.client.get<Performer[]>(
           `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
           )))
+  }
+
+  onSelection(perf: Performer){
+    this.makeFilter.disable;
+    console.log(perf.name, perf.performerId);
+    //this.labelType.nativeElement.innerHTML = "I am changed by ElementRef & ViewChild";
+    this.displayText = true;
+
+  }
+
+
+  ngOnInit() {
+
+    this.makeFilter.valueChanges
+      .pipe, switchMap( f => this.client.get<Performer[]>(
+        `https://localhost:5001/lyrics/performers?SearchQuery=""`
+      ))
   }
 }

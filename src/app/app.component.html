@@ -1,19 +1,40 @@
 <h1>Performer Search</h1>
 
-<div>
-  <label>Filters
-  </label>
-</div>
-
 <form class="autocomplete-form">
-  <mat-form-field>
-    <mat-label></mat-label>
-    <input class="inputs" matInput type="text"
-     [formControl]="makeFilter" [matAutocomplete]="auto"/>
-    <mat-autocomplete autoActiveFirstOption  #auto="matAutocomplete" >
-      <mat-option *ngFor="let perf of performers | async" [value]="perf.name">
-          {{ perf.name}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Performer" class="inputs" type="text" [disabled]="disablePerformer"
+        [formControl]="makeFilter" [matAutocomplete]="auto"/>
+        <mat-autocomplete placeholder = "Performer" class="auto" autoActiveFirstOption showPanel
+          isOpen = "true" #auto="matAutocomplete" >
+          <mat-option (onSelectionChange)="onSelection(perf)"
+            *ngFor="let perf of performers | async" [value]="perf.name">
+            <span>{{ perf.name}}</span>
+          </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
 </form>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<form class="addLyric">
+  <mat-form-field >
+    <mat-label>Lyrics</mat-label>
+    <textarea class = "lyricsInput" matInput type="text" placeholder="Ex. It makes me feel..." floatlabel= "false">
+    </textarea>
+  </mat-form-field>
+  <br/>
+  <mat-form-field>
+    <mat-label>Songtitle</mat-label>
+    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+  </mat-form-field>
+
+  <div class="example-button-row">
+    <button mat-raised-button color="accent">Save lyric</button>
+  </div>
+</form>
+
+
+

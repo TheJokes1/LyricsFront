@@ -1,4 +1,3 @@
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 .autocomplete-form {
   min-width: 150px;
@@ -8,4 +7,15 @@
 
 .inputs {
   background-color: rgb(122, 180, 161);
+}
+
+.lyricsInput {
+  min-width: 400px;
+  width: 100%;
+  height: 150px;
+}
+
+.songTitle{
+  min-width: 300px;
+
 }
