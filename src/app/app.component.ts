@@ -4,10 +4,11 @@ import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { ApiService } from './api.service';
 
 
 export interface Lyric {
-  lyricId: number;
+  lyricId?: number;
   words: string;
   songTitle: string;
   performerId: number;
@@ -52,36 +53,43 @@ export interface FavouritePerformer {
 
 export class AppComponent
 {
-  @ViewChild("labelType") labelType: ElementRef = {} as ElementRef;
-  displayText : boolean = false;
   disablePerformer: boolean = false;
+  disableButton: boolean = true;
   makeFilter = new FormControl('');
   performers : Observable<Performer[]>;
+  lyrics : string ='';
+  songTitle: string ='';
+  iD: number = 0;
+  newLyric?: Lyric;
 
-  constructor(private client: HttpClient) {
+  constructor(private client: HttpClient, public apiService: ApiService) {
     this.performers = this.makeFilter.valueChanges
       .pipe(
         startWith(''),
         debounceTime(400),
-        switchMap(q => this.client.get<Performer[]>(
+        switchMap(q =>
+          this.client.get<Performer[]>(
           `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
-          )))
+          )));
   }
 
   onSelection(perf: Performer){
     this.makeFilter.disable;
+    this.disableButton = false;
     console.log(perf.name, perf.performerId);
-    //this.labelType.nativeElement.innerHTML = "I am changed by ElementRef & ViewChild";
-    this.displayText = true;
+    this.iD = perf.performerId;
+
 
   }
 
-
-  ngOnInit() {
-
-    this.makeFilter.valueChanges
-      .pipe, switchMap( f => this.client.get<Performer[]>(
-        `https://localhost:5001/lyrics/performers?SearchQuery=""`
-      ))
+  onAddLyrics() {
+    console.log(this.lyrics);
+    console.log(this.songTitle);
+    console.log(this.iD);
+    this.newLyric= {words : this.lyrics, songTitle: this.songTitle, performerId: this.iD}
+    this.apiService.AddLyric(this.newLyric).subscribe((response: any) => {
+      console.log(response)
+    });
   }
+
 }
