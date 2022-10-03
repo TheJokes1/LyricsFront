@@ -18,7 +18,8 @@ export class ApiService {
       );
    }
 
-  AddLyric = (contentValue: Lyric) => {
+  AddLyric = (_words: string, _songTitle: string, _performerId: number) => {
     return this.http.post
-      ('https://localhost:5001/lyrics', {content: contentValue})};
+      ('https://localhost:5001/lyrics', {words: _words, songTitle: _songTitle,
+        performerId: _performerId})};
 }

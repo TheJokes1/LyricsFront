@@ -60,7 +60,6 @@ export class AppComponent
   lyrics : string ='';
   songTitle: string ='';
   iD: number = 0;
-  newLyric?: Lyric;
 
   constructor(private client: HttpClient, public apiService: ApiService) {
     this.performers = this.makeFilter.valueChanges
@@ -83,11 +82,8 @@ export class AppComponent
   }
 
   onAddLyrics() {
-    console.log(this.lyrics);
-    console.log(this.songTitle);
-    console.log(this.iD);
-    this.newLyric= {words : this.lyrics, songTitle: this.songTitle, performerId: this.iD}
-    this.apiService.AddLyric(this.newLyric).subscribe((response: any) => {
+    console.log(this.iD, this.lyrics, this.songTitle);
+    this.apiService.AddLyric(this.lyrics, this.songTitle, this.iD).subscribe((response: any) => {
       console.log(response)
     });
   }

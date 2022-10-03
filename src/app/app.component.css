@@ -9,10 +9,10 @@
 .lyricsInput {
   min-width: 400px;
   width: 100%;
-  height: 150px;
+  height: 110px;
 }
 
 .songTitle{
-  min-width: 300px;
-
+  min-width: 400px;
+  width: 100%;
 }
