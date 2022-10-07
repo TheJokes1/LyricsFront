@@ -9,17 +9,21 @@ import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ReviewLyricsDialogComponent } from './reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
+
+
 
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent, ReviewLyricsDialogComponent
   ],
   imports: [
     BrowserModule, NoopAnimationsModule, FormsModule, ReactiveFormsModule, HttpClientModule,
     MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule, MatDialogModule,
 
   ],
   providers: [],

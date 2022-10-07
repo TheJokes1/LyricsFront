@@ -1,0 +1,17 @@
+
+<div mat-dialog-content class="lyricsDialog">
+    <h1 mat-dialog-title>Confirm</h1>
+    <h3>Please review your lyrics for<span class="dialogTitle"> {{songTitle}}</span>
+      from <span class="dialogTitle">{{performerName}}</span> </h3>
+
+  <mat-form-field >
+    <mat-label [(ngModel)] = "songTitle">inputted lyrics</mat-label>
+    <textarea class = "lyricsInput" matInput type="text" placeholder="Ex. It makes me feel..." floatlabel= "false"
+    [(ngModel)]="dialogLyrics" name = "lyricshere"></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <!-- <button mat-button (click)="onNoClick()">No Thanks</button> -->
+  <button mat-button [mat-dialog-close]="dialogLyrics" cdkFocusInitial>Ok</button>
+</div>
+

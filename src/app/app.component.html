@@ -11,9 +11,10 @@
             <span>{{ perf.name}}</span>
           </mat-option>
         </mat-autocomplete>
+        <!-- <mat-icon>close</mat-icon> -->
     </mat-form-field>
 
-</form>
+  </form>
 <br/>
 
 <form class="addLyric">
@@ -25,13 +26,13 @@
   <br/>
   <mat-form-field>
     <mat-label>Songtitle</mat-label>
-    <textarea class = "songTitle" matInput placeholder="Ex. It makes me feel..."
+    <textarea class = "songTitle" matInput
     [(ngModel)]="songTitle" [ngModelOptions]="{standalone: true}"></textarea>
   </mat-form-field>
 
   <div class="example-button-row">
     <button mat-raised-button [disabled] = "disableButton" color="accent"
-      (click)="onAddLyrics()">Save lyric</button>
+      (click)="onAddLyrics(lyrics, songTitle)">Save lyric</button>
   </div>
 </form>
 
