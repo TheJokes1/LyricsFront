@@ -97,7 +97,7 @@ export class AppComponent
     //this.reviewLyrics(lyrics, songTitle);
 
 
-    this.apiService.AddLyric(this.lyrics, this.songTitle, this.iD).subscribe((response: any) => {
+    this.apiService.AddLyric( this.iD, this.lyrics, this.songTitle).subscribe((response: any) => {
       console.log(response)
     });
   }

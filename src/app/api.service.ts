@@ -18,8 +18,8 @@ export class ApiService {
       );
    }
 
-  AddLyric = (_words: string, _songTitle: string, _performerId: number) => {
-    return this.http.post
-      ('https://localhost:5001/lyrics', {words: _words, songTitle: _songTitle,
-        performerId: _performerId})};
+  AddLyric = (_performerId: number, _words: string, _songTitle: string, ) => {
+    return this.http.post(
+      'https://localhost:5001/lyrics/'+ _performerId
+        , {words: _words, songTitle: _songTitle})};
 }
