@@ -1,1 +1,40 @@
-<h3>Get random quotes here, from a certain Performer or style</h3>
+<h3>Get random quotes here. You can add a filter:</h3>
+<tr>
+  <td> <!-- Filter Performer -->
+    <form class="autocomplete-form">
+      <mat-form-field>
+        <input matInput placeholder="Performer" #input class="input" type="text"
+        (input)="changePerformer()" [disabled]="disablePerfomer"
+          [formControl]="makeFilter"  [matAutocomplete]="auto"/>
+          <mat-autocomplete placeholder = "Performer" class="auto" autoActiveFirstOption showPanel
+            isOpen = "true" #auto="matAutocomplete" >
+            <mat-option (onSelectionChange)="onSelection(perf)"
+              *ngFor="let perf of performers | async" [value]="perf.name">
+              <span>{{ perf.name}}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+    </form>
+  </td>
+  <td col="3"> <!-- Filter Content -->
+    <mat-form-field>
+      <mat-label>Language</mat-label>
+      <input hint="Enter a language" matInput  style="font-size: 16;">
+      <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </td>
+  <td col="3"> <!-- Filter Content -->
+    <mat-form-field>
+      <mat-label>Country</mat-label>
+      <input hint="Enter a country" matInput  style="font-size: 16;">
+    </mat-form-field>
+  </td>
+  <td col="3"> <!-- Filter Content -->
+    <mat-form-field>
+      <mat-label>Year</mat-label>
+      <input hint="Enter a year" matInput  style="font-size: 16;">
+    </mat-form-field>
+  </td>
+</tr>
