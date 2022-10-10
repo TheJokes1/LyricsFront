@@ -1,0 +1,40 @@
+<h3>Search a ❤ Performer and add a quote of his Lyrics 💖</h3>
+
+<form class="autocomplete-form">
+    <mat-form-field>
+      <input matInput placeholder="Performer" #input class="input" type="text"
+      (input)="changePerformer()" [disabled]="disablePerformer"
+        [formControl]="makeFilter"  [matAutocomplete]="auto"/>
+        <mat-autocomplete placeholder = "Performer" class="auto" autoActiveFirstOption showPanel
+          isOpen = "true" #auto="matAutocomplete" >
+          <mat-option (onSelectionChange)="onSelection(perf)"
+            *ngFor="let perf of performers | async" [value]="perf.name">
+            <span>{{ perf.name}}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+  </form>
+<br/>
+
+<form class="addLyric">
+  <mat-form-field >
+    <mat-label>Lyrics</mat-label>
+    <textarea class = "lyricsInput" matInput type="text" placeholder="Ex. It makes me feel..." floatlabel= "false"
+    [(ngModel)]="lyrics" name = "lyricshere"></textarea>
+  </mat-form-field>
+  <br/>
+  <mat-form-field>
+    <mat-label>Songtitle</mat-label>
+    <textarea class = "songTitle" matInput
+    [(ngModel)]="songTitle" [ngModelOptions]="{standalone: true}"></textarea>
+  </mat-form-field>
+
+  <div class="example-button-row">
+    <button mat-raised-button [disabled] = "disableButton" color="accent"
+      (click)="onAddLyrics(lyrics, songTitle)">Save lyric</button>
+  </div>
+</form>
+
+
+

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Lyric, Performer } from './app.component';
+import { Lyric, Performer } from './second-page/second-page.component';
 
 @Injectable({
   providedIn: 'root'
