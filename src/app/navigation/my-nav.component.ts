@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { AuthService } from '@auth0/auth0-angular';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'my-nav',
@@ -10,12 +12,21 @@ import { map, shareReplay } from 'rxjs/operators';
 })
 export class NavigationComponent {
 
+  constructor(public auth: AuthService,     @Inject(DOCUMENT) private doc: Document,private breakpointObserver: BreakpointObserver) {}
+
+
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+    logout() {
+      this.auth.logout({ returnTo: this.doc.location.origin });
+    }
 
+    loginWithPopup() : void {
+      this.auth.loginWithRedirect();
+    }
 }

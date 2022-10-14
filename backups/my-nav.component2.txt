@@ -23,17 +23,13 @@
       <span>LyricsFront</span>
     </mat-toolbar>
     <div>Text on homepage</div>
-    <ul
-          class="navbar-nav d-md-none"
-          *ngIf="(auth.isAuthenticated$ | async) === false">
-          <button
-            class="btn btn-primary btn-block"
-            id="qsLoginBtn"
-            (click)="loginWithPopup()">
-            Log in
-          </button>
-
-        </ul>
+    <button
+              id="qsLoginBtn"
+              class="btn btn-primary btn-margin"
+              (click)="loginWithPopup()"
+            >
+              Log in
+            </button>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 

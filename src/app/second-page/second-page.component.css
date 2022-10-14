@@ -15,3 +15,11 @@
   min-width: 400px;
   width: 100%;
 }
+
+
+
+a:hover {
+  /* color: #ffee10; */
+  /* box-shadow: 0 0 5px #395ca4; */
+  text-shadow: 0 0 5px #395ca4;
+}

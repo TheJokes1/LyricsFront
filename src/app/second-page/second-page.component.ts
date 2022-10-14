@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, VERSION, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
+import { debounceTime, merge, Observable, startWith, switchMap } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ApiService } from '../api.service';
@@ -57,12 +58,15 @@ export interface FavouritePerformer {
   templateUrl: './second-page.component.html',
   styleUrls: ['./second-page.component.css']
 })
-export class SecondPageComponent {
+export class SecondPageComponent implements OnInit{
 
   disablePerformer: boolean = false;
   disableButton: boolean = true;
   makeFilter = new FormControl('');
-  performers : Observable<Performer[]>;
+  performerIdd : number = 0;
+  performer1 : Performer =  {performerId : 0 , name : "" };
+  performers? : Observable<Performer[]>;
+
   lyrics : string ='';
   songTitle: string ='';
   performerName? : string;
@@ -80,6 +84,16 @@ export class SecondPageComponent {
           this.client.get<Performer[]>(
           `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
           )));
+
+
+  }
+
+  ngOnInit( ){
+    // const q : any = "";
+    // this.performers =
+    //       this.client.get<Performer[]>(
+    //       `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
+    //       );
   }
 
   onSelection(perf: Performer){
@@ -102,6 +116,10 @@ export class SecondPageComponent {
     this.apiService.AddLyric( this.iD, this.lyrics, this.songTitle).subscribe((response: any) => {
       console.log(response)
     });
+  }
+
+  onAddPerformer(){
+    this.reviewLyrics("", "");
   }
 
   reviewLyrics(lyrics: string, songTitle: string){
