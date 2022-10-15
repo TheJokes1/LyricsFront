@@ -1,4 +1,4 @@
-<h3>Add a ⭐quote of a 💖Performer</h3>
+<h3>Add a ⭐quote⭐</h3>
 
 <form class="autocomplete-form">
   <table>
@@ -11,7 +11,7 @@
       <td>
         <mat-form-field>
           <input matInput placeholder="Performer" #input class="input" type="text"
-          (input)="changePerformer()" [disabled]="disablePerformer"
+          (input)="changePerformer()" [(ngModel)]="performer" [disabled]= "disablePerformer"
             [formControl]="makeFilter"  [matAutocomplete]="auto"/>
 
             <mat-autocomplete placeholder = "Performer" class="auto" autoActiveFirstOption showPanel

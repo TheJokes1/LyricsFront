@@ -1,3 +1,4 @@
+
 .sidenav-container {
   height: 100%;
 
@@ -17,3 +18,25 @@
   top: 0;
   z-index: 1;
 }
+
+.title{
+  display: float;
+}
+
+.title1{
+  font-variant-ligatures: left;
+}
+
+.logons{
+  margin-left: 100px;
+  float: right;
+}
+
+/* .btnLogin{
+ float: right;
+}
+
+.btnLogout{
+  float: right;
+} */
+

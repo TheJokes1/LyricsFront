@@ -1,7 +1,18 @@
 .lyricsDialog {
-  width: 100%;
+  width: 85%;
+  max-width: 400px;
 }
 
 .dialogTitle {
   color: rgb(5, 5, 113)
+}
+
+
+.dialog-lyrics{
+  font-size: larger;
+}
+
+.song-title{
+  font-weight: bolder;
+  font-size: large;
 }

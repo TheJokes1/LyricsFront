@@ -20,20 +20,32 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>LyricsFront</span>
-    </mat-toolbar>
-    <div>Text on homepage</div>
-    <ul
-          class="navbar-nav d-md-none"
-          *ngIf="(auth.isAuthenticated$ | async) === false">
-          <button
-            class="btn btn-primary btn-block"
+
+
+      <div class="title">
+      <span class="title1">LyricsFront</span>
+      <div class="logons">
+        <span
+        *ngIf="(auth.isAuthenticated$ | async) === false">
+          <button mat-raised-button color="basic"
+            class="btnLogin"
             id="qsLoginBtn"
             (click)="loginWithPopup()">
             Log in
           </button>
-
-        </ul>
+        </span>
+        <span
+        *ngIf="(auth.isAuthenticated$ | async) === true">
+          <button mat-raised-button color="warn"
+            class="btnLogout"
+            id="qsLoginBtn"
+            (click)="logout()">
+            Log out
+          </button>
+        </span>
+      </div>
+      </div>
+    </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 

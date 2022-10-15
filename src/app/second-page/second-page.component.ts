@@ -66,7 +66,7 @@ export class SecondPageComponent implements OnInit{
   performerIdd : number = 0;
   performer1 : Performer =  {performerId : 0 , name : "" };
   performers? : Observable<Performer[]>;
-
+  performer: string =""
   lyrics : string ='';
   songTitle: string ='';
   performerName? : string;
@@ -110,11 +110,17 @@ export class SecondPageComponent implements OnInit{
 
   onAddLyrics(lyrics: string, songTitle: string) {
     console.log(this.iD, this.lyrics, this.songTitle, lyrics, songTitle);
-    //this.reviewLyrics(lyrics, songTitle);
+
 
 
     this.apiService.AddLyric( this.iD, this.lyrics, this.songTitle).subscribe((response: any) => {
-      console.log(response)
+      {
+        this.reviewLyrics(lyrics, songTitle);
+        console.log("after dialog" + response);
+        this.performer = "";
+        this.lyrics = "";
+        this.songTitle = "";
+      }
     });
   }
 

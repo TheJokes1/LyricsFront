@@ -27,6 +27,7 @@ import { environment as env } from '../environments/environment';
 
 
 const appRoutes: Routes = [
+  {path:'', component: FirstPageComponent},
   {path: 'first-page', component: FirstPageComponent},
   {path: 'second-page', component: SecondPageComponent},
   {path: 'third-page', component: ThirdPageComponent}
