@@ -1,4 +1,4 @@
-h3{
+.h3{
   margin-left: 20px;
 }
 
@@ -15,13 +15,13 @@ h3{
 
 
 .lyricsInput {
-  min-width: 400px;
+  min-width: 300px;
   width: 100%;
   height: 110px;
 }
 
 .songTitle{
-  min-width: 400px;
+  min-width: 300px;
   width: 100%;
 }
 

@@ -1,7 +1,7 @@
-<h3>Get random quotes here. You can add a filter:</h3>
-<div class="filters">
+<h3>Get random quotes here.</h3>
+<!-- <div class="filters">
 <tr>
-  <td> <!-- Filter Performer -->
+  <td> Filter Performer
     <form class="autocomplete-form">
       <mat-form-field>
         <input matInput placeholder="Performer" #input class="input" type="text"
@@ -17,7 +17,7 @@
         </mat-form-field>
     </form>
   </td>
-  <td col="3"> <!-- Filter Content -->
+  <td col="3"> Filter Content
     <mat-form-field>
       <mat-label>Language</mat-label>
       <input hint="Enter a language" matInput  style="font-size: 16;">
@@ -26,17 +26,29 @@
       </button>
     </mat-form-field>
   </td>
-  <td col="3"> <!-- Filter Content -->
+  <td col="3"> Filter Content
     <mat-form-field>
       <mat-label>Country</mat-label>
       <input hint="Enter a country" matInput  style="font-size: 16;">
     </mat-form-field>
   </td>
-  <td col="3"> <!-- Filter Content -->
+  <td col="3">  Filter Content
     <mat-form-field>
       <mat-label>Year</mat-label>
       <input hint="Enter a year" matInput  style="font-size: 16;">
     </mat-form-field>
   </td>
 </tr>
+</div> -->
+
+<div mat-dialog-content class="lyricsDialog">
+  <mat-card >
+    <div class="lyric-card">
+      <p>{{performerName}}</p><br/>
+      <p>{{songtitle}}</p>
+    </div>
+    <mat-card-content>
+      <p class="lyrics">{{lyrics}}</p>
+    </mat-card-content>
+  </mat-card>
 </div>

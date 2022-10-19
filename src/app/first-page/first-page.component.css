@@ -1,7 +1,49 @@
 h3{
-  margin-left: 20px;
+  margin-left: 50px;
 }
 
 .filters{
-  margin-left: 20px;
+  margin-left: 50px;
 }
+
+.lyricsDialog{
+  width: 275px;
+  height: 300px;
+  margin: 30px;
+  outline: solid 1px black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lyric-card {
+  color:brown;
+  color: transparent;
+  text-shadow: 0 0 10px #000;
+  margin: 0 auto;
+  margin-bottom: 5%;
+  text-align: center;
+}
+
+button {
+  text-shadow: 0 0 10px #000;
+  color: transparant;
+}
+
+.p:active {
+  color:brown;
+  color: transparent;
+  text-shadow: 0;
+  margin: 0 auto;
+  margin-bottom: 5%;
+  text-align: center;
+}
+
+.lyrics{
+  color:rgb(39, 7, 81);
+  width: 85%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+

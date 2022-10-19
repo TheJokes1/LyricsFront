@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnInit, VERSION, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, VERSION, ViewChild, Renderer2 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -58,26 +58,36 @@ export interface FavouritePerformer {
   templateUrl: './first-page.component.html',
   styleUrls: ['./first-page.component.css']
 })
-export class FirstPageComponent {
+export class FirstPageComponent implements OnInit{
 
   disablePerfomer: boolean = false;
   disableButton: boolean = true;
   makeFilter = new FormControl('');
-  performers : Observable<Performer[]>;
   performerName? : string;
   iD: number = 0;
+  lyrics: string;
   value = 'Clear me';
+  songtitle : string = "";
+  title : any;
+  
+  
 
 
-  constructor(private client: HttpClient, public apiService: ApiService, public dialog: MatDialog) {
-    this.performers = this.makeFilter.valueChanges
-    .pipe(
-      startWith(''),
-      debounceTime(400),
-      switchMap(q =>
-        this.client.get<Performer[]>(
-        `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
-        )));
+  constructor(private client: HttpClient, public apiService: ApiService, public dialog: MatDialog,
+    public el: ElementRef, public renderer: Renderer2) {  
+      this.client.get<Lyric>(`https://localhost:5001/lyrics/random`)
+      .subscribe((response : any) => {
+        console.log(response);
+          this.lyrics = response.quote;
+          this.songtitle = response.songTitle;
+          this.performerName = response.performer;
+        });
+      console.log(this.lyrics);
+
+      renderer.listen('document', 'click', (event) => {
+        console.log(event.target);
+        event.target.style.color = 'rgb(39, 7, 81)';
+      })
   }
 
   onSelection(perf: Performer){
@@ -93,7 +103,10 @@ export class FirstPageComponent {
   }
 
   RemoveCatFilter(){
+  }
 
+  ngOnInit(): void {
+    
   }
 
 }

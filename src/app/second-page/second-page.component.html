@@ -1,37 +1,5 @@
 <h3>Add a ⭐quote⭐</h3>
 
-<form class="autocomplete-form">
-  <table>
-    <col style="width:2%">
-    <col style="width:10%">
-    <thead>
-    </thead>
-    <tbody>
-    <tr>
-      <td>
-        <mat-form-field>
-          <input matInput placeholder="Performer" #input class="input" type="text"
-          (input)="changePerformer()" [(ngModel)]="performer" [disabled]= "disablePerformer"
-            [formControl]="makeFilter"  [matAutocomplete]="auto"/>
-
-            <mat-autocomplete placeholder = "Performer" class="auto" autoActiveFirstOption showPanel
-              isOpen = "true" #auto="matAutocomplete" >
-              <mat-option (onSelectionChange)="onSelection(perf)"
-                *ngFor="let perf of performers | async" [value]="perf.name">
-                <span>{{ perf.name}}</span>
-              </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
-      </td>
-      <td>
-        <a  (click) = "onAddPerformer()" id="addPerformer">(Add performer)</a>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-</form>
-<br/>
-
 <form class="addLyric">
   <mat-form-field >
     <mat-label>Lyrics</mat-label>
@@ -43,13 +11,45 @@
     <mat-label>Songtitle</mat-label>
     <textarea class = "songTitle" matInput
     [(ngModel)]="songTitle" [ngModelOptions]="{standalone: true}"></textarea>
-  </mat-form-field>
-
-  <div class="example-button-row">
-    <button mat-raised-button [disabled] = "disableButton" color="accent"
-      (click)="onAddLyrics(lyrics, songTitle)">Save lyric</button>
-  </div>
+</mat-form-field>
 </form>
+
+
+<table class="autocomplete-form">
+  <col style="width:2%">
+  <col style="width:10%">
+  <thead>
+  </thead>
+  <tbody>
+  <tr>
+    <td>
+      <mat-form-field>
+        <input matInput placeholder="Performer" #input class="input" type="text"
+        (input)="changePerformer()" [(ngModel)]="performer" [disabled]= "disablePerformer"
+          [formControl]="makeFilter"  [matAutocomplete]="auto"/>
+
+          <mat-autocomplete placeholder = "Performer" class="auto" autoActiveFirstOption showPanel
+            isOpen = "true" #auto="matAutocomplete" >
+            <mat-option (onSelectionChange)="onSelection(perf)"
+              *ngFor="let perf of performers | async" [value]="perf.name">
+              <span>{{ perf.name}}</span>
+            </mat-option>
+          </mat-autocomplete>
+      </mat-form-field>
+    </td>
+    <td>
+      <a  (click) = "onAddPerformer()" id="addPerformer">(Add performer)</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<br/>
+
+<div class="example-button-row">
+  <button mat-raised-button [disabled] = "disableButton" color="accent"
+    (click)="onAddLyrics(lyrics, songTitle)">Save lyric</button>
+</div>
+
 
 
 

@@ -1,6 +1,14 @@
+h3{
+  text-align: center;
+}
+
 .lyricsDialog {
   width: 85%;
   max-width: 400px;
+}
+
+.lyric-card {
+  justify-content: center;
 }
 
 .dialogTitle {
@@ -10,9 +18,12 @@
 
 .dialog-lyrics{
   font-size: larger;
+  margin: 0 auto;
 }
 
 .song-title{
+  text-align: center;
+  margin: 0 auto;
   font-weight: bolder;
   font-size: large;
 }
