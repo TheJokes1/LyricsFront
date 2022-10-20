@@ -9,6 +9,7 @@ import { ApiService } from '../api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AddPerformerDialogComponent } from '../add-performer-dialog/add-performer-dialog.component';
 
 
 export interface DialogLyricData {
@@ -63,14 +64,13 @@ export class SecondPageComponent implements OnInit{
   disablePerformer: boolean = false;
   disableButton: boolean = true;
   makeFilter = new FormControl('');
-  performerIdd : number = 0;
-  performer1 : Performer =  {performerId : 0 , name : "" };
   performers? : Observable<Performer[]>;
   performer: string =""
   lyrics : string ='';
   songTitle: string ='';
   performerName? : string;
   iD: number = 0;
+
   dLyric : string ='';
   dSongTitle : string ='';
 
@@ -84,11 +84,9 @@ export class SecondPageComponent implements OnInit{
           this.client.get<Performer[]>(
           `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
           )));
-
-
   }
 
-  ngOnInit( ){
+  ngOnInit(){
   }
 
   onSelection(perf: Performer){
@@ -117,7 +115,9 @@ export class SecondPageComponent implements OnInit{
   }
 
   onAddPerformer(){
-    console.log("addPerfrormer clicked");
+    this.dialog.open(AddPerformerDialogComponent ,{
+      //data : { lyrics: lyrics, songTitle: songTitle, performerName : this.performerName }
+    }).afterClosed().subscribe(result=> console.log(result));
   }
 
   reviewLyrics(lyrics: string, songTitle: string){

@@ -1,7 +1,6 @@
 import { Component, Output, EventEmitter, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-
 @Component({
   selector: 'app-review-lyrics-dialog',
   templateUrl: './review-lyrics-dialog.component.html',

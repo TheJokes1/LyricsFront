@@ -24,20 +24,21 @@ import { ThirdPageComponent } from './third-page/third-page.component';
 import { FirstPageComponent } from './first-page/first-page.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment as env } from '../environments/environment';
+import { AddPerformerDialogComponent } from './add-performer-dialog/add-performer-dialog.component';
 
 
 const appRoutes: Routes = [
   {path:'', component: FirstPageComponent},
-  {path: 'first-page', component: FirstPageComponent},
-  {path: 'second-page', component: SecondPageComponent},
-  {path: 'third-page', component: ThirdPageComponent}
+  {path: 'Quiz', component: FirstPageComponent},
+  {path: 'Add', component: SecondPageComponent},
+  {path: 'Favorites', component: ThirdPageComponent}
 ];
 
 
 @NgModule({
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent,
-    FirstPageComponent, SecondPageComponent, ThirdPageComponent
+    FirstPageComponent, SecondPageComponent, ThirdPageComponent, AddPerformerDialogComponent
   ],
   imports: [
     BrowserModule, NoopAnimationsModule, FormsModule, ReactiveFormsModule, HttpClientModule,

@@ -28,6 +28,7 @@
 }
 
 .logons{
+  visibility: hidden;
   margin-left: 100px;
   float: right;
 }
