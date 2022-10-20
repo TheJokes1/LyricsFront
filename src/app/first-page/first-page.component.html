@@ -41,7 +41,7 @@
 </tr>
 </div> -->
 
-<div mat-dialog-content class="lyricsDialog">
+<div mat-dialog-content class="lyrics-container">
   <mat-card >
     <div class="lyric-card">
       <p>{{performerName}}</p><br/>
@@ -51,4 +51,9 @@
       <p class="lyrics">{{lyrics}}</p>
     </mat-card-content>
   </mat-card>
+</div>
+<div class="refresh-container">
+  <mat-icon class ="refresh" (click) = "reloadCurrentPage()" aria-hidden="false" 
+    aria-label="refresh-icon" fontIcon="refresh">
+  </mat-icon>
 </div>

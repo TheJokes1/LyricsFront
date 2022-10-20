@@ -1,33 +1,28 @@
 h3{
-  margin-left: 50px;
+  text-align: center;
 }
 
 .filters{
-  margin-left: 50px;
+  margin-left: 0px;
 }
 
-.lyricsDialog{
-  width: 275px;
-  height: 300px;
-  margin: 30px;
+.lyrics-container{
+  width: 70%;
+  height: 90%;
   outline: solid 1px black;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0 auto;
 }
 
 .lyric-card {
   color:brown;
   color: transparent;
-  text-shadow: 0 0 10px #000;
+  text-shadow: 0 0 12px #000;
   margin: 0 auto;
   margin-bottom: 5%;
   text-align: center;
-}
-
-button {
-  text-shadow: 0 0 10px #000;
-  color: transparant;
 }
 
 .p:active {
@@ -44,6 +39,16 @@ button {
   width: 85%;
   margin: 0 auto;
   text-align: center;
+  margin-top: 20px;
+  margin-bottom: 25px;
 }
 
+.refresh-container{
+  margin-top: 50px;
+  text-align: center;
+}
+
+.refresh-icon{
+  color:red;
+}
 

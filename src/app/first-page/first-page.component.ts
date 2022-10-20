@@ -71,8 +71,6 @@ export class FirstPageComponent implements OnInit{
   title : any;
   
   
-
-
   constructor(private client: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {  
       this.client.get<Lyric>(`https://localhost:5001/lyrics/random`)
@@ -102,8 +100,9 @@ export class FirstPageComponent implements OnInit{
     this.disableButton = true;
   }
 
-  RemoveCatFilter(){
-  }
+  reloadCurrentPage() {
+    window.location.reload();
+   }
 
   ngOnInit(): void {
     

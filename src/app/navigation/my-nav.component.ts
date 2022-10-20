@@ -27,6 +27,6 @@ export class NavigationComponent {
     }
 
     loginWithPopup() : void {
-      this.auth.loginWithRedirect();
+      //this.auth.loginWithRedirect();
     }
 }

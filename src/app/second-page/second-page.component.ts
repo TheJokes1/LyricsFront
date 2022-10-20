@@ -89,11 +89,6 @@ export class SecondPageComponent implements OnInit{
   }
 
   ngOnInit( ){
-    // const q : any = "";
-    // this.performers =
-    //       this.client.get<Performer[]>(
-    //       `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
-    //       );
   }
 
   onSelection(perf: Performer){
@@ -110,9 +105,6 @@ export class SecondPageComponent implements OnInit{
 
   onAddLyrics(lyrics: string, songTitle: string) {
     console.log(this.iD, this.lyrics, this.songTitle, lyrics, songTitle);
-
-
-
     this.apiService.AddLyric( this.iD, this.lyrics, this.songTitle).subscribe((response: any) => {
       {
         this.reviewLyrics(lyrics, songTitle);
@@ -125,7 +117,7 @@ export class SecondPageComponent implements OnInit{
   }
 
   onAddPerformer(){
-    this.reviewLyrics("", "");
+    console.log("addPerfrormer clicked");
   }
 
   reviewLyrics(lyrics: string, songTitle: string){
