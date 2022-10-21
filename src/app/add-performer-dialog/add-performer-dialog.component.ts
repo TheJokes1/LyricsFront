@@ -7,14 +7,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./add-performer-dialog.component.css']
 })
 export class AddPerformerDialogComponent implements OnInit {
-  performer: string;
+  performerName: string;
 
   constructor(public dialogRef: MatDialogRef<AddPerformerDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
 
 
   ngOnInit(): void {
-    console.log(this.performer);
+    this.performerName= this.data.performerName;
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
 }

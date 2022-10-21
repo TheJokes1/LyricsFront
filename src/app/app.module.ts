@@ -9,7 +9,6 @@ import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule, Routes } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from './reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
 import { NavigationComponent } from './navigation/my-nav.component';
@@ -41,7 +40,7 @@ const appRoutes: Routes = [
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, AddPerformerDialogComponent
   ],
   imports: [
-    BrowserModule, NoopAnimationsModule, FormsModule, ReactiveFormsModule, HttpClientModule,
+    BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,
     MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     BrowserAnimationsModule, MatDialogModule, LayoutModule, MatToolbarModule, MatButtonModule,
     MatSidenavModule, MatIconModule, MatListModule, RouterModule.forRoot(appRoutes),

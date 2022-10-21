@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnInit, VERSION, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, VERSION, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, merge, Observable, startWith, switchMap } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -10,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AddPerformerDialogComponent } from '../add-performer-dialog/add-performer-dialog.component';
+import { Element } from '@angular/compiler';
+import { MatInput } from '@angular/material/input';
 
 
 export interface DialogLyricData {
@@ -59,9 +61,7 @@ export interface FavouritePerformer {
   templateUrl: './second-page.component.html',
   styleUrls: ['./second-page.component.css']
 })
-export class SecondPageComponent implements OnInit{
-
-  disablePerformer: boolean = false;
+export class SecondPageComponent implements OnInit, AfterViewInit{
   disableButton: boolean = true;
   makeFilter = new FormControl('');
   performers? : Observable<Performer[]>;
@@ -73,9 +73,14 @@ export class SecondPageComponent implements OnInit{
 
   dLyric : string ='';
   dSongTitle : string ='';
+  allPerformers : Observable<Performer[]>;
+  panelOpen: boolean = true;
+  addPHidden: boolean = false;
+  newTitle: string;
+  newLyric: string;
 
-
-  constructor(private client: HttpClient, public apiService: ApiService, public dialog: MatDialog) {
+  constructor(public client: HttpClient, public apiService: ApiService, public dialog: MatDialog,
+    public el: ElementRef, public renderer: Renderer2) {
     this.performers = this.makeFilter.valueChanges
       .pipe(
         startWith(''),
@@ -84,25 +89,56 @@ export class SecondPageComponent implements OnInit{
           this.client.get<Performer[]>(
           `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
           )));
+
+    
   }
 
+  
+
   ngOnInit(){
+    this.allPerformers = this.client.get<Performer[]>(
+      `https://localhost:5001/lyrics/performers`
+    );
+    console.log("" + this.allPerformers.subscribe
+      (m =>console.log("")));
+  }
+
+  ngAfterViewInit(){
+    
   }
 
   onSelection(perf: Performer){
     this.performerName = perf.name;
     this.makeFilter.disable;
-    this.disableButton = false;
+    if (this.lyrics.length>=5 && this.songTitle.length>=2) this.disableButton = false;
     console.log(perf.name, perf.performerId);
     this.iD = perf.performerId;
+    this.addPHidden = true;
   }
 
-  changePerformer(){
-    this.disableButton = true;
+  onKeypressEvent(){
+    this.addPHidden = false;
+    this.disableButton= true;
+    this.checkStatusFields(); 
+  }
+
+  onKeypressLyric(){
+    this.checkStatusFields();
+  }
+
+  onKeypressTitle(){
+    this.checkStatusFields();
+  }
+
+  checkStatusFields(){
+    if (this.lyrics.length>=5 && this.songTitle.length>=2 && this.addPHidden) 
+      this.disableButton = false
+    else this.disableButton = true;
   }
 
   onAddLyrics(lyrics: string, songTitle: string) {
-    console.log(this.iD, this.lyrics, this.songTitle, lyrics, songTitle);
+    this.newTitle = this.formatTitle(this.songTitle);
+    this.newLyric = this.formatLyric(this.lyrics)
     this.apiService.AddLyric( this.iD, this.lyrics, this.songTitle).subscribe((response: any) => {
       {
         this.reviewLyrics(lyrics, songTitle);
@@ -116,15 +152,24 @@ export class SecondPageComponent implements OnInit{
 
   onAddPerformer(){
     this.dialog.open(AddPerformerDialogComponent ,{
-      //data : { lyrics: lyrics, songTitle: songTitle, performerName : this.performerName }
+      data : { performerName : this.performer }
     }).afterClosed().subscribe(result=> console.log(result));
   }
 
   reviewLyrics(lyrics: string, songTitle: string){
     const checked = this.dialog.open(ReviewLyricsDialogComponent ,{
-      data : { lyrics: lyrics, songTitle: songTitle, performerName : this.performerName }
+      data : { lyrics: lyrics, songTitle: songTitle, performerName : this.performer }
     });
     checked.afterClosed().subscribe(result => console.log(result));
+  }
+
+  formatTitle(title: string){
+    var newtt = title.trim();
+    return newtt;
+  }
+
+  formatLyric(lyric: string){
+    return lyric.trim();
   }
 
 }
