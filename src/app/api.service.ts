@@ -9,10 +9,10 @@ import { Lyric, Performer } from './second-page/second-page.component';
 export class ApiService {
 
   constructor(private http: HttpClient) {
-    console.log("in api service");
+    
    }
 
-   GetPerformers = (q : string) => {
+  GetPerformers = (q : string) => {
     this.http.get<Performer[]>(
       `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
       );
@@ -21,5 +21,12 @@ export class ApiService {
   AddLyric = (_performerId: number, _words: string, _songTitle: string, ) => {
     return this.http.post(
       'https://localhost:5001/lyrics/'+ _performerId
-        , {words: _words, songTitle: _songTitle})};
+        , {words: _words, songTitle: _songTitle})
+  }
+
+  AddPerformer = (_name: string) => {
+    console.log("in api service Add Performer");
+    return this.http.post(
+      'https://localhost:5001/lyrics/performers/', {name: _name});
+  }
 }

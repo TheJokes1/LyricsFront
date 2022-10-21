@@ -1,19 +1,35 @@
 <h3>Add a Quote 👍</h3>
+<table>
+  <col style="width:10%">
+  <col style="width:5%">
+  <thead>
+  </thead>
+  <tbody >
+  <tr>
+    <td>
+      <form>
+        <mat-form-field class="addLyric">
+          <mat-label>Lyrics</mat-label>
+          <textarea class= "lyricsInput" (input)= "onKeypressLyric()" matInput type="text" 
+            placeholder= "Ex. It makes me feel..." floatlabel= "false"
+            [(ngModel)]= "lyrics" name = "lyricshere" maxlength="250">
+          </textarea>
+          <mat-hint>{{250 - lyrics.length}}</mat-hint>
+        </mat-form-field>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<br/>
 
-<form class="addLyric">
-  <mat-form-field >
-    <mat-label>Lyrics</mat-label>
-    <textarea class = "lyricsInput" (input) = "onKeypressLyric()" matInput type="text" placeholder="Ex. It makes me feel..." floatlabel= "false"
-    [(ngModel)]="lyrics" name = "lyricshere"></textarea>
-  </mat-form-field>
-  <br/>
-  <mat-form-field>
+<form>
+  <mat-form-field class= "addTitle">
     <mat-label>Songtitle</mat-label>
-    <textarea class = "songTitle" (input) = "onKeypressTitle()" matInput
-    [(ngModel)]="songTitle" [ngModelOptions]="{standalone: true}"></textarea>
+    <textarea class = "songTitle" [ngModelOptions]="{standalone: true}" (input) = "onKeypressTitle()" matInput type= "text"
+    [(ngModel)]="songTitle"></textarea>
 </mat-form-field>
 </form>
-
 
 <table class="autocomplete-form">
   <col style="width:2%">
@@ -47,8 +63,8 @@
 <br/>
 
 <div class="example-button-row">
-  <button mat-raised-button [disabled] = "disableButton" color="accent"
-    (click)="onAddLyrics(lyrics, songTitle)">Save lyric</button>
+  <button mat-raised-button [disabled] ="disableButton" color= "accent"
+    (click)= "onAddLyrics(lyrics, songTitle)">Save lyric</button>
 </div>
 
 

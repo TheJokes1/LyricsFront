@@ -7,7 +7,7 @@ h3{
 }
 
 .lyrics-container{
-  width: 70%;
+  width: 80%;
   height: 90%;
   outline: solid 1px black;
   display: flex;
@@ -36,7 +36,7 @@ h3{
 
 .lyrics{
   color:rgb(39, 7, 81);
-  width: 85%;
+  width: 87%;
   margin: 0 auto;
   text-align: center;
   margin-top: 20px;

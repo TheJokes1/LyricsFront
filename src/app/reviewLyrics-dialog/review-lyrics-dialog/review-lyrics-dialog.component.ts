@@ -21,7 +21,6 @@ export class ReviewLyricsDialogComponent implements OnInit {
     this.dialogLyrics = this.data.lyrics;
     this.songTitle = this.data.songTitle;
     this.performerName = this.data.performerName;
-    console.log(this.dialogLyrics);
   }
 
 }

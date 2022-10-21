@@ -69,7 +69,8 @@ export class FirstPageComponent implements OnInit{
   value = 'Clear me';
   songtitle : string = "";
   title : any;
-  
+  @ViewChild("lyric-card") background : ElementRef;
+  random_color: string;
   
   constructor(private client: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {  
@@ -86,6 +87,15 @@ export class FirstPageComponent implements OnInit{
         console.log(event.target);
         event.target.style.color = 'rgb(39, 7, 81)';
       })
+
+      var colors = ['##E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
+    '@FBDEFF', '#FFDEED','##F5A8A0', '#F5E2A0' ];
+      this.random_color = colors[Math.floor(Math.random() * colors.length)];
+      console.log("colour" + this.random_color);
+      // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
+
+      //this.background.nativeElement.setStyle("backgron")
+
   }
 
   onSelection(perf: Performer){

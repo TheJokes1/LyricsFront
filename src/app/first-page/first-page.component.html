@@ -41,7 +41,9 @@
 </tr>
 </div> -->
 
-<div mat-dialog-content class="lyrics-container">
+<div mat-dialog-content class="lyrics-container"   
+    [ngStyle]="{'background-color' :random_color}">
+    
   <mat-card >
     <div class="lyric-card">
       <p>{{performerName}}</p><br/>
