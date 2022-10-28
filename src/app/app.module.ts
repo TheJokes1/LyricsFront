@@ -27,12 +27,11 @@ import { AddPerformerDialogComponent } from './add-performer-dialog/add-performe
 
 
 const appRoutes: Routes = [
-  {path:'', component: FirstPageComponent},
-  {path: 'Quiz', component: FirstPageComponent},
-  {path: 'Add', component: SecondPageComponent},
-  {path: 'Favorites', component: ThirdPageComponent}
+  {path: '', component: FirstPageComponent},
+  {path: 'LyricsFront/Random', component: FirstPageComponent},
+  {path: 'LyricsFront/Add', component: SecondPageComponent},
+  {path: 'LyricsFront/Favorites', component: ThirdPageComponent}
 ];
-
 
 @NgModule({
   declarations: [

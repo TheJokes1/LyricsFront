@@ -14,32 +14,35 @@ const headers= new HttpHeaders()
 
 
 export class ApiService {
+  baseUrl: string = `https://localhost:5001/`;
+  //baseUrl: string = `https://lyricslover.azurewebsites.net/`;
 
   constructor(private http: HttpClient) {
-    
-   }
+  }
+
+  GetRandomQuote = () => {
+    return this.http.get<Lyric>(
+        this.baseUrl +`lyrics/random/`
+        )
+  }
 
   GetPerformers = (q : string) => {
     this.http.get<Performer[]>(
-      //`https://localhost:5001/lyrics/performers?SearchQuery=${q}`
-      `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
-
+      this.baseUrl + `lyrics/performers?SearchQuery=${q}`
       ),
       {headers: headers};
    }
 
   AddLyric = (_performerId: number, _words: string, _songTitle: string, ) => {
     return this.http.post(
-      'https://lyricslover.azurewebsites.net/lyrics/'
-      // `https://localhost:5001/lyrics/`
+      this.baseUrl + `lyrics/`
       + _performerId, {words: _words, songTitle: _songTitle})
   }
 
   AddPerformer = (_name: string) => {
     console.log("in api service Add Performer");
     return this.http.post(
-      'https://lyricslover.azurewebsites.net/lyrics/performers/'
-      // `https://localhost:5001/lyrics/performers/`
+      this.baseUrl + `performers/`
       , {name: _name},
       {observe: 'response'}
 )

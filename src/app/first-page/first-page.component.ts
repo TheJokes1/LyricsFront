@@ -73,12 +73,9 @@ export class FirstPageComponent implements OnInit{
   @ViewChild("lyric-card") background : ElementRef;
   random_color: string;
   
-  constructor(private client: HttpClient, public apiService: ApiService, public dialog: MatDialog,
+  constructor(private http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {  
-      this.client.get<Lyric>(
-        `https://lyricslover.azurewebsites.net/lyrics/random`
-        //`https://localhost:5001/lyrics/random`
-        )
+      this.apiService.GetRandomQuote()
       .subscribe((response : any) => {
         console.log(response.quote);
           this.lyrics = response.quote.replaceAll('.', '\n');

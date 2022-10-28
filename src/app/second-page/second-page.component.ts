@@ -89,16 +89,16 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   newLyric: string;
   stringje : string ="";
 
-  constructor(public client: HttpClient, public apiService: ApiService, public dialog: MatDialog,
+  constructor(public http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {
     this.performers = this.makeFilter.valueChanges
       .pipe(
         startWith(''),
         debounceTime(400),
-        switchMap(q =>
-          this.client.get<Performer[]>(
-          `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
-          //`https://localhost:5001/lyrics/performers?searchQuery=${q}`
+        switchMap(q => 
+          this.http.get<Performer[]>(
+          //`https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
+          `https://localhost:5001/lyrics/performers?searchQuery=${q}`
           )));
 
     // this.performers = this.makeFilter.valueChanges
