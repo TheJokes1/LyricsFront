@@ -10,7 +10,7 @@
       <form>
         <mat-form-field class="addLyric">
           <mat-label>Lyrics</mat-label>
-          <textarea class= "lyricsInput" (input)= "onKeypressLyric()" matInput type="text" 
+          <textarea class= "lyricsInput" (keyup)= "onKeypressLyric()" matInput type="text" 
             placeholder= "Ex. It makes me feel..." floatlabel= "false"
             [(ngModel)]= "lyrics" name = "lyricshere" maxlength="250">
           </textarea>
@@ -26,7 +26,7 @@
 <form>
   <mat-form-field class= "addTitle">
     <mat-label>Songtitle</mat-label>
-    <textarea class = "songTitle" [ngModelOptions]="{standalone: true}" (input) = "onKeypressTitle()" matInput type= "text"
+    <textarea class = "songTitle" [ngModelOptions]="{standalone: true}" (keyup) = "onKeypressTitle()" matInput type= "text"
     [(ngModel)]="songTitle"></textarea>
 </mat-form-field>
 </form>
@@ -41,11 +41,11 @@
     <td>
       <mat-form-field>
         <input #input matInput name="inputted" placeholder="Performer" class="input" type="text" 
-          (input) = "onKeypressEvent()"
-          [(ngModel)]="performer" [formControl]="makeFilter" [matAutocomplete]="auto"
+          (keyup) = "onKeypressEvent(input.value)"
+           [formControl]="makeFilter" [matAutocomplete]="auto"
         /> 
         <mat-autocomplete #mySelect placeholder = "Performer" class="auto" autoActiveFirstOption
-          #auto="matAutocomplete" (panelOpen)="panelOpen" >
+          #auto="matAutocomplete" (isOpen)="panelOpen" >
           <mat-option (onSelectionChange)="onSelection(perf)"
             *ngFor="let perf of performers | async" [value]="perf.name">
             <span>{{ perf.name}}</span>

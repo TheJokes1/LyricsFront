@@ -14,8 +14,8 @@ const headers= new HttpHeaders()
 
 
 export class ApiService {
-  baseUrl: string = `https://localhost:5001/`;
-  //baseUrl: string = `https://lyricslover.azurewebsites.net/`;
+  //baseUrl: string = `https://localhost:5001/`;
+  baseUrl: string = `https://lyricslover.azurewebsites.net/`;
 
   constructor(private http: HttpClient) {
   }
@@ -42,7 +42,7 @@ export class ApiService {
   AddPerformer = (_name: string) => {
     console.log("in api service Add Performer");
     return this.http.post(
-      this.baseUrl + `performers/`
+      this.baseUrl + `lyrics/performers/`
       , {name: _name},
       {observe: 'response'}
 )

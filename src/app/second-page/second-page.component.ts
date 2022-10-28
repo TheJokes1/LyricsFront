@@ -70,35 +70,37 @@ const headers= new HttpHeaders()
 export class SecondPageComponent implements OnInit, AfterViewInit
 {
   @ViewChild('mySelect') mySelect : any;
-  disableButton: boolean = true;
+  @ViewChild('input') input : ElementRef;
+  disableButton : boolean = true;
   makeFilter = new FormControl('');
   performers? : Observable<Performer[]>;
-  performer: string =""
+  performer : string = "";
   lyrics : string ='';
-  songTitle: string ='';
+  songTitle : string ='';
   performerName? : string;
-  iD: number = 0;
+  iD : number = 0;
 
   dLyric : string ='';
   dSongTitle : string ='';
   allPerformers : Observable<Performer[]>;
-  allP: Performer[] =[];
-  panelOpen: boolean = true;
-  addPHidden: boolean = false;
-  newTitle: string;
-  newLyric: string;
+  allP : Performer[] =[];
+  panelOpen : boolean;
+  addPHidden : boolean = true;
+  newTitle : string;
+  newLyric : string;
   stringje : string ="";
+  selectionMade : boolean= false;
 
   constructor(public http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {
     this.performers = this.makeFilter.valueChanges
       .pipe(
         startWith(''),
-        debounceTime(400),
+        debounceTime(200),
         switchMap(q => 
           this.http.get<Performer[]>(
-          //`https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
-          `https://localhost:5001/lyrics/performers?searchQuery=${q}`
+          `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
+          //`https://localhost:5001/lyrics/performers?searchQuery=${q}`
           )));
 
     // this.performers = this.makeFilter.valueChanges
@@ -116,69 +118,87 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     // );
   }
 
-  private _filter (value: any): Performer[] {
-    const filterValue = value.toLowerCase();
-    return this.allP.filter(options => options.name.toLowerCase().includes(filterValue))
-  }
+  // private _filter (value: any): Performer[] {
+  //   const filterValue = value.toLowerCase();
+  //   return this.allP.filter(options => options.name.toLowerCase().includes(filterValue))
+  // }
 
   ngAfterViewInit() {
   }
 
 
   onSelection(perf: Performer){
+    this.performer = perf.name;
     this.performerName = perf.name;
     this.makeFilter.disable;
     if (this.lyrics.length>=5 && this.songTitle.length>=2) this.disableButton = false;
-    console.log(perf.name, perf.performerId);
+    
     this.iD = perf.performerId;
     this.addPHidden = true;
+    this.selectionMade = true;
+    console.log(typeof(this.mySelect));
   }
 
-  onKeypressEvent(){
-    this.addPHidden = false;
-    this.disableButton= true;
-    this.checkStatusFields(); 
+  onKeypressEvent(code: any){
+    this.performer = code;
+    if (this.mySelect.isOpen) this.addPHidden= true;
+    if (!this.mySelect.isOpen) this.addPHidden = false;
+    console.log(this.mySelect.isOpen);
+    this.checkStatusSaveButton();
+    this.checkStatusPerformerButton();
+    this.selectionMade = false;
   }
 
   onKeypressLyric(){
-    this.checkStatusFields();
+    this.checkStatusSaveButton();
   }
 
   onKeypressTitle(){
-    this.checkStatusFields();
+    this.checkStatusSaveButton();
   }
 
-  onClosedEvent(){
-    console.log("closed it");
+  checkStatusPerformerButton(){
+    if (this.performer.length <= 2 || this.mySelect.isOpen) this.addPHidden = true
+    else this.addPHidden = false;
   }
 
-  checkStatusFields(){
-    if (this.lyrics.length>=5 && this.songTitle.length>=2 && this.addPHidden) 
-      this.disableButton = false
+  checkStatusSaveButton(){
+    console.log("DD open: " + this.mySelect.isOpen);
+    //console.log("buttonP hidden: " + this.addPHidden);
+    if (this.lyrics.length>=5 && this.songTitle.length>=2
+      && this.selectionMade)
+      this.disableButton = false;
     else this.disableButton = true;
   }
-
+  
   onAddLyrics(lyrics: string, songTitle: string) {
     this.newTitle = this.formatTitle(this.songTitle);
     this.newLyric = this.formatLyric(this.lyrics)
     this.apiService.AddLyric( this.iD, this.newLyric, this.newTitle).subscribe((response: any) => {
       {
         this.reviewLyrics(this.newLyric, this.newTitle);
-        console.log("after dialog" + response);
-        this.performer = "";
-        this.lyrics = "";
-        this.songTitle = "";
+        console.log("after dialog response: " + response);
+        // this.lyrics = "";
+        // this.songTitle = "";
+        // this.input.nativeElement.value = " ";
+        // this.disableButton = true;
       }
     });
   }
 
   onAddPerformer(){
+    console.log("performer: " + this.performer);
+    console.log("performerName: " + this.performerName);
     this.dialog.open(AddPerformerDialogComponent ,{
       data : { performerName : this.performer }
     }).afterClosed().subscribe
       (result => {
         console.log("name given: " + typeof(result));
-        if (result != undefined) this.addPerformer(result);
+        if (result != undefined) {
+          this.addPerformer(result);
+          //this.mySelect.nativeElement.value = "";
+          //window.location.reload();
+        }
       });
   }
 
@@ -190,7 +210,10 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     const checked = this.dialog.open(ReviewLyricsDialogComponent ,{
       data : { lyrics: lyrics, songTitle: songTitle, performerName : this.performer }
     });
-    checked.afterClosed().subscribe(result => console.log(result));
+    checked.afterClosed().subscribe(result => {
+      console.log(result);
+      window.location.reload();
+    }); 
   }
 
   formatTitle(title: string){
