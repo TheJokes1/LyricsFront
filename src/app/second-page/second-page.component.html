@@ -44,8 +44,8 @@
           (input) = "onKeypressEvent()"
           [(ngModel)]="performer" [formControl]="makeFilter" [matAutocomplete]="auto"
         /> 
-        <mat-autocomplete placeholder = "Performer" class="auto" autoActiveFirstOption
-          #auto="matAutocomplete" (panelOpen)="panelOpen">
+        <mat-autocomplete #mySelect placeholder = "Performer" class="auto" autoActiveFirstOption
+          #auto="matAutocomplete" (panelOpen)="panelOpen" >
           <mat-option (onSelectionChange)="onSelection(perf)"
             *ngFor="let perf of performers | async" [value]="perf.name">
             <span>{{ perf.name}}</span>

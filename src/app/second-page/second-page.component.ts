@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, VERSION, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, merge, Observable, startWith, switchMap } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ApiService } from '../api.service';
@@ -12,6 +12,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AddPerformerDialogComponent } from '../add-performer-dialog/add-performer-dialog.component';
 import { Element } from '@angular/compiler';
 import { MatInput } from '@angular/material/input';
+import { HttpHeaders } from '@angular/common/http';
+
 
 
 export interface DialogLyricData {
@@ -56,12 +58,18 @@ export interface FavouritePerformer {
   performer: Performer;
 }
 
+const headers= new HttpHeaders()
+  .set('content-type', 'application/json')
+  .set('Access-Control-Allow-Origin', '*');
+
 @Component({
   selector: 'app-second-page',
   templateUrl: './second-page.component.html',
   styleUrls: ['./second-page.component.css']
 })
-export class SecondPageComponent implements OnInit{
+export class SecondPageComponent implements OnInit, AfterViewInit
+{
+  @ViewChild('mySelect') mySelect : any;
   disableButton: boolean = true;
   makeFilter = new FormControl('');
   performers? : Observable<Performer[]>;
@@ -74,6 +82,7 @@ export class SecondPageComponent implements OnInit{
   dLyric : string ='';
   dSongTitle : string ='';
   allPerformers : Observable<Performer[]>;
+  allP: Performer[] =[];
   panelOpen: boolean = true;
   addPHidden: boolean = false;
   newTitle: string;
@@ -88,15 +97,31 @@ export class SecondPageComponent implements OnInit{
         debounceTime(400),
         switchMap(q =>
           this.client.get<Performer[]>(
-          `https://localhost:5001/lyrics/performers?SearchQuery=${q}`
+          `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
+          //`https://localhost:5001/lyrics/performers?searchQuery=${q}`
           )));
 
+    // this.performers = this.makeFilter.valueChanges
+    //   .pipe(
+    //       startWith(''),
+    //       debounceTime(200),
+    //       map(q => this._filter(q)));
   }
 
-    ngOnInit(){
-    this.allPerformers = this.client.get<Performer[]>(
-      `https://localhost:5001/lyrics/performers`
-    );
+  ngOnInit(){
+    // this.performers = this.client.get<Performer[]>(
+    //   //`https://lyricslover.azurewebsites.net/lyrics/performers`
+    //  `https://localhost:5001/lyrics/performers`
+    //  //,{headers: headers}
+    // );
+  }
+
+  private _filter (value: any): Performer[] {
+    const filterValue = value.toLowerCase();
+    return this.allP.filter(options => options.name.toLowerCase().includes(filterValue))
+  }
+
+  ngAfterViewInit() {
   }
 
 
@@ -121,6 +146,10 @@ export class SecondPageComponent implements OnInit{
 
   onKeypressTitle(){
     this.checkStatusFields();
+  }
+
+  onClosedEvent(){
+    console.log("closed it");
   }
 
   checkStatusFields(){
@@ -173,13 +202,8 @@ export class SecondPageComponent implements OnInit{
     return nieuwere;
   }
 
-  myFunc(element: string){
-    var TitleInCapitals = element.substring(0,1).toUpperCase() + element.slice(1);
-    return TitleInCapitals;
-  }
-
   formatLyric(lyric: string){
-    var newText = lyric.replace("\n" , "<br>");
+    var newText = lyric.replaceAll("." , "\n");
     return newText;
   }
 

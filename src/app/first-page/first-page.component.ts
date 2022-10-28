@@ -66,6 +66,7 @@ export class FirstPageComponent implements OnInit{
   performerName? : string;
   iD: number = 0;
   lyrics: string;
+  lyrics1: string;
   value = 'Clear me';
   songtitle : string = "";
   title : any;
@@ -74,10 +75,14 @@ export class FirstPageComponent implements OnInit{
   
   constructor(private client: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {  
-      this.client.get<Lyric>(`https://localhost:5001/lyrics/random`)
+      this.client.get<Lyric>(
+        `https://lyricslover.azurewebsites.net/lyrics/random`
+        //`https://localhost:5001/lyrics/random`
+        )
       .subscribe((response : any) => {
-        console.log(response);
-          this.lyrics = response.quote;
+        console.log(response.quote);
+          this.lyrics = response.quote.replaceAll('.', '\n');
+          this.lyrics = this.lyrics.replaceAll(',', '\n');
           this.songtitle = response.songTitle;
           this.performerName = response.performer;
         });

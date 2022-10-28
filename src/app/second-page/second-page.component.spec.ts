@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpHeaders } from '@angular/common/http';
 
 import { SecondPageComponent } from './second-page.component';
 
