@@ -18,7 +18,7 @@ h3{
 
 .lyric-card-top {
   font-size: large;
-  font-weight: bold;
+  font-weight: 500;
   color:brown;
   color: transparent;
   text-shadow: 0 0 12px #000;
@@ -28,6 +28,7 @@ h3{
 }
 
 .p:active {
+  font-weight: bold;
   color:brown;
   color: transparent;
   text-shadow: 0;
