@@ -91,7 +91,7 @@ export class FirstPageComponent implements OnInit{
       })
 
       var colors = ['##E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-    '@FBDEFF', '#FFDEED','##F5A8A0', '#F5E2A0' ];
+        '@FBDEFF', '#FFDEED','##F5A8A0', '#F5E2A0' ];
       this.random_color = colors[Math.floor(Math.random() * colors.length)];
       console.log("colour" + this.random_color);
       // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
