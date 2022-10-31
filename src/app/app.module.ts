@@ -33,6 +33,7 @@ const appRoutes: Routes = [
   {path: 'Favorites', component: ThirdPageComponent}
 ];
 
+
 @NgModule({
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent,
