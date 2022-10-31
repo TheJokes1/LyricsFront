@@ -14,8 +14,8 @@ const headers= new HttpHeaders()
 
 
 export class ApiService {
-  //baseUrl: string = `https://localhost:5001/`;
-  baseUrl: string = `https://lyricslover.azurewebsites.net/`;
+  baseUrl: string = `https://localhost:5001/`;
+  //baseUrl: string = `https://lyricslover.azurewebsites.net/`;
 
   constructor(private http: HttpClient) {
   }
@@ -36,7 +36,7 @@ export class ApiService {
   AddLyric = (_performerId: number, _words: string, _songTitle: string, ) => {
     return this.http.post(
       this.baseUrl + `lyrics/`
-      + _performerId, {words: _words, songTitle: _songTitle})
+      + _performerId, {words: _words, songTitle: _songTitle}, )
   }
 
   AddPerformer = (_name: string) => {

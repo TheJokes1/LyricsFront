@@ -99,8 +99,8 @@ export class SecondPageComponent implements OnInit, AfterViewInit
         debounceTime(200),
         switchMap(q => 
           this.http.get<Performer[]>(
-          `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
-          //`https://localhost:5001/lyrics/performers?searchQuery=${q}`
+          //`https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
+          `https://localhost:5001/lyrics/performers?searchQuery=${q}`
           )));
 
     // this.performers = this.makeFilter.valueChanges

@@ -21,10 +21,12 @@
 
 .title{
   display: float;
+  margin : 0 auto;
 }
 
 .title1{
-  font-variant-ligatures: left;
+  /* font-variant-ligatures: left; */
+  justify-content: center;
 }
 
 .logons{

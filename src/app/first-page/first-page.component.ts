@@ -86,7 +86,7 @@ export class FirstPageComponent implements OnInit{
       console.log(this.lyrics);
 
       renderer.listen('document', 'click', (event) => {
-        console.log(event.target);
+        console.log("event: " + event.target);
         event.target.style.color = 'rgb(39, 7, 81)';
       })
 

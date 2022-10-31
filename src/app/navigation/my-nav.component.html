@@ -11,7 +11,8 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
+    <router-outlet>
+    <mat-toolbar >    
       <button
         type="button"
         aria-label="Toggle sidenav"
@@ -21,11 +22,10 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
 
-
       <div class="title">
-      <span class="title1">LyricsFront</span>
+        <span class="title1">{{title}}</span>
       <div class="logons">
-        <span
+        <!-- <span
         *ngIf="(auth.isAuthenticated$ | async) === false">
           <button mat-raised-button color="basic"
             class="btnLogin"
@@ -42,11 +42,13 @@
             (click)="logout()">
             Log out
           </button>
-        </span>
+        </span> -->
       </div>
       </div>
     </mat-toolbar>
-    <router-outlet></router-outlet>
+    </router-outlet>
   </mat-sidenav-content>
 
 </mat-sidenav-container>
+
+
