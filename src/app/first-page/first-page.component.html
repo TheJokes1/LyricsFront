@@ -45,16 +45,16 @@
     [ngStyle]="{'background-color' :random_color}">
   <mat-card >
     <div class="lyric-card-top">
-      <p>{{performerName}}</p><br/>
+      <p>{{performerName}}</p>
       <p>{{songtitle}}</p>
     </div>
     <mat-card-content>
-      <p class="lyrics">{{lyrics}}</p>
+      <p (click) = "reloadCurrentPage()" class="lyrics">{{lyrics}}</p>
     </mat-card-content>
   </mat-card>
 </div>
-<div class="refresh-container">
+<!-- <div class="refresh-container">
   <mat-icon class ="refresh" (click) = "reloadCurrentPage()" aria-hidden="false" 
     aria-label="refresh-icon" fontIcon="refresh">
   </mat-icon>
-</div>
+</div> -->

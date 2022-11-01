@@ -86,14 +86,20 @@ export class FirstPageComponent implements OnInit{
       console.log(this.lyrics);
 
       renderer.listen('document', 'click', (event) => {
-        console.log("event: " + event.target);
-        event.target.style.color = 'rgb(39, 7, 81)';
+        console.log("event: ", event);
+        if ((event.target.localName == "p" 
+          || event.target.localName == "div") 
+          && (event.target.className != "lyrics")){
+            event.target.style.color = 'rgb(39, 7, 181)';
+            event.target.style.fontWeight = "850";
+            event.target.style.textShadow = "none";
+        }
       })
 
-      var colors = ['##E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-        '@FBDEFF', '#FFDEED','##F5A8A0', '#F5E2A0' ];
+      var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
+        '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
       this.random_color = colors[Math.floor(Math.random() * colors.length)];
-      console.log("colour" + this.random_color);
+      console.log("colour " + this.random_color);
       // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
 
       //this.background.nativeElement.setStyle("backgron")

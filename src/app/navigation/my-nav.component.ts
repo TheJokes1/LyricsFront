@@ -34,6 +34,6 @@ export class NavigationComponent implements AfterContentChecked{
     ngAfterContentChecked(): void {
       this.url = window.location.href;
       if (this.url.endsWith("Add")) this.title = 'Add Quote 👍';
-      if (this.url.endsWith('Random')) this.title = 'Random Quote 🎵';
+      if (this.url.endsWith('Random') || (this.url.endsWith("/"))) this.title = 'Random Quote 🎵';
     }
 }

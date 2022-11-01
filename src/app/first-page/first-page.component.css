@@ -17,9 +17,9 @@ h3{
 }
 
 .lyric-card-top {
-  font-size: large;
-  font-weight: 600;
-  color:brown;
+  font-size: 1.25em;
+  font-weight: 100;
+  /* color:rgb(240, 200, 200); */
   color: transparent;
   text-shadow: 0 0 12px #000;
   margin: 0 auto;
@@ -27,9 +27,9 @@ h3{
   text-align: center;
 }
 
-.p:active {
-  font-weight: bold;
-  color:brown;
+.p{
+  /* font-weight: bold; */
+  color:rgb(250, 248, 248);
   color: transparent;
   text-shadow: 0;
   margin: 0 auto;
@@ -39,14 +39,14 @@ h3{
 
 .lyrics{
   color:rgb(39, 7, 81);
-  font-size: x-large;
+  font-size: 1.35em;
   font-weight: bolder;
   width: 88%;
   margin: 0 auto;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 33px;
   margin-bottom: 25px;
-  /* white-space: pre-wrap; */
+  white-space: pre-wrap;
 }
 
 .refresh-container{
