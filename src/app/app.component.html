@@ -1,3 +1,7 @@
-<app-landing-page *ngIf="!loadingDisabled" ></app-landing-page>
-<my-nav *ngIf="loadingDisabled"></my-nav>
-<!-- *ngIf= !loadingDisabled -->
+    <div *ngIf="(quote$ | async )?.quote == ''; else loading">
+            <my-nav></my-nav>
+    </div>
+
+    <ng-template #loading>
+        <app-landing-page  ></app-landing-page> 
+    </ng-template>

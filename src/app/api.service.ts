@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Lyric, Performer } from './second-page/second-page.component'; 
+import { Performer } from './second-page/second-page.component'; 
 import { HttpHeaders } from '@angular/common/http';
+import { Lyric } from './lyric';
 
 const headers= new HttpHeaders()
   .set('content-type', 'application/json')
@@ -12,7 +13,7 @@ const headers= new HttpHeaders()
   providedIn: 'root'
 })
 
-
+@Injectable()
 export class ApiService {
   //baseUrl: string = `https://localhost:5001/`;
   baseUrl: string = `https://lyricslover.azurewebsites.net/`;
@@ -20,7 +21,7 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
 
-  GetRandomQuote = () => {
+  get GetRandomQuote() :Observable<Lyric> {
     return this.http.get<Lyric>(
         this.baseUrl +`lyrics/random/`
         )

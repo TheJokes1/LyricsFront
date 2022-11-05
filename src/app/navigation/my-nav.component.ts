@@ -15,8 +15,6 @@ export class NavigationComponent implements AfterContentChecked{
   title: string;
   constructor(public auth: AuthService, @Inject(DOCUMENT) private doc: Document,private breakpointObserver: BreakpointObserver) {}
 
-
-
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),

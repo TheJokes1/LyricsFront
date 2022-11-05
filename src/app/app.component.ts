@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { Lyric } from './lyric';
 
 @Component({
   selector: 'app-root',
@@ -8,17 +10,19 @@ import { ApiService } from './api.service';
 })
 export class AppComponent implements OnInit {
   loadingDisabled : boolean = false;
+  quote$: Observable<Lyric>;
+  wordings?: string;
 
-  constructor(private apiService: ApiService) { 
-    console.log("calling now", this.loadingDisabled);
-    this.apiService.GetRandomQuote().subscribe((response: any) => {
-      console.log(response);
-      this.loadingDisabled = true;
-    });
+  constructor(private apiService: ApiService) {
+      
   }
 
-
   ngOnInit(): void {
+    this.quote$ = this.apiService.GetRandomQuote;
+    this.quote$.subscribe(res => {
+      this.loadingDisabled = true;
+      this.wordings = res.songTitle;
+    })
   }
 
 }

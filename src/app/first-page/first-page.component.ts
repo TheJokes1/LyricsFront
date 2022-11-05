@@ -8,18 +8,12 @@ import { ApiService } from '../api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Lyric } from '../lyric';
 
 
 export interface DialogLyricData {
   dLyrics: string;
   dSongTitle: string;
-}
-
-export interface Lyric {
-  lyricId?: number;
-  words: string;
-  songTitle: string;
-  performerId: number;
 }
 
 export interface Performer {
@@ -65,24 +59,30 @@ export class FirstPageComponent implements OnInit{
   makeFilter = new FormControl('');
   performerName? : string;
   iD: number = 0;
-  lyrics: string;
+  lyrics: any;
   lyrics1: string;
   value = 'Clear me';
   songtitle : string = "";
   title : any;
   @ViewChild("lyric-card") background : ElementRef;
   random_color: string;
+  quote$ : Observable<Lyric>;
   
   constructor(private http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {  
-      this.apiService.GetRandomQuote()
-      .subscribe((response : any) => {
-        console.log(response.quote);
-          this.lyrics = response.quote.replaceAll('.', '\n');
+
+      this.quote$ = this.apiService.GetRandomQuote;
+      this.quote$.subscribe(response => {
+     
+      // this.apiService.GetRandomQuote()
+      // .subscribe((response : any) => {
+      //   console.log(response.quote);
+          this.lyrics = response?.quote?.replaceAll('.', '\n');
           this.lyrics = this.lyrics.replaceAll(',', '\n');
           this.songtitle = response.songTitle;
           this.performerName = response.performer;
         });
+      
       console.log(this.lyrics);
 
       renderer.listen('document', 'click', (event) => {

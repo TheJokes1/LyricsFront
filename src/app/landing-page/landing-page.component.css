@@ -1,7 +1,18 @@
 .image-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40%;
 }
+
+img{
+    width: 70%;
+}
+
+/* img{
+    width: 85%;
+    height: 85%;
+} */
 
 .loader{
     text-align: center;

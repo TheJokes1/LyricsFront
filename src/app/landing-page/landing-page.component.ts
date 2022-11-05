@@ -15,17 +15,15 @@ textAdd: string  = ""
   }
 
   ngAfterViewInit(): void {
-
     //var box = this.writing.nativeElement;
-    // this.textAdd= "It takes time writing good lyrics. So does loading good apps...";
-    // this.text="";
     // box.focus();
-    
 
     // for (var i = 0, l = this.text.length; i < l; i++) {
     //   setTimeout(() => {
-    //       this.text = this.text + this.text.substring(0, i + 1);
-    //   }, i * 200);
+    //       this.textAdd = this.textAdd + this.text.substring(0, i + 1);
+    //   }, 1000);
+    //   console.log("text: ",this.textAdd);
+    //   console.log("I am: ",i);
     // }
   }  
 

@@ -13,6 +13,7 @@ import { AddPerformerDialogComponent } from '../add-performer-dialog/add-perform
 import { Element } from '@angular/compiler';
 import { MatInput } from '@angular/material/input';
 import { HttpHeaders } from '@angular/common/http';
+import { Lyric } from '../lyric';
 
 
 
@@ -21,12 +22,12 @@ export interface DialogLyricData {
   dSongTitle: string;
 }
 
-export interface Lyric {
-  lyricId?: number;
-  words: string;
-  songTitle: string;
-  performerId: number;
-}
+// export interface Lyric {
+//   lyricId?: number;
+//   words: string;
+//   songTitle: string;
+//   performerId: number;
+// }
 
 export interface Performer {
   performerId: number;
