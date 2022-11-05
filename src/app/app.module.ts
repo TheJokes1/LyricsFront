@@ -21,6 +21,7 @@ import { MatListModule } from '@angular/material/list';
 import { SecondPageComponent } from './second-page/second-page.component';
 import { ThirdPageComponent } from './third-page/third-page.component';
 import { FirstPageComponent } from './first-page/first-page.component';
+import { LandingPageComponent } from './landing-page/landing-page.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment as env } from '../environments/environment';
 import { AddPerformerDialogComponent } from './add-performer-dialog/add-performer-dialog.component';
@@ -37,7 +38,8 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent,
-    FirstPageComponent, SecondPageComponent, ThirdPageComponent, AddPerformerDialogComponent
+    FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
+    AddPerformerDialogComponent
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,

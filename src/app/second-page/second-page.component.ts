@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, VERSION, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { debounceTime, merge, Observable, startWith, switchMap } from 'rxjs';
+import { asyncScheduler, debounceTime, merge, Observable, startWith, switchMap } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -97,10 +97,10 @@ export class SecondPageComponent implements OnInit, AfterViewInit
       .pipe(
         startWith(''),
         debounceTime(200),
-        switchMap(q => 
+        switchMap(q =>
           this.http.get<Performer[]>(
-          //`https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
-          `https://localhost:5001/lyrics/performers?searchQuery=${q}`
+          `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
+          //`https://localhost:5001/lyrics/performers?searchQuery=${q}`
           )));
 
     // this.performers = this.makeFilter.valueChanges
@@ -164,7 +164,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
 
   checkStatusSaveButton(){
     console.log("DD open: " + this.mySelect.isOpen);
-    //console.log("buttonP hidden: " + this.addPHidden);
     if (this.lyrics.length>=5 && this.songTitle.length>=2
       && this.selectionMade)
       this.disableButton = false;
