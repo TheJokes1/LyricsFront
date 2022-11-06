@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(res => {
+      console.log(res.quote);
       this.loadingDisabled = true;
       this.wordings = res.songTitle;
     })
