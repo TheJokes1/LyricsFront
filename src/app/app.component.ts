@@ -9,11 +9,13 @@ import { Lyric } from './lyric';
   styleUrls: ['app.component.css']
 })
 export class AppComponent implements OnInit {
-  loadingDisabled : boolean = false;
+  //loadingDisabled : boolean = false;
   quote$: Observable<Lyric>;
   wordings?: string;
+  loadingDisabled : boolean = false;
 
   constructor(private apiService: ApiService) {
+    if (localStorage.getItem("loadingDisabled")== "true") this.loadingDisabled = true;
       
   }
 
@@ -21,11 +23,11 @@ export class AppComponent implements OnInit {
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(res => {
       console.log(res.quote);
+      localStorage.setItem("loadingDisabled", "true");
       this.loadingDisabled = true;
       this.wordings = res.songTitle;
     })
   }
-
 }
 
 

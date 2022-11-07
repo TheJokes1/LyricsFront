@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnInit, VERSION, ViewChild, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnInit, VERSION, ViewChild, Renderer2, AfterViewInit, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -46,7 +46,6 @@ export interface FavouritePerformer {
   performer: Performer;
 }
 
-
 @Component({
   selector: 'app-first-page',
   templateUrl: './first-page.component.html',
@@ -61,49 +60,64 @@ export class FirstPageComponent implements OnInit{
   iD: number = 0;
   lyrics: any;
   lyrics1: string;
-  value = 'Clear me';
   songtitle : string = "";
   title : any;
-  @ViewChild("lyric-card") background : ElementRef;
-  random_color: string;
-  quote$ : Observable<Lyric>;
-  
-  constructor(private http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
-    public el: ElementRef, public renderer: Renderer2) {  
+  @ViewChildren("ps") psRef : ElementRef;
+    pElement: HTMLElement;
 
+  reminder: boolean;
+  statusClass1: string = "transparent";
+  statusClass2: string = "400"
+  statusClass3: string = "0 0 13px #000;"
+  statusClass10: string = "transparent";
+  statusClass20: string = "400"
+  statusClass30: string = "0 0 13px #000;" 
+  random_color: string;
+  quote$: Observable<Lyric>;
+  
+  constructor(public apiService: ApiService, public dialog: MatDialog,
+    public el: ElementRef, public renderer: Renderer2) {  
+      console.log("statusclass: ", this.statusClass1);
       this.quote$ = this.apiService.GetRandomQuote;
       this.quote$.subscribe(response => {
-     
-      // this.apiService.GetRandomQuote()
-      // .subscribe((response : any) => {
-      //   console.log(response.quote);
           this.lyrics = response?.quote?.replaceAll('.', '\n');
           this.lyrics = this.lyrics.replaceAll(',', '\n');
           this.songtitle = response.songTitle;
           this.performerName = response.performer;
         });
-      
-      console.log(this.lyrics);
-
-      renderer.listen('document', 'click', (event) => {
-        console.log("event: ", event);
-        if ((event.target.localName == "p" 
-          || event.target.localName == "div") 
-          && (event.target.className != "lyrics")){
-            event.target.style.color = 'rgb(39, 7, 181)';
-            event.target.style.fontWeight = "850";
-            event.target.style.textShadow = "none";
-        }
-      })
-
+      console.log("reminder: ", this.reminder);
+      console.log(this.lyrics);      
+  
       var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
         '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
       this.random_color = colors[Math.floor(Math.random() * colors.length)];
-      console.log("colour " + this.random_color);
-      // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
 
-      //this.background.nativeElement.setStyle("backgron")
+     this.renderer.listen('document', 'click', (event) => {
+      console.log("event: ", event);
+      if (event.target.id == "perf")         
+        {
+          this.statusClass1 = "rgb(39, 7, 181)"
+          this.statusClass2 = "850";
+          this.statusClass3 = "none";
+        }
+      else if (event.target.id == "titled"){
+          this.statusClass10 = "rgb(39, 7, 181)"
+          this.statusClass20 = "850";
+          this.statusClass30 = "none";
+      }
+      else if (event.target.localName == "div"){
+        this.statusClass1 = "rgb(39, 7, 181)"
+        this.statusClass2 = "850";
+        this.statusClass3 = "none";
+        this.statusClass10 = "rgb(39, 7, 181)"
+        this.statusClass20 = "850";
+        this.statusClass30 = "none";
+      }
+    })
+  }
 
+  ngOnInit() {
+    
   }
 
   onSelection(perf: Performer){
@@ -118,12 +132,31 @@ export class FirstPageComponent implements OnInit{
     this.disableButton = true;
   }
 
-  reloadCurrentPage() {
-    window.location.reload();
+  loadLyrics() {
+    this.statusClass1 = "transparent";
+    this.statusClass2 = "400";
+    this.statusClass3 = "0 0 13px #000";
+    this.statusClass10 = "transparent";
+    this.statusClass20 = "400";
+    this.statusClass30 = "0 0 13px #000";
+    this.quote$ = this.apiService.GetRandomQuote;
+    this.quote$.subscribe(response => {
+        this.lyrics = response?.quote?.replaceAll('.', '\n');
+        this.lyrics = this.lyrics.replaceAll(',', '\n');
+        this.songtitle = response.songTitle;
+        this.performerName = response.performer;
+      });
+    
+    console.log(this.lyrics);
+    console.log(this.statusClass1);
+    
+
+    var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
+      '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
+    this.random_color = colors[Math.floor(Math.random() * colors.length)];
+    // renderer.setStyle(HTMLTextAreaElement, "color", random_color);;
    }
 
-  ngOnInit(): void {
-    
-  }
+  
 
 }

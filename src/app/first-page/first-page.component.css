@@ -27,6 +27,15 @@ h3{
   text-align: center;
 }
 
+.blurred{
+  color: red;
+  text-shadow: 0 0 13px #000;
+}
+
+.not-blurred{
+  color:blueviolet;
+}
+
 .p{
   /* font-weight: bold; */
   color:rgb(250, 248, 248);

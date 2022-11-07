@@ -1,4 +1,4 @@
-    <div *ngIf="(quote$ | async )?.quote != undefined; else loading">
+    <div *ngIf="(((quote$ | async )?.quote != undefined) && (loadingDisabled)); else loading">
             <my-nav></my-nav>
     </div>
 
