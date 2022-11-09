@@ -1,13 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnInit, VERSION, ViewChild, Renderer2, AfterViewInit, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { ApiService } from '../api.service';
+import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
 
 
@@ -62,8 +58,6 @@ export class FirstPageComponent implements OnInit{
   lyrics1: string;
   songtitle : string = "";
   title : any;
-  @ViewChildren("ps") psRef : ElementRef;
-    pElement: HTMLElement;
 
   reminder: boolean;
   statusClass1: string = "transparent";
@@ -77,23 +71,21 @@ export class FirstPageComponent implements OnInit{
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {  
-      console.log("statusclass: ", this.statusClass1);
       this.quote$ = this.apiService.GetRandomQuote;
       this.quote$.subscribe(response => {
           this.lyrics = response?.quote?.replaceAll('.', '\n');
-          this.lyrics = this.lyrics.replaceAll(',', '\n');
           this.songtitle = response.songTitle;
           this.performerName = response.performer;
+          console.log(this.performerName);
         });
-      console.log("reminder: ", this.reminder);
-      console.log(this.lyrics);      
+            
   
       var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
         '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
       this.random_color = colors[Math.floor(Math.random() * colors.length)];
 
      this.renderer.listen('document', 'click', (event) => {
-      console.log("event: ", event);
+      //console.log("event: ", event);
       if (event.target.id == "perf")         
         {
           this.statusClass1 = "rgb(39, 7, 181)"
@@ -117,7 +109,6 @@ export class FirstPageComponent implements OnInit{
   }
 
   ngOnInit() {
-    
   }
 
   onSelection(perf: Performer){
@@ -142,19 +133,15 @@ export class FirstPageComponent implements OnInit{
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(response => {
         this.lyrics = response?.quote?.replaceAll('.', '\n');
-        this.lyrics = this.lyrics.replaceAll(',', '\n');
+        //this.lyrics = this.lyrics.replaceAll(',', '\n');
         this.songtitle = response.songTitle;
         this.performerName = response.performer;
       });
-    
-    console.log(this.lyrics);
-    console.log(this.statusClass1);
-    
 
     var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
       '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
     this.random_color = colors[Math.floor(Math.random() * colors.length)];
-    // renderer.setStyle(HTMLTextAreaElement, "color", random_color);;
+    // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
    }
 
   

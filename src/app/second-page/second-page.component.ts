@@ -5,7 +5,7 @@ import { asyncScheduler, debounceTime, merge, Observable, startWith, switchMap }
 import { map, tap } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { ApiService } from '../api.service';
+import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';

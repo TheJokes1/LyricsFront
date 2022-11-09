@@ -1,7 +1,17 @@
-    <div *ngIf="(((quote$ | async )?.quote != undefined) && (loadingDisabled)); else loading">
+    <div *ngIf="((quote$ | async )?.quote != undefined); else loading">
             <my-nav></my-nav>
     </div>
 
     <ng-template #loading>
         <app-landing-page></app-landing-page> 
     </ng-template>
+
+
+
+
+
+    
+    <!-- <app-splash *ngIf="!stopped" ></app-splash> -->
+    <!-- <my-nav></my-nav> -->
+  
+   

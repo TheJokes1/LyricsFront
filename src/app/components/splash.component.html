@@ -1,0 +1,20 @@
+<!-- <div *ngIf="showSplash" class="app-splash-screen" [ngStyle]="{'opacity': opacityChange, 'transition': splashTransition}">
+    <div class="image-container">
+        <img class="image" src="assets/LyricsSmaller.png"/>
+    </div>  
+    <div class="loader">
+         <p *ngIf = "text" id="writing">{{text}}</p>
+    </div>
+    <div class="app-splash-content">
+        <div data-text="loading" class="loading-text">Loading
+        </div>
+    </div>
+</div> -->
+<div  *ngIf="showSplash">
+    <div class="image-container">
+        <img class="image" src="assets/LyricsSmaller.png"/>
+    </div>  
+    <div class="loader">
+        <p *ngIf = "text" id="writing">{{text}}</p>
+    </div>
+</div>

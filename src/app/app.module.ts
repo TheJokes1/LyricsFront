@@ -25,19 +25,16 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment as env } from '../environments/environment';
 import { AddPerformerDialogComponent } from './add-performer-dialog/add-performer-dialog.component';
-
-
-const appRoutes: Routes = [
-  {path: '', component: FirstPageComponent},
-  {path: 'Random', component: FirstPageComponent},
-  {path: 'Add', component: SecondPageComponent},
-  {path: 'Favorites', component: ThirdPageComponent}
-];
+import { SplashScreenStateService } from './services/splash-screen-state.service';
+import { SplashComponent } from './components/splash.component';
+import { ApiService } from './services/api.service';
+import { HomepageResolver } from './resolvers/homepage.resolver';
+import { AppRoutingModule } from './app-routing.module';
 
 
 @NgModule({
   declarations: [
-    AppComponent, ReviewLyricsDialogComponent, NavigationComponent,
+    AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
     AddPerformerDialogComponent
   ],
@@ -45,12 +42,13 @@ const appRoutes: Routes = [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,
     MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     BrowserAnimationsModule, MatDialogModule, LayoutModule, MatToolbarModule, MatButtonModule,
-    MatSidenavModule, MatIconModule, MatListModule, RouterModule.forRoot(appRoutes),
+    MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule,
     AuthModule.forRoot(env.auth),
 
   ],
-  providers: [],
+  providers: [SplashScreenStateService, ApiService],
   bootstrap: [AppComponent],
-  schemas : [ CUSTOM_ELEMENTS_SCHEMA]
+  schemas : [ CUSTOM_ELEMENTS_SCHEMA],
+  
 })
 export class AppModule { }

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Performer } from './second-page/second-page.component'; 
+import { Performer } from '../second-page/second-page.component'; 
 import { HttpHeaders } from '@angular/common/http';
-import { Lyric } from './lyric';
+import { Lyric } from '../lyric';
 
 const headers= new HttpHeaders()
   .set('content-type', 'application/json')

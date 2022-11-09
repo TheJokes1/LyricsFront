@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from './api.service';
+import { ApiService } from './services/api.service';
+import { SplashScreenStateService } from './services/splash-screen-state.service';
 import { Lyric } from './lyric';
+import { ActivatedRouteSnapshot, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,26 +11,21 @@ import { Lyric } from './lyric';
   styleUrls: ['app.component.css']
 })
 export class AppComponent implements OnInit {
-  //loadingDisabled : boolean = false;
   quote$: Observable<Lyric>;
   wordings?: string;
-  loadingDisabled : boolean = false;
+  public stopped: boolean;
 
-  constructor(private apiService: ApiService) {
-    if (localStorage.getItem("loadingDisabled")== "true") this.loadingDisabled = true;
-      
+  constructor(private apiService: ApiService, private splashScreenStateService: SplashScreenStateService, private route: Router) {  
   }
 
   ngOnInit(): void {
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(res => {
-      console.log(res.quote);
-      localStorage.setItem("loadingDisabled", "true");
-      this.loadingDisabled = true;
-      this.wordings = res.songTitle;
+      console.log("quote:", res.quote);
+      // this.wordings = res.songTitle;
+      //this.splashScreenStateService.stop();
+      //this.route.navigateByUrl('/');
+      this.stopped = true;
     })
   }
 }
-
-
-
