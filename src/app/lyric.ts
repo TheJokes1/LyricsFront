@@ -1,6 +1,7 @@
 export interface Lyric {
-        quote?: string;
-        songTitle: string;
-        performer: string;
-        language: string;
-      }
+  lyricId: number;
+  quote?: string;
+  songTitle: string;
+  performer: string;
+  language: string;
+}

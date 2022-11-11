@@ -5,6 +5,7 @@ import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
+import { ElementSchemaRegistry } from '@angular/compiler';
 
 
 export interface DialogLyricData {
@@ -58,6 +59,8 @@ export class FirstPageComponent implements OnInit{
   lyrics1: string;
   songtitle : string = "";
   title : any;
+  usedLyricIds: number[] = new Array();
+  haveToReload: boolean= false;
 
   reminder: boolean;
   statusClass1: string = "transparent";
@@ -76,7 +79,8 @@ export class FirstPageComponent implements OnInit{
           this.lyrics = response?.quote?.replaceAll('.', '\n');
           this.songtitle = response.songTitle;
           this.performerName = response.performer;
-          console.log(this.performerName);
+          console.log("in constructor: ", response.performer, " And: ",response.lyricId);
+          this.usedLyricIds.push(response.lyricId);
         });
             
   
@@ -111,6 +115,23 @@ export class FirstPageComponent implements OnInit{
   ngOnInit() {
   }
 
+  checkLyricId(id: number): boolean {
+    this.haveToReload = false;
+    this.usedLyricIds.find(element => {
+      if (element == id)
+      {
+        this.haveToReload = true;
+        return true;
+      } 
+      else 
+      {
+        this.haveToReload = false
+        return false;
+      }
+    });
+    return this.haveToReload;
+  }
+
   onSelection(perf: Performer){
     this.performerName = perf.name;
     this.makeFilter.disable;
@@ -124,6 +145,7 @@ export class FirstPageComponent implements OnInit{
   }
 
   loadLyrics() {
+    console.log("reloading is happening");
     this.statusClass1 = "transparent";
     this.statusClass2 = "400";
     this.statusClass3 = "0 0 13px #000";
@@ -132,10 +154,20 @@ export class FirstPageComponent implements OnInit{
     this.statusClass30 = "0 0 13px #000";
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(response => {
-        this.lyrics = response?.quote?.replaceAll('.', '\n');
-        //this.lyrics = this.lyrics.replaceAll(',', '\n');
-        this.songtitle = response.songTitle;
-        this.performerName = response.performer;
+        console.log("loaded: ", response.performer + " AND ", response.lyricId);
+        console.log (this.checkLyricId(response.lyricId));
+        if (this.checkLyricId(response.lyricId) == true){ 
+          console.log("RELOADING");
+          this.loadLyrics();
+        }
+        else {
+          console.log("printing goodies");
+          this.lyrics = response?.quote?.replaceAll('.', '\n');
+          //this.lyrics = this.lyrics.replaceAll(',', '\n');
+          this.songtitle = response.songTitle;
+          this.performerName = response.performer;
+          this.usedLyricIds.push(response.lyricId);
+        }
       });
 
     var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
@@ -143,7 +175,4 @@ export class FirstPageComponent implements OnInit{
     this.random_color = colors[Math.floor(Math.random() * colors.length)];
     // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
    }
-
-  
-
 }

@@ -20,20 +20,15 @@ h3{
   font-size: 1.25em;
   font-weight: 100;
   /* color:rgb(240, 200, 200); */
-  color: transparent;
-  text-shadow: 0 0 13px #000;
+  /* color: transparent; */
   margin: 0 auto;
   /* margin-bottom: 5%; */
   text-align: center;
 }
 
-.blurred{
-  color: red;
-  text-shadow: 0 0 13px #000;
-}
-
-.not-blurred{
-  color:blueviolet;
+.perfTitle{
+  text-shadow: 0 0 18px #000;
+  color: black;
 }
 
 .p{

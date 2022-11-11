@@ -1,11 +1,19 @@
 
 <div mat-dialog-content class="lyrics-container"   
     [ngStyle]="{'background-color' :random_color}">
-  <mat-card >
+  <mat-card >   
+    
     <div class="lyric-card-top" >
-      <p #ps id="perf" [ngStyle]="{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">{{performerName}}</p>
-      <p #ps id="titled" [ngStyle]="{'color' :statusClass10, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">{{songtitle}}</p>
+      <p #ps id="perf" class="perfTitle"
+        [ngStyle]="{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">
+        {{performerName}} 
+      </p>
+      <p #ps id="titled" class="perfTitle"
+        [ngStyle]="{'color' :statusClass10, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">
+        {{songtitle}}
+      </p>
     </div>
+
     <mat-card-content>
       <p (click) = "loadLyrics()" class="lyrics">{{lyrics}}</p>
     </mat-card-content>

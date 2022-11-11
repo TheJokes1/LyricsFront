@@ -1,3 +1,4 @@
+    <mat-spinner *ngIf="load"></mat-spinner>   
     <div *ngIf="((quote$ | async )?.quote != undefined); else loading">
             <my-nav></my-nav>
     </div>
@@ -5,10 +6,6 @@
     <ng-template #loading>
         <app-landing-page></app-landing-page> 
     </ng-template>
-
-
-
-
 
     
     <!-- <app-splash *ngIf="!stopped" ></app-splash> -->

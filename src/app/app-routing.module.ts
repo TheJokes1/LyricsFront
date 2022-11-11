@@ -11,10 +11,13 @@ const routes: Routes = [
     {path: 'Add', component: SecondPageComponent},
     {path: 'Favorites', component: ThirdPageComponent},
     {path: '**', redirectTo: ''}
-  ];
+  ]
+ 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes
+    // , {enableTracing: true}
+    )],
   exports: [RouterModule]
 })
 
