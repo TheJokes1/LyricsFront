@@ -15,8 +15,8 @@ const headers= new HttpHeaders()
 
 @Injectable()
 export class ApiService {
-  baseUrl: string = `https://localhost:5001/`;
-  //baseUrl: string = `https://lyricslover.azurewebsites.net/`;
+  //baseUrl: string = `https://localhost:5001/`;
+  baseUrl: string = `https://lyricslover.azurewebsites.net/`;
 
   constructor(private http: HttpClient) {
   }
