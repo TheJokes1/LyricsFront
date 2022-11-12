@@ -5,8 +5,6 @@ import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
-import { ElementSchemaRegistry } from '@angular/compiler';
-
 
 export interface DialogLyricData {
   dLyrics: string;
@@ -62,7 +60,6 @@ export class FirstPageComponent implements OnInit{
   usedLyricIds: number[] = new Array();
   haveToReload: boolean= false;
 
-  reminder: boolean;
   statusClass1: string = "transparent";
   statusClass2: string = "400"
   statusClass3: string = "0 0 13px #000;"
@@ -115,6 +112,18 @@ export class FirstPageComponent implements OnInit{
   ngOnInit() {
   }
 
+  onSelection(perf: Performer){
+    this.performerName = perf.name;
+    this.makeFilter.disable;
+    this.disableButton = false;
+    console.log(perf.name, perf.performerId);
+    this.iD = perf.performerId;
+  }
+
+  changePerformer(){
+    this.disableButton = true;
+  }
+
   checkLyricId(id: number): boolean {
     this.haveToReload = false;
     this.usedLyricIds.find(element => {
@@ -132,20 +141,7 @@ export class FirstPageComponent implements OnInit{
     return this.haveToReload;
   }
 
-  onSelection(perf: Performer){
-    this.performerName = perf.name;
-    this.makeFilter.disable;
-    this.disableButton = false;
-    console.log(perf.name, perf.performerId);
-    this.iD = perf.performerId;
-  }
-
-  changePerformer(){
-    this.disableButton = true;
-  }
-
   loadLyrics() {
-    console.log("reloading is happening");
     this.statusClass1 = "transparent";
     this.statusClass2 = "400";
     this.statusClass3 = "0 0 13px #000";
@@ -154,25 +150,25 @@ export class FirstPageComponent implements OnInit{
     this.statusClass30 = "0 0 13px #000";
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(response => {
-        console.log("loaded: ", response.performer + " AND ", response.lyricId);
-        console.log (this.checkLyricId(response.lyricId));
         if (this.checkLyricId(response.lyricId) == true){ 
-          console.log("RELOADING");
+          //console.log(this.usedLyricIds);
+          //console.log("RELOADING: ", response.lyricId);
           this.loadLyrics();
         }
         else {
-          console.log("printing goodies");
+          //console.log("printing goodies");
           this.lyrics = response?.quote?.replaceAll('.', '\n');
           //this.lyrics = this.lyrics.replaceAll(',', '\n');
           this.songtitle = response.songTitle;
           this.performerName = response.performer;
           this.usedLyricIds.push(response.lyricId);
+          var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
+            '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
+          this.random_color = colors[Math.floor(Math.random() * colors.length)];
+          // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
         }
       });
 
-    var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-      '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
-    this.random_color = colors[Math.floor(Math.random() * colors.length)];
-    // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
+    
    }
 }
