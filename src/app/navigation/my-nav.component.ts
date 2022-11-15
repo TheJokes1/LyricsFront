@@ -2,7 +2,6 @@ import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, Inject
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { AuthService } from '@auth0/auth0-angular';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
@@ -13,7 +12,7 @@ import { DOCUMENT } from '@angular/common';
 export class NavigationComponent implements AfterContentChecked{
   url: string;
   title: string;
-  constructor(public auth: AuthService, @Inject(DOCUMENT) private doc: Document,private breakpointObserver: BreakpointObserver) {}
+  constructor( @Inject(DOCUMENT) private doc: Document,private breakpointObserver: BreakpointObserver) {}
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -21,9 +20,9 @@ export class NavigationComponent implements AfterContentChecked{
       shareReplay()
     );
 
-    logout() {
-      this.auth.logout({ returnTo: this.doc.location.origin });
-    }
+    // logout() {
+    //   this.auth.logout({ returnTo: this.doc.location.origin });
+    // }
 
     loginWithPopup() : void {
       //this.auth.loginWithRedirect();

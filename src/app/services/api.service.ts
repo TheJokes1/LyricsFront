@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
+import { buffer, Observable } from 'rxjs';
 import { Performer } from '../second-page/second-page.component'; 
 import { HttpHeaders } from '@angular/common/http';
 import { Lyric } from '../lyric';
+import { Buffer } from 'buffer';
 
 const headers= new HttpHeaders()
   .set('content-type', 'application/json')
   .set('Access-Control-Allow-Origin', '*');
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +20,22 @@ const headers= new HttpHeaders()
 export class ApiService {
   //baseUrl: string = `https://localhost:5001/`;
   baseUrl: string = `https://lyricslover.azurewebsites.net/`;
+  client_id: string = '4c51f7e54bd546e7a04d4141ff59ce8f';
+  client_secret: string = 'ed88fa0c5b4b480c92fc6ca3f982d617';
+
+
+  // authOptions: any = {
+  //   url: 'https://accounts.spotify.com/api/token',
+  //   headers: {
+  //     'Authorization': 'Basic ' + (client_id + ':' + client_secret)
+  //   },
+  //   form: {
+  //     grant_type: 'client_credentials'
+  //   },
+  //   json: true
+  // };
+
+ 
 
   constructor(private http: HttpClient) {
   }
@@ -46,12 +65,45 @@ export class ApiService {
       this.baseUrl + `lyrics/performers/`
       , {name: _name},
       {observe: 'response'}
-)
-  .subscribe(response => {
-    // You can access status:
-    console.log(response);
-    // Or any other header:
-    console.log(response.headers.get('X-Custom-Header'));
-  });;
+    // )
+    // .subscribe(response => {
+    //   console.log(response);
+    //   console.log(response.headers.get('X-Custom-Header'));
+    // }
+    );
   }
-}
+
+  
+    GetSpotifyCreds = () => {
+      let headers = new HttpHeaders({"Content-Type": "application/x-www-form-urlencoded", "Authorization": "Basic " 
+        + (btoa(this.client_id + ":" + this.client_secret))});
+      let body = new HttpParams();
+      body = body.append('grant_type', 'client_credentials');
+      return this.http.post
+        ('https://accounts.spotify.com/api/token', body.toString(), {headers: headers});
+    }
+
+    getSpotifyInfo = (token: any, performer: any, title: any) => {
+      let headers = new HttpHeaders({
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      });
+      const performerPlus = performer.replaceAll(' ', '+');
+      console.log('Performer: ', performerPlus);
+      const titlePlus = title.replaceAll(' ', '+');
+      console.log('title: ', titlePlus);
+      const urlSpot:string = 'https://api.spotify.com/v1/search?query=' + performerPlus + '+' + titlePlus + '&type=track&market=BE';
+
+      return this.http.get( 
+        urlSpot,
+        //    'href': 'https://api.spotify.com/v1/search?query=New+Rules+Dua+Lipa&type=track&market=US&offset=0&limit=1',
+  
+        { headers: headers }
+      );
+    };
+  } 
+  
+  
+
+

@@ -53,12 +53,16 @@ h3{
   white-space: pre-wrap;
 }
 
-.refresh-container{
-  margin-top: 30px;
+.spotify-cont{
   text-align: center;
 }
 
-.refresh-icon{
-  color:red;
+.spotify{
+  width: 25px;
+  height: 25px;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
+
+
 

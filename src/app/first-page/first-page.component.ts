@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
@@ -68,25 +67,28 @@ export class FirstPageComponent implements OnInit{
   statusClass30: string = "0 0 13px #000;" 
   random_color: string;
   quote$: Observable<Lyric>;
+  token: string;
+  link: any;
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
-    public el: ElementRef, public renderer: Renderer2) {  
-      this.quote$ = this.apiService.GetRandomQuote;
-      this.quote$.subscribe(response => {
-          this.lyrics = response?.quote?.replaceAll('.', '\n');
-          this.songtitle = response.songTitle;
-          this.performerName = response.performer;
-          console.log("in constructor: ", response.performer, " And: ",response.lyricId);
-          this.usedLyricIds.push(response.lyricId);
-        });
-            
-  
-      var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-        '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
-      this.random_color = colors[Math.floor(Math.random() * colors.length)];
+  public el: ElementRef, public renderer: Renderer2) {  
+    // this.quote$ = this.apiService.GetRandomQuote;
+    // this.quote$.subscribe(response => {
+    //     this.lyrics = response?.quote?.replaceAll('.', '\n');
+    //     this.songtitle = response.songTitle;
+    //     this.performerName = response.performer;
+    //     console.log("in constructor: ", response.performer, " And: ",response.lyricId);
+    //     var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
+    //       '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
+    //     this.random_color = colors[Math.floor(Math.random() * colors.length)];
+    //     this.usedLyricIds.push(response.lyricId);
+    //     this.getSpotifyUrl();
+    //  });          
 
-     this.renderer.listen('document', 'click', (event) => {
-      //console.log("event: ", event);
+    this.loadLyrics();
+
+    this.renderer.listen('document', 'click', (event) => {
+    //console.log("event: ", event);
       if (event.target.id == "perf")         
         {
           this.statusClass1 = "rgb(39, 7, 181)"
@@ -106,7 +108,16 @@ export class FirstPageComponent implements OnInit{
         this.statusClass20 = "850";
         this.statusClass30 = "none";
       }
-    })
+    });
+
+    this.apiService.GetSpotifyCreds().subscribe({
+      next: (response: any) => {
+        console.log('Access token: ',response.access_token);
+        this.token= response.access_token;
+      },
+      error: error => console.log(error),
+      complete : () => console.log("complete")
+      })
   }
 
   ngOnInit() {
@@ -150,25 +161,37 @@ export class FirstPageComponent implements OnInit{
     this.statusClass30 = "0 0 13px #000";
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(response => {
-        if (this.checkLyricId(response.lyricId) == true){ 
-          //console.log(this.usedLyricIds);
-          //console.log("RELOADING: ", response.lyricId);
-          this.loadLyrics();
-        }
-        else {
-          //console.log("printing goodies");
-          this.lyrics = response?.quote?.replaceAll('.', '\n');
-          //this.lyrics = this.lyrics.replaceAll(',', '\n');
-          this.songtitle = response.songTitle;
-          this.performerName = response.performer;
-          this.usedLyricIds.push(response.lyricId);
-          var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-            '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
-          this.random_color = colors[Math.floor(Math.random() * colors.length)];
-          // renderer.setStyle(HTMLTextAreaElement, "color", random_color);
-        }
-      });
+      if (this.checkLyricId(response.lyricId) == true){ 
+        this.loadLyrics();
+      }
+      else {
+        //console.log("printing goodies");
+        this.lyrics = response?.quote?.replaceAll('.', '\n');
+        //this.lyrics = this.lyrics.replaceAll(',', '\n');
+        this.songtitle = response.songTitle;
+        this.performerName = response.performer;
+        this.usedLyricIds.push(response.lyricId);
+        var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
+          '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
+        this.random_color = colors[Math.floor(Math.random() * colors.length)];
+        this.getSpotifyUrl();
+      }
+    });  
+   }
 
-    
+   getSpotifyUrl() {
+    this.apiService.getSpotifyInfo(this.token, this.performerName, this.songtitle).subscribe({
+      next: (response:any) => {
+        this.link = response.tracks.items[0].external_urls.spotify;
+        console.log("LINK: ", this.link);
+      },
+      error: error => {
+        this.link="";
+        console.log(error);
+      },
+      complete: () => {
+        console.log("lol");
+      }
+    })
    }
 }

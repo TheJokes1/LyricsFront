@@ -16,7 +16,13 @@
 
     <mat-card-content>
       <p (click) = "loadLyrics()" class="lyrics">{{lyrics}}</p>
+      <div class="spotify-cont">
+        <a *ngIf="link != '' " [href]=[link] target="_blank">
+          <img class = "spotify" src="../../assets/Spotify_Icon.png"/>
+        </a>
+      </div>
     </mat-card-content>
+
   </mat-card>
 </div>
 <!-- <div class="refresh-container">

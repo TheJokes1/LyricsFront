@@ -43,7 +43,7 @@ import { AppRoutingModule } from './app-routing.module';
     MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     BrowserAnimationsModule, MatDialogModule, LayoutModule, MatToolbarModule, MatButtonModule,
     MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule,
-    AuthModule.forRoot(env.auth),
+    //AuthModule.forRoot(env.auth),
 
   ],
   providers: [SplashScreenStateService, ApiService],

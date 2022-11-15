@@ -91,6 +91,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   newLyric : string;
   stringje : string ="";
   selectionMade : boolean= false;
+  performer$? : Observable<any>;
 
   constructor(public http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {
@@ -137,14 +138,14 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     this.iD = perf.performerId;
     this.addPHidden = true;
     this.selectionMade = true;
-    console.log(typeof(this.mySelect));
+    //console.log(typeof(this.mySelect));
   }
 
   onKeypressEvent(code: any){
     this.performer = code;
     if (this.mySelect.isOpen) this.addPHidden= true;
     if (!this.mySelect.isOpen) this.addPHidden = false;
-    console.log(this.mySelect.isOpen);
+    //console.log(this.mySelect.isOpen);
     this.checkStatusSaveButton();
     this.checkStatusPerformerButton();
     this.selectionMade = false;
@@ -164,7 +165,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
 
   checkStatusSaveButton(){
-    console.log("DD open: " + this.mySelect.isOpen);
+    //console.log("DD open: " + this.mySelect.isOpen);
     if (this.lyrics.length>=5 && this.songTitle.length>=2
       && this.selectionMade)
       this.disableButton = false;
@@ -177,7 +178,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     this.apiService.AddLyric( this.iD, this.newLyric, this.newTitle).subscribe((response: any) => {
       {
         this.reviewLyrics(this.newLyric, this.newTitle);
-        console.log("after dialog response: " + response);
         // this.lyrics = "";
         // this.songTitle = "";
         // this.input.nativeElement.value = " ";
@@ -187,8 +187,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
 
   onAddPerformer(){
-    console.log("performer: " + this.performer);
-    console.log("performerName: " + this.performerName);
     this.dialog.open(AddPerformerDialogComponent ,{
       data : { performerName : this.performer }
     }).afterClosed().subscribe
@@ -203,11 +201,13 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
 
   addPerformer(name: string){
-    this.apiService.AddPerformer(name);
+    this.performer$ = this.apiService.AddPerformer(name);
+    //this.performer$.subscribe(respons =>{
+    //})
   }
 
   reviewLyrics(lyrics: string, songTitle: string){
-    const checked = this.dialog.open(ReviewLyricsDialogComponent ,{
+    const checked = this.dialog.open(ReviewLyricsDialogComponent, {
       data : { lyrics: lyrics, songTitle: songTitle, performerName : this.performer }
     });
     checked.afterClosed().subscribe(result => {
@@ -221,7 +221,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     var nieuwe = test.map(element => 
       element.substring(0,1).toUpperCase() + element.slice(1));
     var nieuwere = nieuwe.join(" ");
-    console.log(nieuwere);
+    //console.log(nieuwere);
     return nieuwere;
   }
 

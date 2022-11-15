@@ -4,4 +4,6 @@ export interface Lyric {
   songTitle: string;
   performer: string;
   language: string;
+  classic: boolean,
+  spotLink: string
 }
