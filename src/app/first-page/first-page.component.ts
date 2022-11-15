@@ -72,25 +72,21 @@ export class FirstPageComponent implements OnInit{
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
   public el: ElementRef, public renderer: Renderer2) {  
-    // this.quote$ = this.apiService.GetRandomQuote;
-    // this.quote$.subscribe(response => {
-    //     this.lyrics = response?.quote?.replaceAll('.', '\n');
-    //     this.songtitle = response.songTitle;
-    //     this.performerName = response.performer;
-    //     console.log("in constructor: ", response.performer, " And: ",response.lyricId);
-    //     var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-    //       '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
-    //     this.random_color = colors[Math.floor(Math.random() * colors.length)];
-    //     this.usedLyricIds.push(response.lyricId);
-    //     this.getSpotifyUrl();
-    //  });          
 
     this.loadLyrics();
 
+    this.apiService.GetSpotifyCreds().subscribe({
+      next: (response: any) => {
+        console.log('Access token: ',response.access_token);
+        this.token= response.access_token;
+      },
+      error: error => console.log(error),
+      complete : () => console.log("complete")
+      })
+
     this.renderer.listen('document', 'click', (event) => {
     //console.log("event: ", event);
-      if (event.target.id == "perf")         
-        {
+      if (event.target.id == "perf") {
           this.statusClass1 = "rgb(39, 7, 181)"
           this.statusClass2 = "850";
           this.statusClass3 = "none";
@@ -109,15 +105,6 @@ export class FirstPageComponent implements OnInit{
         this.statusClass30 = "none";
       }
     });
-
-    this.apiService.GetSpotifyCreds().subscribe({
-      next: (response: any) => {
-        console.log('Access token: ',response.access_token);
-        this.token= response.access_token;
-      },
-      error: error => console.log(error),
-      complete : () => console.log("complete")
-      })
   }
 
   ngOnInit() {
@@ -138,13 +125,11 @@ export class FirstPageComponent implements OnInit{
   checkLyricId(id: number): boolean {
     this.haveToReload = false;
     this.usedLyricIds.find(element => {
-      if (element == id)
-      {
+      if (element == id) {
         this.haveToReload = true;
         return true;
       } 
-      else 
-      {
+      else {
         this.haveToReload = false
         return false;
       }
@@ -165,7 +150,6 @@ export class FirstPageComponent implements OnInit{
         this.loadLyrics();
       }
       else {
-        //console.log("printing goodies");
         this.lyrics = response?.quote?.replaceAll('.', '\n');
         //this.lyrics = this.lyrics.replaceAll(',', '\n');
         this.songtitle = response.songTitle;
@@ -174,6 +158,7 @@ export class FirstPageComponent implements OnInit{
         var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
           '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
         this.random_color = colors[Math.floor(Math.random() * colors.length)];
+        
         this.getSpotifyUrl();
       }
     });  
@@ -182,7 +167,7 @@ export class FirstPageComponent implements OnInit{
    getSpotifyUrl() {
     this.apiService.getSpotifyInfo(this.token, this.performerName, this.songtitle).subscribe({
       next: (response:any) => {
-        this.link = response.tracks.items[0].external_urls.spotify;
+        this.link= response.tracks.items[0].external_urls.spotify;
         console.log("LINK: ", this.link);
       },
       error: error => {
