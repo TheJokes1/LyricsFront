@@ -69,23 +69,25 @@ export class FirstPageComponent implements OnInit{
   quote$: Observable<Lyric>;
   token: string;
   link: any;
+  formattedLyrics: any;
+  formattedLyrics2: any;
+  formatted: boolean;
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
   public el: ElementRef, public renderer: Renderer2) {  
 
-    this.loadLyrics();
-
     this.apiService.GetSpotifyCreds().subscribe({
-      next: (response: any) => {
-        console.log('Access token: ',response.access_token);
-        this.token= response.access_token;
-      },
-      error: error => console.log(error),
-      complete : () => console.log("complete")
-      })
+    next: (response: any) => {
+      this.token= response.access_token;
+      this.loadLyrics();
+    },
+    error: error => console.log(error),
+    complete : () => {}
+    })
+
+    
 
     this.renderer.listen('document', 'click', (event) => {
-    //console.log("event: ", event);
       if (event.target.id == "perf") {
           this.statusClass1 = "rgb(39, 7, 181)"
           this.statusClass2 = "850";
@@ -124,6 +126,8 @@ export class FirstPageComponent implements OnInit{
 
   checkLyricId(id: number): boolean {
     this.haveToReload = false;
+    // HARD CODED NONSENSE THIS 88!!!! 
+    if (this.usedLyricIds.length == 88) this.usedLyricIds.splice(0, this.usedLyricIds.length);
     this.usedLyricIds.find(element => {
       if (element == id) {
         this.haveToReload = true;
@@ -150,19 +154,35 @@ export class FirstPageComponent implements OnInit{
         this.loadLyrics();
       }
       else {
-        this.lyrics = response?.quote?.replaceAll('.', '\n');
-        //this.lyrics = this.lyrics.replaceAll(',', '\n');
+        this.lyrics = this.formatLyrics(response.quote);
+        
         this.songtitle = response.songTitle;
         this.performerName = response.performer;
         this.usedLyricIds.push(response.lyricId);
         var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
           '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
         this.random_color = colors[Math.floor(Math.random() * colors.length)];
-        
+
         this.getSpotifyUrl();
       }
     });  
    }
+
+   formatLyrics (quote: string | undefined){
+    this.formatted = false;
+    while (!this.formatted){
+      if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
+        this.formattedLyrics = quote.substring(0,quote.length-1);
+      } else {
+        this.formattedLyrics = quote;
+        this.formatted = true;
+      }
+    }
+    this.formattedLyrics2= this.formattedLyrics.trim();
+    this.lyrics = this.formattedLyrics.replaceAll('.', '\n');
+    return this.lyrics;
+  }
+   
 
    getSpotifyUrl() {
     this.apiService.getSpotifyInfo(this.token, this.performerName, this.songtitle).subscribe({
@@ -175,7 +195,6 @@ export class FirstPageComponent implements OnInit{
         console.log(error);
       },
       complete: () => {
-        console.log("lol");
       }
     })
    }

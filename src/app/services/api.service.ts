@@ -11,7 +11,6 @@ const headers= new HttpHeaders()
   .set('Access-Control-Allow-Origin', '*');
 
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -22,20 +21,6 @@ export class ApiService {
   baseUrl: string = `https://lyricslover.azurewebsites.net/`;
   client_id: string = '4c51f7e54bd546e7a04d4141ff59ce8f';
   client_secret: string = 'ed88fa0c5b4b480c92fc6ca3f982d617';
-
-
-  // authOptions: any = {
-  //   url: 'https://accounts.spotify.com/api/token',
-  //   headers: {
-  //     'Authorization': 'Basic ' + (client_id + ':' + client_secret)
-  //   },
-  //   form: {
-  //     grant_type: 'client_credentials'
-  //   },
-  //   json: true
-  // };
-
- 
 
   constructor(private http: HttpClient) {
   }
@@ -60,7 +45,6 @@ export class ApiService {
   }
 
   AddPerformer = (_name: string) => {
-    console.log("in api service Add Performer");
     return this.http.post(
       this.baseUrl + `lyrics/performers/`
       , {name: _name},
@@ -90,15 +74,11 @@ export class ApiService {
         Authorization: 'Bearer ' + token,
       });
       const performerPlus = performer.replaceAll(' ', '+');
-      console.log('Performer: ', performerPlus);
       const titlePlus = title.replaceAll(' ', '+');
-      console.log('title: ', titlePlus);
       const urlSpot:string = 'https://api.spotify.com/v1/search?query=' + performerPlus + '+' + titlePlus + '&type=track&market=BE';
 
       return this.http.get( 
         urlSpot,
-        //    'href': 'https://api.spotify.com/v1/search?query=New+Rules+Dua+Lipa&type=track&market=US&offset=0&limit=1',
-  
         { headers: headers }
       );
     };
