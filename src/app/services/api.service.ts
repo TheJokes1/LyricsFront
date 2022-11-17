@@ -49,12 +49,7 @@ export class ApiService {
       this.baseUrl + `lyrics/performers/`
       , {name: _name},
       {observe: 'response'}
-    // )
-    // .subscribe(response => {
-    //   console.log(response);
-    //   console.log(response.headers.get('X-Custom-Header'));
-    // }
-    );
+    )
   }
 
   

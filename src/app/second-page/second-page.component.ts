@@ -193,6 +193,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
       (result => {
         console.log("name given: " + typeof(result));
         if (result != undefined) {
+          console.log(result);
           this.addPerformer(result);
           //this.mySelect.nativeElement.value = "";
           //window.location.reload();
@@ -202,8 +203,9 @@ export class SecondPageComponent implements OnInit, AfterViewInit
 
   addPerformer(name: string){
     this.performer$ = this.apiService.AddPerformer(name);
-    //this.performer$.subscribe(respons =>{
-    //})
+    this.performer$.subscribe(response =>{
+      console.log(response.headers.get('X-Custom-Header'));
+    })
   }
 
   reviewLyrics(lyrics: string, songTitle: string){

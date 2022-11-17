@@ -72,6 +72,9 @@ export class FirstPageComponent implements OnInit{
   formattedLyrics: any;
   formattedLyrics2: any;
   formatted: boolean;
+  p1: any;
+  p2: any;
+  p3: any;
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
   public el: ElementRef, public renderer: Renderer2) {  
@@ -154,7 +157,7 @@ export class FirstPageComponent implements OnInit{
         this.loadLyrics();
       }
       else {
-        this.lyrics = this.formatLyrics(response.quote);
+        this.lyrics = this.formatLyrics(response.quote, response.songTitle);
         
         this.songtitle = response.songTitle;
         this.performerName = response.performer;
@@ -168,7 +171,7 @@ export class FirstPageComponent implements OnInit{
     });  
    }
 
-   formatLyrics (quote: string | undefined){
+   formatLyrics (quote: string | undefined, title: string){
     this.formatted = false;
     while (!this.formatted){
       if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
@@ -177,9 +180,23 @@ export class FirstPageComponent implements OnInit{
         this.formattedLyrics = quote;
         this.formatted = true;
       }
+
     }
     this.formattedLyrics2= this.formattedLyrics.trim();
     this.lyrics = this.formattedLyrics.replaceAll('.', '\n');
+
+    
+    const titleL= title.toLowerCase();
+    const quoteL= this.lyrics.toLowerCase(); 
+    const position = quoteL.indexOf(titleL);
+    console.log("POSITION: ", position);
+    if (position > -1) {
+      this.p1= quote?.substring(0, position);
+      this.p2= quote?.substring(position, position + title.length);      
+      this.p3= quote?.substring(position+title.length, quote.length);
+      console.log(this.p1 + this.p2 + this.p3);
+    }
+    
     return this.lyrics;
   }
    
