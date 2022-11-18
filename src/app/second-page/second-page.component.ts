@@ -92,6 +92,8 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   stringje : string ="";
   selectionMade : boolean= false;
   performer$? : Observable<any>;
+  token: any;
+  link: any;
 
   constructor(public http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {
@@ -105,11 +107,13 @@ export class SecondPageComponent implements OnInit, AfterViewInit
           //`https://localhost:5001/lyrics/performers?searchQuery=${q}`
           )));
 
-    // this.performers = this.makeFilter.valueChanges
-    //   .pipe(
-    //       startWith(''),
-    //       debounceTime(200),
-    //       map(q => this._filter(q)));
+     this.apiService.GetSpotifyCreds().subscribe({
+    next: (response: any) => {
+      this.token= response.access_token;
+    },
+    error: error => console.log(error),
+    complete : () => {}
+    })
   }
 
   ngOnInit(){
@@ -174,17 +178,30 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   
   onAddLyrics(lyrics: string, songTitle: string) {
     this.newTitle = this.formatTitle(this.songTitle);
-    this.newLyric = this.formatLyric(this.lyrics)
-    this.apiService.AddLyric( this.iD, this.newLyric, this.newTitle).subscribe((response: any) => {
-      {
-        this.reviewLyrics(this.newLyric, this.newTitle);
-        // this.lyrics = "";
-        // this.songTitle = "";
-        // this.input.nativeElement.value = " ";
-        // this.disableButton = true;
+    this.newLyric = this.formatLyric(this.lyrics);
+    
+    this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
+      next: (response:any) => {
+        this.link= response.tracks.items[0].external_urls.spotify;
+        console.log("LINK: ", this.link);
+      },
+      error: error => {
+        this.link="";
+        console.log(error);
+      },
+      complete: () => {
+        this.apiService.AddLyric(this.iD, this.newLyric, this.newTitle, this.link).subscribe((response: any) => {
+          {
+            this.reviewLyrics(this.newLyric, this.newTitle);
+          }
+        });
       }
-    });
+    })
   }
+
+  getSpotifyUrl() {
+   
+   }
 
   onAddPerformer(){
     this.dialog.open(AddPerformerDialogComponent ,{
@@ -223,7 +240,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     var nieuwe = test.map(element => 
       element.substring(0,1).toUpperCase() + element.slice(1));
     var nieuwere = nieuwe.join(" ");
-    //console.log(nieuwere);
     return nieuwere;
   }
 

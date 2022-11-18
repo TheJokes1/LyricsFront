@@ -58,11 +58,13 @@ export class FirstPageComponent implements OnInit{
   title : any;
   usedLyricIds: number[] = new Array();
   haveToReload: boolean= false;
+  loadedLyric: Lyric = {};
 
   statusClass1: string = "transparent";
   statusClass2: string = "400"
   statusClass3: string = "0 0 13px #000;"
   statusClass10: string = "transparent";
+  statusClass11: string = "transparent";
   statusClass20: string = "400"
   statusClass30: string = "0 0 13px #000;" 
   random_color: string;
@@ -88,8 +90,6 @@ export class FirstPageComponent implements OnInit{
     complete : () => {}
     })
 
-    
-
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
           this.statusClass1 = "rgb(39, 7, 181)"
@@ -100,12 +100,14 @@ export class FirstPageComponent implements OnInit{
           this.statusClass10 = "rgb(39, 7, 181)"
           this.statusClass20 = "850";
           this.statusClass30 = "none";
+          this.statusClass11 = "rgb(39, 7, 81)";
       }
       else if (event.target.localName == "div"){
         this.statusClass1 = "rgb(39, 7, 181)"
         this.statusClass2 = "850";
         this.statusClass3 = "none";
         this.statusClass10 = "rgb(39, 7, 181)"
+        this.statusClass11 = "rgb(39, 7, 81)";
         this.statusClass20 = "850";
         this.statusClass30 = "none";
       }
@@ -127,10 +129,10 @@ export class FirstPageComponent implements OnInit{
     this.disableButton = true;
   }
 
-  checkLyricId(id: number): boolean {
+  checkLyricIdOnRepeat(id: number): boolean {
     this.haveToReload = false;
     // HARD CODED NONSENSE THIS 88!!!! 
-    if (this.usedLyricIds.length == 88) this.usedLyricIds.splice(0, this.usedLyricIds.length);
+    if (this.usedLyricIds.length == 80) this.usedLyricIds.splice(0, this.usedLyricIds.length);
     this.usedLyricIds.find(element => {
       if (element == id) {
         this.haveToReload = true;
@@ -149,29 +151,33 @@ export class FirstPageComponent implements OnInit{
     this.statusClass2 = "400";
     this.statusClass3 = "0 0 13px #000";
     this.statusClass10 = "transparent";
+    this.statusClass11 = "transparent";
     this.statusClass20 = "400";
     this.statusClass30 = "0 0 13px #000";
     this.quote$ = this.apiService.GetRandomQuote;
     this.quote$.subscribe(response => {
-      if (this.checkLyricId(response.lyricId) == true){ 
+      if (this.checkLyricIdOnRepeat(response.lyricId!) == true){ 
         this.loadLyrics();
-      }
-      else {
-        this.lyrics = this.formatLyrics(response.quote, response.songTitle);
-        
-        this.songtitle = response.songTitle;
-        this.performerName = response.performer;
-        this.usedLyricIds.push(response.lyricId);
+      }else {
+        this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
+        this.loadedLyric.songTitle = response.songTitle;
+        this.loadedLyric.performer = response.performer;
+        if (response.spotLink?.substring(0,5) != 'https'){
+          console.log("not HTTPS");
+          this.getSpotifyUrl();
+
+        } 
+        this.loadedLyric.spotLink = response.spotLink;
+        this.loadedLyric.lyricId = response.lyricId;
+        this.usedLyricIds.push(response.lyricId!);
         var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
           '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
         this.random_color = colors[Math.floor(Math.random() * colors.length)];
-
-        this.getSpotifyUrl();
       }
-    });  
+    })
    }
 
-   formatLyrics (quote: string | undefined, title: string){
+  formatLyrics (quote: string | undefined, title: string){
     this.formatted = false;
     while (!this.formatted){
       if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
@@ -180,39 +186,40 @@ export class FirstPageComponent implements OnInit{
         this.formattedLyrics = quote;
         this.formatted = true;
       }
-
     }
     this.formattedLyrics2= this.formattedLyrics.trim();
     this.lyrics = this.formattedLyrics.replaceAll('.', '\n');
 
-    
     const titleL= title.toLowerCase();
     const quoteL= this.lyrics.toLowerCase(); 
     const position = quoteL.indexOf(titleL);
-    console.log("POSITION: ", position);
     if (position > -1) {
       this.p1= quote?.substring(0, position);
       this.p2= quote?.substring(position, position + title.length);      
       this.p3= quote?.substring(position+title.length, quote.length);
-      console.log(this.p1 + this.p2 + this.p3);
+      
+    } else {
+      this.p1 = this.lyrics;
+      this.p2="";
+      this.p3=""
     }
-    
+    console.log(this.p1 + this.p2 + this.p3);
     return this.lyrics;
   }
-   
 
-   getSpotifyUrl() {
-    this.apiService.getSpotifyInfo(this.token, this.performerName, this.songtitle).subscribe({
+  getSpotifyUrl(){
+    this.apiService.getSpotifyInfo(this.token, this.loadedLyric.performer, this.loadedLyric.songTitle).subscribe({
       next: (response:any) => {
         this.link= response.tracks.items[0].external_urls.spotify;
-        console.log("LINK: ", this.link);
       },
       error: error => {
         this.link="";
         console.log(error);
       },
       complete: () => {
+        this.apiService.AddSpotLink(this.loadedLyric.lyricId!, this.link).subscribe(data => {
+        });
       }
     })
-   }
+  }
 }

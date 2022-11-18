@@ -6,16 +6,22 @@
     <div class="lyric-card-top" >
       <p #ps id="perf" class="perfTitle"
         [ngStyle]="{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">
-        {{performerName}} 
+        {{loadedLyric.performer}} 
       </p>
       <p #ps id="titled" class="perfTitle"
         [ngStyle]="{'color' :statusClass10, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">
-        {{songtitle}}
+        {{loadedLyric.songTitle}}
       </p>
     </div>
 
     <mat-card-content>
-      <p (click) = "loadLyrics()" class="lyrics">{{lyrics}}</p>
+      <p  class="lyrics">
+        <!-- {{lyrics}} -->
+        <span (click) = "loadLyrics()">{{p1}}</span>
+        <span #ps id="titled" class="perfTitle"
+        [ngStyle]="{'color' :statusClass11, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">{{p2}}</span>
+        <span (click) = "loadLyrics()">{{p3}}</span>
+      </p>
       <div class="spotify-cont">
         <a *ngIf="link != '' " [href]=[link] target="_blank">
           <img class= "spotify" src= "assets/Spotify_Icon.png"/>

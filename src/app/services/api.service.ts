@@ -38,10 +38,10 @@ export class ApiService {
       {headers: headers};
    }
 
-  AddLyric = (_performerId: number, _words: string, _songTitle: string, ) => {
+  AddLyric = (_performerId: number, _words: string, _songTitle: string, _spotLink: string) => {
     return this.http.post(
       this.baseUrl + `lyrics/`
-      + _performerId, {words: _words, songTitle: _songTitle}, )
+      + _performerId, {words: _words, songTitle: _songTitle, spotLink: _spotLink}, )
   }
 
   AddPerformer = (_name: string) => {
@@ -52,32 +52,38 @@ export class ApiService {
     )
   }
 
+  AddSpotLink = (_id: number, _link: string) => {
+    return this.http.put(
+      this.baseUrl + `lyrics/put/${_id}`, 
+      {spotLink: _link} , {observe: 'response'}
+    )
+  }
   
-    GetSpotifyCreds = () => {
-      let headers = new HttpHeaders({"Content-Type": "application/x-www-form-urlencoded", "Authorization": "Basic " 
-        + (btoa(this.client_id + ":" + this.client_secret))});
-      let body = new HttpParams();
-      body = body.append('grant_type', 'client_credentials');
-      return this.http.post
-        ('https://accounts.spotify.com/api/token', body.toString(), {headers: headers});
-    }
+  GetSpotifyCreds = () => {
+    let headers = new HttpHeaders({"Content-Type": "application/x-www-form-urlencoded", "Authorization": "Basic " 
+      + (btoa(this.client_id + ":" + this.client_secret))});
+    let body = new HttpParams();
+    body = body.append('grant_type', 'client_credentials');
+    return this.http.post
+      ('https://accounts.spotify.com/api/token', body.toString(), {headers: headers});
+  }
 
-    getSpotifyInfo = (token: any, performer: any, title: any) => {
-      let headers = new HttpHeaders({
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      });
-      const performerPlus = performer.replaceAll(' ', '+');
-      const titlePlus = title.replaceAll(' ', '+');
-      const urlSpot:string = 'https://api.spotify.com/v1/search?query=' + performerPlus + '+' + titlePlus + '&type=track&market=BE';
+  getSpotifyInfo = (token: any, performer: any, title: any) => {
+    let headers = new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    });
+    const performerPlus = performer.replaceAll(' ', '+');
+    const titlePlus = title.replaceAll(' ', '+');
+    const urlSpot:string = 'https://api.spotify.com/v1/search?query=' + performerPlus + '+' + titlePlus + '&type=track&market=BE';
 
-      return this.http.get( 
-        urlSpot,
-        { headers: headers }
-      );
-    };
-  } 
+    return this.http.get( 
+      urlSpot,
+      { headers: headers }
+    );
+  };
+} 
   
   
 
