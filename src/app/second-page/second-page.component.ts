@@ -117,17 +117,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
 
   ngOnInit(){
-    // this.performers = this.client.get<Performer[]>(
-    //   //`https://lyricslover.azurewebsites.net/lyrics/performers`
-    //  `https://localhost:5001/lyrics/performers`
-    //  //,{headers: headers}
-    // );
   }
-
-  // private _filter (value: any): Performer[] {
-  //   const filterValue = value.toLowerCase();
-  //   return this.allP.filter(options => options.name.toLowerCase().includes(filterValue))
-  // }
 
   ngAfterViewInit() {
   }

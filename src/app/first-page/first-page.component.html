@@ -23,7 +23,7 @@
         <span (click) = "loadLyrics()">{{p3}}</span>
       </p>
       <div class="spotify-cont">
-        <a *ngIf="link != '' " [href]=[link] target="_blank">
+        <a *ngIf="link != '' " [href]=[loadedLyric.spotLink] target="_blank">
           <img class= "spotify" src= "assets/Spotify_Icon.png"/>
         </a>
       </div>
