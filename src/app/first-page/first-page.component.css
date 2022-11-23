@@ -31,6 +31,11 @@ h3{
   color: black;
 }
 
+.classic{
+  margin: 0 auto;
+  text-align: center;
+}
+
 .p{
   /* font-weight: bold; */
   color:rgb(250, 248, 248);
@@ -62,6 +67,11 @@ h3{
   height: 25px;
   margin: 0 auto;
   margin-bottom: 10px;
+}
+
+.ster{
+  width: 25px;
+  height: 25px;
 }
 
 

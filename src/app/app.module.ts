@@ -30,6 +30,8 @@ import { SplashComponent } from './components/splash.component';
 import { ApiService } from './services/api.service';
 import { HomepageResolver } from './resolvers/homepage.resolver';
 import { AppRoutingModule } from './app-routing.module';
+import { MatChipsModule } from '@angular/material/chips';
+
 
 
 @NgModule({
@@ -42,7 +44,7 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,
     MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     BrowserAnimationsModule, MatDialogModule, LayoutModule, MatToolbarModule, MatButtonModule,
-    MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule,
+    MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule, MatChipsModule
     //AuthModule.forRoot(env.auth),
 
   ],

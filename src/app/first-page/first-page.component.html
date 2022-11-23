@@ -1,7 +1,7 @@
 
 <div mat-dialog-content class="lyrics-container"   
     [ngStyle]="{'background-color' :random_color}">
-  <mat-card >   
+  <mat-card md-swipe-left="onSwipeLeft()" [hidden]="hideQuote" >   
     
     <div class="lyric-card-top" >
       <p #ps id="perf" class="perfTitle"
@@ -16,23 +16,27 @@
 
     <mat-card-content>
       <p  class="lyrics">
-        <!-- {{lyrics}} -->
         <span (click) = "loadLyrics()">{{p1}}</span>
         <span #ps id="titled" class="perfTitle"
         [ngStyle]="{'color' :statusClass11, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">{{p2}}</span>
         <span (click) = "loadLyrics()">{{p3}}</span>
-      </p>
+      </p>  
+   
       <div class="spotify-cont">
-        <a *ngIf="link != '' " [href]=[loadedLyric.spotLink] target="_blank">
-          <img class= "spotify" src= "assets/Spotify_Icon.png"/>
-        </a>
+          <!-- <a *ngIf="link != '' " [href]=[loadedLyric.spotLink] target="_blank"> -->
+            <a *ngIf="link != '' " [href]=[previewLink] target="_blank">
+
+            <img class= "spotify" src= "assets/Spotify_Icon.png"/>
+          </a>
+          <!-- <img class = "ster" *ngIf="popularity > 57" src="assets/gold-star.jpg"> -->
       </div>
     </mat-card-content>
-
   </mat-card>
+
+  <mat-card md-swipe-right="onSwipeRight()" [hidden]="!hideQuote">
+    <mat-card-content>
+      <img [src]="[artistImage]"/>
+    </mat-card-content>
+  </mat-card>
+
 </div>
-<!-- <div class="refresh-container">
-  <mat-icon class ="refresh" (click) = "reloadCurrentPage()" aria-hidden="false" 
-    aria-label="refresh-icon" fontIcon="refresh">
-  </mat-icon>
-</div> -->

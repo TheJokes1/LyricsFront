@@ -5,6 +5,7 @@ import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
 
+
 export interface DialogLyricData {
   dLyrics: string;
   dSongTitle: string;
@@ -79,6 +80,11 @@ export class FirstPageComponent implements OnInit{
   p2: any;
   p3: any;
   formattedLyrics4: any;
+  popularity: number;
+  previewLink: any;
+  artistImage: any;
+
+  hideQuote: boolean = false;
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
   public el: ElementRef, public renderer: Renderer2) {  
@@ -165,13 +171,14 @@ export class FirstPageComponent implements OnInit{
         this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
-        if (response.spotLink?.substring(0,5) != 'https'){ // if there's no spotify link in DB: get it from Spotify
+        if (response.spotLink?.substring(0,5) == 'https'){ // if there's no spotify link in DB: get it from Spotify
           console.log("not HTTPS");
           this.getSpotifyUrl();
 
         } 
         this.loadedLyric.spotLink = response.spotLink;
         this.loadedLyric.lyricId = response.lyricId;
+        
         this.usedLyricIds.push(response.lyricId!); // add lyricId to array (to check on doubles)
         var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
           '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
@@ -201,7 +208,7 @@ export class FirstPageComponent implements OnInit{
     const position = quoteL.indexOf(titleL);
     quote= this.lyrics;
 
-    if (position > -1) { //if the songTitle appears in the quote -> chop up the string and blur it
+    if (position > -1) { // if the songTitle appears in the quote -> chop up the string and blur it
       this.p1= quote?.substring(0, position);
       this.p2= quote?.substring(position, position + title.length);      
       this.p3= quote?.substring(position+title.length, quote.length);
@@ -219,6 +226,10 @@ export class FirstPageComponent implements OnInit{
       next: (response:any) => {
         console.log(response);
         this.link= response.tracks.items[0].external_urls.spotify;
+        this.popularity = this.getPopularity(response);
+        this.previewLink = response.tracks.items[0].preview_url;
+        this.artistImage = response.tracks.items[0].album.images[1].url;
+        console.log(this.artistImage);
       },
       error: error => {
         this.link="";
@@ -229,6 +240,28 @@ export class FirstPageComponent implements OnInit{
         });
       }
     })
+  }
+
+  getPopularity (response: any) : number {
+    var highest = 2;
+    var limit = response.tracks.items.length;
+    for (var i: any = 0; i<limit; i++){
+      if (response.tracks.items[i].popularity > highest) {
+        highest = response.tracks.items[i].popularity;
+        
+      } 
+      if (highest>57) i=i+10;
+    } 
+    console.log("popularity: ", highest);
+    return highest;
+  };
+
+  onSwipeLeft(){
+    this.hideQuote = true;
+  }
+
+  onswipeRight(){
+    this.hideQuote = false;
   }
 
 }
