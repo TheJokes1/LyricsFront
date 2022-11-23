@@ -257,10 +257,12 @@ export class FirstPageComponent implements OnInit{
   };
 
   onSwipeLeft(){
+    console.log("swipe left");
     this.hideQuote = true;
   }
 
   onswipeRight(){
+    console.log("swipe right");
     this.hideQuote = false;
   }
 
