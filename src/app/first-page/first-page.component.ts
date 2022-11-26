@@ -60,6 +60,9 @@ export class FirstPageComponent implements OnInit{
   usedLyricIds: number[] = new Array();
   haveToReload: boolean= false;
   loadedLyric: Lyric = {};
+  lyricList$: Observable<Lyric[]>;
+  lyricList: Lyric[] = new Array();
+  lyricArray:number [][] = new Array;
 
   statusClass1: string = "transparent";
   statusClass2: string = "400"
@@ -83,6 +86,7 @@ export class FirstPageComponent implements OnInit{
   popularity: number;
   previewLink: any;
   artistImage: any;
+  lengthLyrics: number = 0;
 
   hideQuote: boolean = false;
   
@@ -92,11 +96,26 @@ export class FirstPageComponent implements OnInit{
     this.apiService.GetSpotifyCreds().subscribe({
     next: (response: any) => {
       this.token= response.access_token;
-      this.loadLyrics();
     },
     error: error => console.log(error),
     complete : () => {}
-    })
+  })
+  
+  //LOADING LYRICS FOR THE FIRST TIME HERE
+  this.lyricList$ = this.apiService.GetLyrics();
+  this.lyricList$.subscribe({
+      next: (response: any) => {
+        this.lengthLyrics = response.length;
+        this.lyricList$ = response.lyrics;
+        console.log("dit is de lijst: ", this.lyricList$);
+        this.loadLyrics();
+      },
+      error: error => console.log("error: ", error),
+      complete: () => {}
+    });
+   
+   
+    
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
@@ -139,8 +158,8 @@ export class FirstPageComponent implements OnInit{
 
   checkLyricIdOnRepeat(id: number): boolean {
     this.haveToReload = false;
-    // HARD CODED NONSENSE THIS 88!!!! 
-    if (this.usedLyricIds.length == 80) this.usedLyricIds.splice(0, this.usedLyricIds.length);
+    // HARD CODED NONSENSE THIS 100!!!! 
+    if (this.usedLyricIds.length == 100) this.usedLyricIds.splice(0, this.usedLyricIds.length);
     this.usedLyricIds.find(element => {
       if (element == id) {
         this.haveToReload = true;
@@ -162,30 +181,40 @@ export class FirstPageComponent implements OnInit{
     this.statusClass11 = "transparent";
     this.statusClass20 = "400";
     this.statusClass30 = "0 0 13px #000";
-    this.quote$ = this.apiService.GetRandomQuote;
-    this.quote$.subscribe(response => { 
-      if (this.checkLyricIdOnRepeat(response.lyricId!) == true){ 
-        this.loadLyrics(); // if it's a double, load another one.
-      }else { // if no double: format and display it:
+
+    var randomNumber = Math.floor(Math.random() * this.lengthLyrics);
+    this.usedLyricIds.push(randomNumber);
+
+    //check LOOP if the id is already used. Get outta loop when OKAY
+    while (this.checkLyricIdOnRepeat(randomNumber) == true){
+      randomNumber = Math.floor(Math.random() * this.lengthLyrics);
+      this.usedLyricIds.push(randomNumber);
+    }
+    console.log("random number: ", randomNumber);
+    console.log("usedLyricIds: ", this.usedLyricIds);
+    // if no double: get it, format and display it:
+      
+    this.quote$ = this.apiService.GetLyric(randomNumber);
+    this.quote$.subscribe({
+      next: (response: any) => {
         console.log(response.lyricId);
         this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
         if (response.spotLink?.substring(0,5) == 'https'){ // if there's no spotify link in DB: get it from Spotify
           console.log("not HTTPS");
-          this.getSpotifyUrl();
-
-        } 
-        this.loadedLyric.spotLink = response.spotLink;
-        this.loadedLyric.lyricId = response.lyricId;
-        
-        this.usedLyricIds.push(response.lyricId!); // add lyricId to array (to check on doubles)
-        var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-          '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
-        this.random_color = colors[Math.floor(Math.random() * colors.length)];
+          this.getSpotifyUrl();      
+          this.loadedLyric.spotLink = response.spotLink;
+          this.loadedLyric.lyricId = response.lyricId;
+        }
       }
-    })
-   }
+    });
+
+    var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
+      '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
+    this.random_color = colors[Math.floor(Math.random() * colors.length)];
+    
+  }
 
   formatLyrics (quote: string | undefined, title: string){
     this.formatted = false;

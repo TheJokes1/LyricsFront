@@ -34,16 +34,20 @@ export class ApiService {
   GetPerformers = (q : string) => {
     this.http.get<Performer[]>(
       this.baseUrl + `lyrics/performers?SearchQuery=${q}`
-      ),
-      {headers: headers};
+      )
    }
 
-   GetLyric = (q : string) => {
-    this.http.get<Lyric>(
+   GetLyrics = () => {
+    return this.http.get<Lyric[]>(
+      this.baseUrl + `lyrics/GetAllLyrics/`
+    )
+   }
+
+   GetLyric = (q : number) => {
+    return this.http.get<Lyric>(
       this.baseUrl + `lyrics/${q}`
-      ),
-      {headers: headers};
-    }
+      )
+   }
 
   AddLyric = (_performerId: number, _words: string, _songTitle: string, _spotLink: string) => {
     return this.http.post(
