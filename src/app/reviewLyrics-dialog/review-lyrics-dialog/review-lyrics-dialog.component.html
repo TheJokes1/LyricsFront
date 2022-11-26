@@ -6,10 +6,12 @@
     [(ngModel)]="dialogLyrics" name = "lyricshere"></textarea> -->
     <mat-card class="lyric-card">
       <mat-card-header>
-        <mat-card-title class = "song-title">{{songTitle}}</mat-card-title>
+        <mat-card-title class = "song-title">
+          <h3>{{songTitle}}</h3>
+        </mat-card-title>
         <mat-card-subtitle></mat-card-subtitle>
       </mat-card-header>
-      <mat-card-content>
+      <mat-card-content> 
         <p class="dialog-lyrics">{{dialogLyrics}}</p>
       </mat-card-content>
       <!-- <mat-card-actions>

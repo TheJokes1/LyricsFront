@@ -1,5 +1,6 @@
 h3{
   text-align: center;
+  color: black;
 }
 
 .lyricsDialog {
@@ -12,11 +13,18 @@ h3{
 }
 
 .dialogTitle {
-  color: rgb(5, 5, 113)
+  color: black
 }
 
+.mat-dialog-content{
+  white-space: pre-wrap;
+  /* color: rgb(5, 7, 113); */
+}
 
 .dialog-lyrics{
+  white-space: pre-wrap;
+  color: rgb(5, 7, 113);
+  text-align: left;
   font-size: larger;
   margin: 0 auto;
 }

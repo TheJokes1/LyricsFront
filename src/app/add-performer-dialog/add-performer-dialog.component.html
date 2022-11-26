@@ -1,6 +1,9 @@
 <div mat-dialog-content class="lyricsDialog">
-    <h2>Do you want to add</h2>
-    <h3>{{performerName}}</h3>
+    <h2>Add Artist</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Do you want to add</mat-label>
+      <input matInput [(ngModel)]="performerName">
+    </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <!-- <button mat-button (click)="onNoClick()">No Thanks</button> -->
