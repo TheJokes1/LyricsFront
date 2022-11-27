@@ -46,7 +46,7 @@ export interface FavouritePerformer {
   templateUrl: './first-page.component.html',
   styleUrls: ['./first-page.component.css']
 })
-export class FirstPageComponent implements OnInit{
+export class FirstPageComponent{
 
   disablePerfomer: boolean = false;
   disableButton: boolean = true;
@@ -58,11 +58,10 @@ export class FirstPageComponent implements OnInit{
   songtitle : string = "";
   title : any;
   usedLyricIds: number[] = new Array();
-  haveToReload: boolean= false;
   loadedLyric: Lyric = {};
+  // lyricList$: Observable<Lyric[]>;
   lyricList$: Observable<Lyric[]>;
-  lyricList: Lyric[] = new Array();
-  lyricArray:number [][] = new Array;
+  lyricList: number[];
 
   statusClass1: string = "transparent";
   statusClass2: string = "400"
@@ -87,35 +86,34 @@ export class FirstPageComponent implements OnInit{
   previewLink: any;
   artistImage: any;
   lengthLyrics: number = 0;
-
+  randomNumber: number;
   hideQuote: boolean = false;
+  lyricId: any;
+
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
-  public el: ElementRef, public renderer: Renderer2) {  
+    public el: ElementRef, public renderer: Renderer2) {  
 
-    this.apiService.GetSpotifyCreds().subscribe({
-    next: (response: any) => {
-      this.token= response.access_token;
-    },
-    error: error => console.log(error),
-    complete : () => {}
-  })
+      this.apiService.GetSpotifyCreds().subscribe({
+      next: (response: any) => {
+        this.token= response.access_token;
+      },
+      error: error => console.log(error),
+      complete : () => {}
+    })
   
-  //LOADING LYRICS FOR THE FIRST TIME HERE
-  this.lyricList$ = this.apiService.GetLyrics();
-  this.lyricList$.subscribe({
+    //LOADING LYRICS FOR THE FIRST TIME HERE
+    this.lyricList$ = this.apiService.GetLyrics();
+    this.lyricList$.subscribe({
       next: (response: any) => {
         this.lengthLyrics = response.length;
-        this.lyricList$ = response.lyrics;
-        console.log("dit is de lijst: ", this.lyricList$);
-        this.loadLyrics();
+       this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
+        this.loadLyrics(); // LOADLYRICS
       },
       error: error => console.log("error: ", error),
       complete: () => {}
     });
    
-   
-    
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
@@ -139,38 +137,27 @@ export class FirstPageComponent implements OnInit{
         this.statusClass30 = "none";
       }
     });
-  }
+  } // END OF CONSTRUCTOR
 
-  ngOnInit() {
-  }
 
-  onSelection(perf: Performer){
-    this.performerName = perf.name;
-    this.makeFilter.disable;
-    this.disableButton = false;
-    console.log(perf.name, perf.performerId);
-    this.iD = perf.performerId;
-  }
+  // onSelection(perf: Performer){
+  //   this.performerName = perf.name;
+  //   this.makeFilter.disable;
+  //   this.disableButton = false;
+  //   console.log(perf.name, perf.performerId);
+  //   this.iD = perf.performerId;
+  // }
 
   changePerformer(){
     this.disableButton = true;
   }
 
-  checkLyricIdOnRepeat(id: number): boolean {
-    this.haveToReload = false;
-    // HARD CODED NONSENSE THIS 100!!!! 
-    if (this.usedLyricIds.length == 100) this.usedLyricIds.splice(0, this.usedLyricIds.length);
-    this.usedLyricIds.find(element => {
-      if (element == id) {
-        this.haveToReload = true;
-        return true;
-      } 
-      else {
-        this.haveToReload = false
-        return false;
-      }
-    });
-    return this.haveToReload;
+  iDAlreadyUsed(id: number): boolean {
+    if (this.usedLyricIds.includes(id)) {
+      return true;
+    }else 
+      this.usedLyricIds.push(id);
+      return false;
   }
 
   loadLyrics() {
@@ -182,39 +169,36 @@ export class FirstPageComponent implements OnInit{
     this.statusClass20 = "400";
     this.statusClass30 = "0 0 13px #000";
 
-    var randomNumber = Math.floor(Math.random() * this.lengthLyrics);
-    this.usedLyricIds.push(randomNumber);
-
-    //check LOOP if the id is already used. Get outta loop when OKAY
-    while (this.checkLyricIdOnRepeat(randomNumber) == true){
-      randomNumber = Math.floor(Math.random() * this.lengthLyrics);
-      this.usedLyricIds.push(randomNumber);
+    //check in LOOP if the id is already used. Get outta loop when OKAY
+    do{
+      this.randomNumber = Math.floor(Math.random() * this.lengthLyrics); //36 
+      this.lyricId = this.lyricList[this.randomNumber]; //36e id= bv. 45
     }
-    console.log("random number: ", randomNumber);
-    console.log("usedLyricIds: ", this.usedLyricIds);
-    // if no double: get it, format and display it:
-      
-    this.quote$ = this.apiService.GetLyric(randomNumber);
+    while (this.iDAlreadyUsed(this.lyricId));
+
+    // if no double: get it, format and display it:    
+    this.quote$ = this.apiService.GetLyric(this.lyricId);
     this.quote$.subscribe({
       next: (response: any) => {
-        console.log(response.lyricId);
         this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
         if (response.spotLink?.substring(0,5) == 'https'){ // if there's no spotify link in DB: get it from Spotify
-          console.log("not HTTPS");
           this.getSpotifyUrl();      
           this.loadedLyric.spotLink = response.spotLink;
           this.loadedLyric.lyricId = response.lyricId;
         }
-      }
+      },
+      error: error => console.log("error: ", error),
+      complete: () => {}
     });
 
     var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
       '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
     this.random_color = colors[Math.floor(Math.random() * colors.length)];
-    
   }
+  // END OF LOADLYRICS
+
 
   formatLyrics (quote: string | undefined, title: string){
     this.formatted = false;
@@ -225,8 +209,7 @@ export class FirstPageComponent implements OnInit{
         this.formattedLyrics = quote;
         this.formatted = true;
       }
-    }    
-
+    }
     this.formattedLyrics2= this.formattedLyrics.trim();
     this.formattedLyrics3 = this.formattedLyrics2.replaceAll('?', '?\n')
     this.formattedLyrics4 = this.formattedLyrics3.replaceAll('\n\n', '\n');
