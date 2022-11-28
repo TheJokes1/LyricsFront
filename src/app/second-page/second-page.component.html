@@ -40,11 +40,11 @@
   <tr>
     <td>
       <mat-form-field>
-        <input #input matInput name="inputted" placeholder="Performer" class="input" type="text" 
+        <input #input matInput name="inputted" placeholder="Artist" class="input" type="text" 
           (keyup) = "onKeypressEvent(input.value)"
            [formControl]="makeFilter" [matAutocomplete]="auto"
         /> 
-        <mat-autocomplete #mySelect placeholder = "Performer" class="auto" autoActiveFirstOption
+        <mat-autocomplete #mySelect placeholder = "Artist" class="auto" autoActiveFirstOption
           #auto="matAutocomplete" (isOpen)="panelOpen" >
           <mat-option (onSelectionChange)="onSelection(perf)"
             *ngFor="let perf of performers | async" [value]="perf.name">

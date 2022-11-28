@@ -4,7 +4,7 @@ import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
-
+import { FilterService } from '../services/filter.service';
 
 export interface DialogLyricData {
   dLyrics: string;
@@ -89,10 +89,11 @@ export class FirstPageComponent{
   randomNumber: number;
   hideQuote: boolean = false;
   lyricId: any;
+  filteredLanguage: any = "";
 
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
-    public el: ElementRef, public renderer: Renderer2) {  
+    public el: ElementRef, public renderer: Renderer2, private filter: FilterService) {  
 
       this.apiService.GetSpotifyCreds().subscribe({
       next: (response: any) => {
@@ -101,19 +102,13 @@ export class FirstPageComponent{
       error: error => console.log(error),
       complete : () => {}
     })
+
+    this.filter.updateFilter$.subscribe((language) => {
+      this.filteredLanguage = language;
+    });
   
     //LOADING LYRICS FOR THE FIRST TIME HERE
-    this.lyricList$ = this.apiService.GetLyrics();
-    this.lyricList$.subscribe({
-      next: (response: any) => {
-        this.lengthLyrics = response.length;
-       this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
-        this.loadLyrics(); // LOADLYRICS
-      },
-      error: error => console.log("error: ", error),
-      complete: () => {}
-    });
-   
+    this.getLyrics(this.filteredLanguage);
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
@@ -139,21 +134,22 @@ export class FirstPageComponent{
     });
   } // END OF CONSTRUCTOR
 
-
-  // onSelection(perf: Performer){
-  //   this.performerName = perf.name;
-  //   this.makeFilter.disable;
-  //   this.disableButton = false;
-  //   console.log(perf.name, perf.performerId);
-  //   this.iD = perf.performerId;
-  // }
-
-  changePerformer(){
-    this.disableButton = true;
+  getLyrics(language: string) {
+    this.lyricList$ = this.apiService.GetLyrics(language);
+    this.lyricList$.subscribe({
+      next: (response: any) => {
+        this.lengthLyrics = response.length;
+        this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
+        this.loadLyrics(); // LOADLYRICS
+      },
+      error: error => console.log("error: ", error),
+      complete: () => {}
+    });   
   }
 
   iDAlreadyUsed(id: number): boolean {
     if (this.usedLyricIds.includes(id)) {
+      //console.log("Houston, we needed a reload on ", id);
       return true;
     }else 
       this.usedLyricIds.push(id);
@@ -172,9 +168,10 @@ export class FirstPageComponent{
     //check in LOOP if the id is already used. Get outta loop when OKAY
     do{
       this.randomNumber = Math.floor(Math.random() * this.lengthLyrics); //36 
-      this.lyricId = this.lyricList[this.randomNumber]; //36e id= bv. 45
+      this.lyricId = this.lyricList[this.randomNumber]; //36e ID in de rij= bv. 45
     }
     while (this.iDAlreadyUsed(this.lyricId));
+    //console.log(this.usedLyricIds.sort(function(a, b){return a - b}));
 
     // if no double: get it, format and display it:    
     this.quote$ = this.apiService.GetLyric(this.lyricId);
@@ -183,10 +180,12 @@ export class FirstPageComponent{
         this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
+        this.loadedLyric.lyricId = response.lyricId;
         if (response.spotLink?.substring(0,5) == 'https'){ // if there's no spotify link in DB: get it from Spotify
-          this.getSpotifyUrl();      
           this.loadedLyric.spotLink = response.spotLink;
-          this.loadedLyric.lyricId = response.lyricId;
+          this.link = response.spotLink;
+        }else{     
+          this.getSpotifyUrl();
         }
       },
       error: error => console.log("error: ", error),

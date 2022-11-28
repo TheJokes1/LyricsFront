@@ -31,6 +31,7 @@ import { ApiService } from './services/api.service';
 import { HomepageResolver } from './resolvers/homepage.resolver';
 import { AppRoutingModule } from './app-routing.module';
 import { MatChipsModule } from '@angular/material/chips';
+import { FilterComponent } from './filter/filter.component';
 
 
 
@@ -38,7 +39,7 @@ import { MatChipsModule } from '@angular/material/chips';
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
-    AddPerformerDialogComponent
+    AddPerformerDialogComponent, FilterComponent
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,

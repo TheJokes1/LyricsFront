@@ -18,7 +18,7 @@ const headers= new HttpHeaders()
 @Injectable()
 export class ApiService {
   baseUrl: string = `https://localhost:5001/api/`;
-  //baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
+  //baseUrl: string = `https://lyricslover.azurewebsites.net/`;
   client_id: string = '4c51f7e54bd546e7a04d4141ff59ce8f';
   client_secret: string = 'ed88fa0c5b4b480c92fc6ca3f982d617';
 
@@ -37,9 +37,9 @@ export class ApiService {
       )
    }
 
-   GetLyrics = () => {
+   GetLyrics = (language: string) => {
     return this.http.get<Lyric[]>(
-      this.baseUrl + `lyrics/GetAllLyrics/`
+      this.baseUrl + `lyrics?language=${language}`
     )
    }
 

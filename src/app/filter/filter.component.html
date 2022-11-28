@@ -1,0 +1,8 @@
+<mat-form-field class = "LanguagPick">
+    <mat-select [(value)]="selectedLanguage">
+      <!-- <mat-label *ngIf="selectedLanguage < 0">Language</mat-label> -->
+      <mat-option>ALL</mat-option>
+      <mat-option (onSelectionChange)="onSelection(lang)" [value]="lang.value" 
+          *ngFor="let lang of languageList">{{ lang.viewValue }}</mat-option>
+    </mat-select>
+</mat-form-field>

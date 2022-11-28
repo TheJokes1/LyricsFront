@@ -2,32 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, VERSION, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { asyncScheduler, debounceTime, merge, Observable, startWith, switchMap } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AddPerformerDialogComponent } from '../add-performer-dialog/add-performer-dialog.component';
-import { Element } from '@angular/compiler';
-import { MatInput } from '@angular/material/input';
-import { HttpHeaders } from '@angular/common/http';
 import { Lyric } from '../lyric';
-
-
 
 export interface DialogLyricData {
   dLyrics: string;
   dSongTitle: string;
 }
-
-// export interface Lyric {
-//   lyricId?: number;
-//   words: string;
-//   songTitle: string;
-//   performerId: number;
-// }
 
 export interface Performer {
   performerId: number;
@@ -59,15 +44,13 @@ export interface FavouritePerformer {
   performer: Performer;
 }
 
-const headers= new HttpHeaders()
-  .set('content-type', 'application/json')
-  .set('Access-Control-Allow-Origin', '*');
-
 @Component({
   selector: 'app-second-page',
   templateUrl: './second-page.component.html',
   styleUrls: ['./second-page.component.css']
 })
+
+
 export class SecondPageComponent implements OnInit, AfterViewInit
 {
   @ViewChild('mySelect') mySelect : any;
@@ -79,7 +62,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   lyrics : string ='';
   songTitle : string ='';
   performerName? : string;
-  iD : number = 0;
+  idPerformer : number = 0;
 
   dLyric : string ='';
   dSongTitle : string ='';
@@ -129,7 +112,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     this.makeFilter.disable;
     if (this.lyrics.length>=5 && this.songTitle.length>=2) this.disableButton = false;
     
-    this.iD = perf.performerId;
+    this.idPerformer = perf.performerId;
     this.addPHidden = true;
     this.selectionMade = true;
     //console.log(typeof(this.mySelect));
@@ -180,7 +163,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
         console.log(error);
       },
       complete: () => {
-        this.apiService.AddLyric(this.iD, this.newLyric, this.newTitle, this.link).subscribe((response: any) => {
+        this.apiService.AddLyric(this.idPerformer, this.newLyric, this.newTitle, this.link).subscribe((response: any) => {
           {
             this.reviewLyrics(this.newLyric, this.newTitle);
           }
@@ -188,10 +171,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
       }
     })
   }
-
-  getSpotifyUrl() {
-   
-   }
 
   onAddPerformer(){
     this.dialog.open(AddPerformerDialogComponent ,{
