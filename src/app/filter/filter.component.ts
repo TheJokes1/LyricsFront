@@ -1,4 +1,4 @@
-import { AfterContentChecked, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FilterService } from '../services/filter.service';
 
 interface Language {
@@ -13,27 +13,24 @@ interface Language {
 })
 
 
-export class FilterComponent implements AfterContentChecked {
+export class FilterComponent{
   title: string;
   inRandoms: boolean = false;
   url: string;
   selectedLanguage : string = "";
 
-  languageList: Language[] = [{value: 'eng', viewValue: "ENG"}, 
+  languageList: Language[] = [{value:"", viewValue: "----"}, 
+    {value: 'eng', viewValue: "ENG"}, 
     {value: 'fra', viewValue: "FRA"},
     {value: 'nld', viewValue: "NLD"}];
 
-  constructor(private filter: FilterService) { 
-    this.filter.updateFilter(this.selectedLanguage);
+  constructor(private filterService: FilterService) { 
   }
   
-  onSelection(lang: Language){
-    this.selectedLanguage = lang.value;
-  }
+  onSelection(lang: string){
+    console.log("in FILTER component: ", lang);
+    this.filterService.updateFilter(lang);
 
-  ngAfterContentChecked(): void {
-    this.url = window.location.href;
-    //if (this.url.endsWith('Random') || (this.url.endsWith("/")))
   }
 
 }

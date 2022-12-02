@@ -19,10 +19,7 @@ h3{
 .lyric-card-top {
   font-size: 1.25em;
   font-weight: 100;
-  /* color:rgb(240, 200, 200); */
-  /* color: transparent; */
   margin: 0 auto;
-  /* margin-bottom: 5%; */
   text-align: center;
 }
 
@@ -35,6 +32,16 @@ h3{
   margin: 0 auto;
   text-align: center;
 }
+
+.star{
+  width: 10%;
+  height: 30px;
+  font-size: 36px;
+  margin: auto;
+  display: block;
+  white-space: pre-wrap;
+}
+
 
 .p{
   /* font-weight: bold; */
@@ -53,8 +60,8 @@ h3{
   width: 88%;
   margin: 0 auto;
   text-align: center;
-  margin-top: 33px;
-  margin-bottom: 25px;
+  margin-top: 32px;
+  margin-bottom: 20px;
   white-space: pre-wrap;
 }
 
@@ -66,13 +73,9 @@ h3{
   width: 25px;
   height: 25px;
   margin: 0 auto;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
-.ster{
-  width: 25px;
-  height: 25px;
-}
 
 
 

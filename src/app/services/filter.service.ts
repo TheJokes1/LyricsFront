@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, shareReplay, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +9,12 @@ export class FilterService {
   private languageFilter = new Subject<any>();
 
   constructor() { 
-    this.updateFilter$ = this.languageFilter.asObservable();
+    this.updateFilter$ = 
+    this.languageFilter.asObservable()
+    .pipe(shareReplay(1));
   }
 
   updateFilter(language: string){
-    console.log(language);
     this.languageFilter.next(language);
   }
 

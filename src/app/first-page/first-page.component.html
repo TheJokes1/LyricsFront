@@ -13,8 +13,10 @@
         {{loadedLyric.songTitle}}
       </p>
     </div>
-
-    <mat-card-content>
+    <div>
+      <mat-icon color= "accent" class="star" *ngIf= "loadedLyric.classic">star</mat-icon>
+    </div>
+    <mat-card-content>  
       <p  class="lyrics">
         <span (click) = "loadLyrics()">{{p1}}</span>
         <span #ps id="titled" class="perfTitle"

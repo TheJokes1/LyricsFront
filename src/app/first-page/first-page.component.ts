@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren, OnDestroy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
+import { debounceTime, Observable, startWith, switchMap, take } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
@@ -46,7 +46,7 @@ export interface FavouritePerformer {
   templateUrl: './first-page.component.html',
   styleUrls: ['./first-page.component.css']
 })
-export class FirstPageComponent{
+export class FirstPageComponent implements OnDestroy{
 
   disablePerfomer: boolean = false;
   disableButton: boolean = true;
@@ -90,10 +90,12 @@ export class FirstPageComponent{
   hideQuote: boolean = false;
   lyricId: any;
   filteredLanguage: any = "";
+  numberOfLoadedLyrics: number = 0;
+  subscription: any;
 
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
-    public el: ElementRef, public renderer: Renderer2, private filter: FilterService) {  
+    public el: ElementRef, public renderer: Renderer2, private filterService: FilterService) {  
 
       this.apiService.GetSpotifyCreds().subscribe({
       next: (response: any) => {
@@ -103,16 +105,21 @@ export class FirstPageComponent{
       complete : () => {}
     })
 
-    this.filter.updateFilter$.subscribe((language) => {
+    this.getLyrics("");
+
+
+    this.subscription = this.filterService.updateFilter$.pipe().subscribe((language) => {
       this.filteredLanguage = language;
+      console.log("subscribed to: ", this.filteredLanguage);
+      this.getLyrics(this.filteredLanguage);
     });
   
-    //LOADING LYRICS FOR THE FIRST TIME HERE
-    this.getLyrics(this.filteredLanguage);
+    //LOADING LYRICS FOR THE FIRST TIME HERE too
+   // this.getLyrics(this.filteredLanguage);
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
-          this.statusClass1 = "rgb(39, 7, 181)"
+          this.statusClass1 = "rgb(39, 7, 181)";
           this.statusClass2 = "850";
           this.statusClass3 = "none";
         }
@@ -134,12 +141,14 @@ export class FirstPageComponent{
     });
   } // END OF CONSTRUCTOR
 
-  getLyrics(language: string) {
+  getLyrics(language: string) { //based on the language filter GETALLLYRICS
     this.lyricList$ = this.apiService.GetLyrics(language);
     this.lyricList$.subscribe({
       next: (response: any) => {
         this.lengthLyrics = response.length;
         this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
+        this.usedLyricIds = new Array(); // reset the usedLyricIds array
+        console.log("list: ", this.lyricList);
         this.loadLyrics(); // LOADLYRICS
       },
       error: error => console.log("error: ", error),
@@ -149,10 +158,15 @@ export class FirstPageComponent{
 
   iDAlreadyUsed(id: number): boolean {
     if (this.usedLyricIds.includes(id)) {
-      //console.log("Houston, we needed a reload on ", id);
+      console.log("Houston, we needed a reload on ", id);
+      if (this.usedLyricIds.length == this.lengthLyrics) {
+        this.usedLyricIds = new Array(); // reset the usedLyricIds array
+      }
       return true;
     }else 
+      this.numberOfLoadedLyrics ++;
       this.usedLyricIds.push(id);
+      console.log("Lyrics loaded: ", this.usedLyricIds);
       return false;
   }
 
@@ -169,6 +183,8 @@ export class FirstPageComponent{
     do{
       this.randomNumber = Math.floor(Math.random() * this.lengthLyrics); //36 
       this.lyricId = this.lyricList[this.randomNumber]; //36e ID in de rij= bv. 45
+      console.log(" Id: ", this.lyricId, "randomNr: ", this.randomNumber);
+
     }
     while (this.iDAlreadyUsed(this.lyricId));
     //console.log(this.usedLyricIds.sort(function(a, b){return a - b}));
@@ -181,6 +197,7 @@ export class FirstPageComponent{
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
         this.loadedLyric.lyricId = response.lyricId;
+        this.loadedLyric.classic = response.classic;
         if (response.spotLink?.substring(0,5) == 'https'){ // if there's no spotify link in DB: get it from Spotify
           this.loadedLyric.spotLink = response.spotLink;
           this.link = response.spotLink;
@@ -219,7 +236,7 @@ export class FirstPageComponent{
     const position = quoteL.indexOf(titleL);
     quote= this.lyrics;
 
-    if (position > -1) { // if the songTitle appears in the quote -> chop up the string and blur it
+    if (position > -1) { // if the substr appears in the quote -> chop up the string and blur it
       this.p1= quote?.substring(0, position);
       this.p2= quote?.substring(position, position + title.length);      
       this.p3= quote?.substring(position+title.length, quote.length);
@@ -228,7 +245,7 @@ export class FirstPageComponent{
       this.p2="";
       this.p3=""
     }
-    console.log(this.p1 + this.p2 + this.p3);
+    //console.log(this.p1 + this.p2 + this.p3);
     return this.lyrics;
   }
 
@@ -275,6 +292,10 @@ export class FirstPageComponent{
   onswipeRight(){
     console.log("swipe right");
     this.hideQuote = false;
+  }
+
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
   }
 
 }
