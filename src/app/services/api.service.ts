@@ -6,10 +6,9 @@ import { HttpHeaders } from '@angular/common/http';
 import { Lyric } from '../lyric';
 import { Buffer } from 'buffer';
 
-const headers= new HttpHeaders()
-  .set('content-type', 'application/json')
-  .set('Access-Control-Allow-Origin', '*');
-
+// const headers= new HttpHeaders()
+//   .set('content-type', 'application/json')
+//   .set('Access-Control-Allow-Origin', '*');
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +16,10 @@ const headers= new HttpHeaders()
 
 @Injectable()
 export class ApiService {
+
   baseUrl: string = `https://localhost:5001/api/`;
   //baseUrl: string = `https://lyricslover.azurewebsites.net/`;
-  client_id: string = '4c51f7e54bd546e7a04d4141ff59ce8f';
-  client_secret: string = 'ed88fa0c5b4b480c92fc6ca3f982d617';
-
+  
   constructor(private http: HttpClient) {
   }
 
@@ -69,21 +67,19 @@ export class ApiService {
       {spotLink: _link} , {observe: 'response'}
     )
   }
-  
-  GetSpotifyCreds = () => {
-    let headers = new HttpHeaders({"Content-Type": "application/x-www-form-urlencoded", "Authorization": "Basic " 
-      + (btoa(this.client_id + ":" + this.client_secret))});
-    let body = new HttpParams();
-    body = body.append('grant_type', 'client_credentials');
-    return this.http.post
-      ('https://accounts.spotify.com/api/token', body.toString(), {headers: headers});
+
+  GetAccessToken = () => { // API does the call to Spotify
+    return this.http.post( 
+      this.baseUrl + `SpotController/`,
+      {observe: 'response'}
+    )
   }
 
-  getSpotifyInfo = (token: any, performer: any, title: any) => {
+  getSpotifyInfo = (token: any, performer: any, title: any) => { //call to Spotify
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
+      Authorization: 'Bearer ' + token
     });
     const performerPlus = performer.replaceAll(' ', '+');
     const titlePlus = title.replaceAll(' ', '+');

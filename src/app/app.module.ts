@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { SecondPageComponent } from './second-page/second-page.component';
 import { ThirdPageComponent } from './third-page/third-page.component';
-import { FirstPageComponent } from './first-page/first-page.component';
+import { FirstPageComponent, SafeHtmlPipe } from './first-page/first-page.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment as env } from '../environments/environment';
@@ -32,6 +32,7 @@ import { HomepageResolver } from './resolvers/homepage.resolver';
 import { AppRoutingModule } from './app-routing.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { FilterComponent } from './filter/filter.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 
@@ -39,13 +40,14 @@ import { FilterComponent } from './filter/filter.component';
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
-    AddPerformerDialogComponent, FilterComponent
+    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,
     MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     BrowserAnimationsModule, MatDialogModule, LayoutModule, MatToolbarModule, MatButtonModule,
-    MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule, MatChipsModule
+    MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule, MatChipsModule,
+    MatExpansionModule
     //AuthModule.forRoot(env.auth),
 
   ],

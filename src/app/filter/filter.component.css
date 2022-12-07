@@ -1,6 +1,28 @@
 .LanguagPick{
-  font-size: small;
-  max-width: 60px;
-  float: left;
-  left: 20px;  
+  font-size: 14px;
+  max-width: 60px; 
+  height: 35px;
+  margin-left: 26px;
+  margin-top: 10px;
+}
+
+.mat-expansion-panel-body {
+  padding: none;
+}
+
+.mat-select-0-panel{
+  width: 100px;
+}
+
+.listbox{
+  width: 100px;
+}
+
+.material-symbols-outlined{
+  color: #000000;
+  align-items: left;
+}
+
+mat-select-arrow{
+  display: none;
 }

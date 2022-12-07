@@ -1,7 +1,29 @@
-<mat-form-field class = "LanguagPick">
-    <mat-select (selectionChange)="onSelection(selectedLanguage)" [(value)]="selectedLanguage">
-      <!-- <mat-label *ngIf="selectedLanguage < 0">Language</mat-label> -->
-      <mat-option [value]="lang.value" 
-          *ngFor="let lang of languageList">{{ lang.viewValue }}</mat-option>
-    </mat-select>
-</mat-form-field>
+<!-- <mat-accordion class="example-headers-align">
+    <mat-expansion-panel hideToggle="false" (opened)="panelOpenState = true"
+    (closed)="panelOpenState = false" closeAll="closeOnSelection()" >
+      <mat-expansion-panel-header expandedHeight="22px"> -->
+        <!-- <mat-panel-title *ngIf="!panelOpenState">
+          {{ selectedLanguage | uppercase }}
+        </mat-panel-title>
+        <mat-panel-description *ngIf="!panelOpenState && noFilter">
+          <mat-icon><span class="material-symbols-outlined">
+            filter_alt
+            </span>
+          </mat-icon>
+        </mat-panel-description> -->
+
+        <!-- <mat-form-field class = "LanguagPick"> -->
+            <mat-select (selectionChange)="onSelection(selectedLanguage)" [(value)]="selectedLanguage"
+            class = "LanguagPick">
+            <!-- <mat-label *ngIf="selectedLanguage < 0">Language</mat-label> -->
+                <mat-option [value]="lang.value" 
+                *ngFor="let lang of languageList">{{ lang.viewValue }}</mat-option>
+            </mat-select>
+        <!-- </mat-form-field> -->
+
+      <!-- </mat-expansion-panel-header>
+   
+        
+    </mat-expansion-panel>
+</mat-accordion>
+ -->

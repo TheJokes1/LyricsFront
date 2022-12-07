@@ -2,6 +2,32 @@ h3{
   text-align: center;
 }
 
+.column {
+  float: left;
+}
+
+.left {
+  width: 5%;
+}
+
+.middle{
+  width: 90%;
+}
+
+.right {
+  width: 5%;
+}
+
+.next{
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: x-large;
+  font-weight: bold;
+  margin-right: 1px;
+  margin-top: 100px;
+}
+
 .filters{
   margin-left: 0px;
 }
@@ -21,27 +47,24 @@ h3{
   font-weight: 100;
   margin: 0 auto;
   text-align: center;
+  ;
 }
 
 .perfTitle{
   text-shadow: 0 0 18px #000;
   color: black;
+  
 }
 
-.classic{
-  margin: 0 auto;
+.chipList{
   text-align: center;
 }
 
-.star{
-  width: 10%;
-  height: 30px;
-  font-size: 36px;
-  margin: auto;
+.classic{
+  width: 18%;
+  margin: 0 auto;
   display: block;
-  white-space: pre-wrap;
 }
-
 
 .p{
   /* font-weight: bold; */
@@ -60,8 +83,8 @@ h3{
   width: 88%;
   margin: 0 auto;
   text-align: center;
-  margin-top: 32px;
-  margin-bottom: 20px;
+  margin-top: 25px;
+  margin-bottom: 5px;
   white-space: pre-wrap;
 }
 
@@ -74,6 +97,11 @@ h3{
   height: 25px;
   margin: 0 auto;
   margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.blur {
+  color:blueviolet;
 }
 
 

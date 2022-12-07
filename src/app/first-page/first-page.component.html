@@ -1,44 +1,62 @@
 <app-filter></app-filter>
 <div mat-dialog-content class="lyrics-container"   
     [ngStyle]="{'background-color' :random_color}">
-  <mat-card md-swipe-left="onSwipeLeft()" [hidden]="hideQuote" >   
-    
+  <mat-card>
     <div class="lyric-card-top" >
-      <p #ps id="perf" class="perfTitle"
+      <!-- ARTIST and TITLE -->
+      <p #ps id="perf" class="perfTitle" 
         [ngStyle]="{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">
         {{loadedLyric.performer}} 
+        <!-- <span>
+          <mat-icon color= "accent" class="star" >star</mat-icon>
+       </span> -->
       </p>
       <p #ps id="titled" class="perfTitle"
         [ngStyle]="{'color' :statusClass10, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">
         {{loadedLyric.songTitle}}
       </p>
     </div>
-    <div>
-      <mat-icon color= "accent" class="star" *ngIf= "loadedLyric.classic">star</mat-icon>
-    </div>
-    <mat-card-content>  
-      <p  class="lyrics">
-        <span (click) = "loadLyrics()">{{p1}}</span>
-        <span #ps id="titled" class="perfTitle"
-        [ngStyle]="{'color' :statusClass11, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">{{p2}}</span>
-        <span (click) = "loadLyrics()">{{p3}}</span>
-      </p>  
-   
-      <div class="spotify-cont">
-          <!-- <a *ngIf="link != '' " [href]=[loadedLyric.spotLink] target="_blank"> -->
-            <a *ngIf="link != '' " [href]=[link] target="_blank">
 
+    <!-- LYRICS -->
+    <mat-card-content>  
+      <div class="row">
+        <div class="column left">
+          <a class="next" (click) ="toggleP()" [hidden]="!showImage">
+            <mat-icon>
+              <span class="material-symbols-outlined">
+                arrow_back_ios
+              </span>
+            </mat-icon>
+          </a>
+        </div>
+        <div class="column middle">
+          <p class = "lyrics" (click)="loadLyricsIf()" [innerHtml]="p1 | safeHtml" [hidden]="showImage" >
+          </p>
+          <img [src]=[albumImage] [hidden]="!showImage"/>
+        </div>
+        <div class="column right">
+          <a class="next" (click) ="toggleP()" [hidden]="!showImage">
+            <mat-icon>
+              <span class="material-symbols-outlined">
+                arrow_forward_ios
+              </span>
+            </mat-icon>
+          </a>
+        </div>
+      </div>
+      
+      
+   <!-- SPOTIFY ICON -->
+      <div class="spotify-cont">
+          <a *ngIf="link != '' " [href]=[link] target="_blank">
             <img class= "spotify" src= "assets/Spotify_Icon.png"/>
           </a>
-          <!-- <img class = "ster" *ngIf="popularity > 57" src="assets/gold-star.jpg"> -->
+          <!-- <mat-chip-list class="chipList" >       
+            <mat-chip class= "classic" color="warn" selected *ngIf= "loadedLyric.classic">
+                Classic
+            </mat-chip>        
+        </mat-chip-list>       -->
       </div>
     </mat-card-content>
   </mat-card>
-
-  <mat-card md-swipe-right="onSwipeRight()" [hidden]="!hideQuote">
-    <mat-card-content>
-      <img [src]="[artistImage]"/>
-    </mat-card-content>
-  </mat-card>
-
 </div>

@@ -1,10 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren, OnDestroy, PipeTransform, Pipe } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable, startWith, switchMap, take } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
 import { FilterService } from '../services/filter.service';
+import { DomSanitizer } from '@angular/platform-browser';
+
+@Pipe({ name: "safeHtml" })
+export class SafeHtmlPipe implements PipeTransform {
+  constructor(private sanitizer: DomSanitizer) {}
+
+  transform(value: string) {
+    return this.sanitizer.bypassSecurityTrustHtml(value);
+  }
+}
 
 export interface DialogLyricData {
   dLyrics: string;
@@ -46,7 +56,8 @@ export interface FavouritePerformer {
   templateUrl: './first-page.component.html',
   styleUrls: ['./first-page.component.css']
 })
-export class FirstPageComponent implements OnDestroy{
+
+export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   disablePerfomer: boolean = false;
   disableButton: boolean = true;
@@ -57,11 +68,10 @@ export class FirstPageComponent implements OnDestroy{
   lyrics1: string;
   songtitle : string = "";
   title : any;
-  usedLyricIds: number[] = new Array();
+  LyricIdsCopy: number[] = new Array();
   loadedLyric: Lyric = {};
-  // lyricList$: Observable<Lyric[]>;
   lyricList$: Observable<Lyric[]>;
-  lyricList: number[];
+  lyricList: number[] = new Array();
 
   statusClass1: string = "transparent";
   statusClass2: string = "400"
@@ -87,17 +97,26 @@ export class FirstPageComponent implements OnDestroy{
   artistImage: any;
   lengthLyrics: number = 0;
   randomNumber: number;
-  hideQuote: boolean = false;
   lyricId: any;
   filteredLanguage: any = "";
   numberOfLoadedLyrics: number = 0;
   subscription: any;
-
+  releaseDate: any;
+  albumImage: string;
+  showImage: boolean = false;
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
-    public el: ElementRef, public renderer: Renderer2, private filterService: FilterService) {  
+    public el: ElementRef, private renderer: Renderer2, private filterService: FilterService) {  
 
-      this.apiService.GetSpotifyCreds().subscribe({
+    // this.apiService.GetSpotifyCreds().subscribe({
+    //   next: (response: any) => {
+    //     this.token= response.access_token;
+    //   },
+    //   error: error => console.log(error),
+    //   complete : () => {}
+    // 
+
+     this.apiService.GetAccessToken().subscribe({
       next: (response: any) => {
         this.token= response.access_token;
       },
@@ -111,11 +130,8 @@ export class FirstPageComponent implements OnDestroy{
     this.subscription = this.filterService.updateFilter$.pipe().subscribe((language) => {
       this.filteredLanguage = language;
       console.log("subscribed to: ", this.filteredLanguage);
-      this.getLyrics(this.filteredLanguage);
+      this.getLyrics(this.filteredLanguage); // LOADING LYRICS LIST BASED ON THE FILTER
     });
-  
-    //LOADING LYRICS FOR THE FIRST TIME HERE too
-   // this.getLyrics(this.filteredLanguage);
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
@@ -128,6 +144,7 @@ export class FirstPageComponent implements OnDestroy{
           this.statusClass20 = "850";
           this.statusClass30 = "none";
           this.statusClass11 = "rgb(39, 7, 81)";
+          this.unblurLyrics();
       }
       else if (event.target.localName == "div"){
         this.statusClass1 = "rgb(39, 7, 181)"
@@ -137,37 +154,30 @@ export class FirstPageComponent implements OnDestroy{
         this.statusClass11 = "rgb(39, 7, 81)";
         this.statusClass20 = "850";
         this.statusClass30 = "none";
+        this.unblurLyrics();
       }
     });
-  } // END OF CONSTRUCTOR
+  } 
+
+  transform(value: any, ...args: any[]) {
+    throw new Error('Method not implemented.');
+  }
+  
+  // END OF CONSTRUCTOR
 
   getLyrics(language: string) { //based on the language filter GETALLLYRICS
     this.lyricList$ = this.apiService.GetLyrics(language);
     this.lyricList$.subscribe({
       next: (response: any) => {
-        this.lengthLyrics = response.length;
+        //this.lengthLyrics = response.length;
         this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
-        this.usedLyricIds = new Array(); // reset the usedLyricIds array
-        console.log("list: ", this.lyricList);
+        this.lengthLyrics = this.lyricList.length;
+        this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array
         this.loadLyrics(); // LOADLYRICS
       },
       error: error => console.log("error: ", error),
       complete: () => {}
     });   
-  }
-
-  iDAlreadyUsed(id: number): boolean {
-    if (this.usedLyricIds.includes(id)) {
-      console.log("Houston, we needed a reload on ", id);
-      if (this.usedLyricIds.length == this.lengthLyrics) {
-        this.usedLyricIds = new Array(); // reset the usedLyricIds array
-      }
-      return true;
-    }else 
-      this.numberOfLoadedLyrics ++;
-      this.usedLyricIds.push(id);
-      console.log("Lyrics loaded: ", this.usedLyricIds);
-      return false;
   }
 
   loadLyrics() {
@@ -179,18 +189,18 @@ export class FirstPageComponent implements OnDestroy{
     this.statusClass20 = "400";
     this.statusClass30 = "0 0 13px #000";
 
-    //check in LOOP if the id is already used. Get outta loop when OKAY
-    do{
-      this.randomNumber = Math.floor(Math.random() * this.lengthLyrics); //36 
-      this.lyricId = this.lyricList[this.randomNumber]; //36e ID in de rij= bv. 45
-      console.log(" Id: ", this.lyricId, "randomNr: ", this.randomNumber);
+    this.randomNumber = Math.floor(Math.random() * this.lyricList.length); //e.g. 36
+    //console.log(this.lyricList);
+    this.lyricId = this.lyricList[this.randomNumber]; //e.g. 36e ID in de rij= bv. 45
+    this.lyricList.splice(this.randomNumber, 1); //remove the used ID from the list
+    if (this.lyricList.length == 0) {
+      this.lyricList= [...this.LyricIdsCopy]; // reset the LyricList array
+    } 
 
-    }
-    while (this.iDAlreadyUsed(this.lyricId));
-    //console.log(this.usedLyricIds.sort(function(a, b){return a - b}));
-
-    // if no double: get it, format and display it:    
-    this.quote$ = this.apiService.GetLyric(this.lyricId);
+    // if no double: get it, format and display it: 
+    //choose an ID for TESTING:
+    //this.lyricId= 174;
+    this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     this.quote$.subscribe({
       next: (response: any) => {
         this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
@@ -198,10 +208,10 @@ export class FirstPageComponent implements OnDestroy{
         this.loadedLyric.performer = response.performer;
         this.loadedLyric.lyricId = response.lyricId;
         this.loadedLyric.classic = response.classic;
-        if (response.spotLink?.substring(0,5) == 'https'){ // if there's no spotify link in DB: get it from Spotify
+        if (response.spotLink?.substring(0,5) == 'httpq'){ 
           this.loadedLyric.spotLink = response.spotLink;
           this.link = response.spotLink;
-        }else{     
+        }else{   // if there's no spotify link in DB: get it from Spotify
           this.getSpotifyUrl();
         }
       },
@@ -215,6 +225,12 @@ export class FirstPageComponent implements OnDestroy{
   }
   // END OF LOADLYRICS
 
+  loadLyricsIf(){
+    //loadLyrics only when title and performer are unblurred
+    if (this.statusClass10 == "rgb(39, 7, 181)" && this.statusClass11 == "rgb(39, 7, 81)"){
+      this.loadLyrics();
+    }
+  }
 
   formatLyrics (quote: string | undefined, title: string){
     this.formatted = false;
@@ -236,28 +252,30 @@ export class FirstPageComponent implements OnDestroy{
     const position = quoteL.indexOf(titleL);
     quote= this.lyrics;
 
-    if (position > -1) { // if the substr appears in the quote -> chop up the string and blur it
-      this.p1= quote?.substring(0, position);
-      this.p2= quote?.substring(position, position + title.length);      
-      this.p3= quote?.substring(position+title.length, quote.length);
-    } else {
-      this.p1 = this.lyrics;
-      this.p2="";
-      this.p3=""
-    }
-    //console.log(this.p1 + this.p2 + this.p3);
+    // try replacing all titles in the quote with a blur
+    this.p1= this.lyrics;
+    const reg = new RegExp(title, "gi");
+    this.p1 = this.p1.replace(reg,`<b>${title}</b>`);
+    this.p1= `<style> b {color: black; font-weight:400; filter: blur(6px);} </style>` + this.p1;
     return this.lyrics;
   }
+
+  unblurLyrics(){ //remove all styling from p1
+    this.p1 = this.lyrics;
+  }
+  
 
   getSpotifyUrl(){
     this.apiService.getSpotifyInfo(this.token, this.loadedLyric.performer, this.loadedLyric.songTitle).subscribe({
       next: (response:any) => {
         console.log(response);
         this.link= response.tracks.items[0].external_urls.spotify;
+        this.previewLink = response.tracks.items[0].preview_url;
+        this.releaseDate = response.tracks.items[0].album.release_date;
+        this.albumImage = response.tracks.items[0].album.images[1].url;
         this.popularity = this.getPopularity(response);
         this.previewLink = response.tracks.items[0].preview_url;
-        this.artistImage = response.tracks.items[0].album.images[1].url;
-        console.log(this.artistImage);
+        console.log("image which means good: ", this.albumImage);
       },
       error: error => {
         this.link="";
@@ -284,14 +302,9 @@ export class FirstPageComponent implements OnDestroy{
     return highest;
   };
 
-  onSwipeLeft(){
-    console.log("swipe left");
-    this.hideQuote = true;
-  }
-
-  onswipeRight(){
-    console.log("swipe right");
-    this.hideQuote = false;
+  toggleP(){
+    this.showImage = !this.showImage;
+    console.log("showImage: ", this.showImage);
   }
 
   ngOnDestroy(){
