@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
 import { FilterService } from '../services/filter.service';
 import { DomSanitizer } from '@angular/platform-browser';
+//import { AllSpotLinks } from '../allSpotLinks';
 
 @Pipe({ name: "safeHtml" })
 export class SafeHtmlPipe implements PipeTransform {
@@ -69,7 +70,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   songtitle : string = "";
   title : any;
   LyricIdsCopy: number[] = new Array();
-  loadedLyric: Lyric = {};
+  loadedLyric: Lyric | any = {};
   lyricList$: Observable<Lyric[]>;
   lyricList: number[] = new Array();
 
@@ -92,18 +93,13 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   p2: any;
   p3: any;
   formattedLyrics4: any;
-  popularity: number;
-  previewLink: any;
-  artistImage: any;
-  lengthLyrics: number = 0;
   randomNumber: number;
   lyricId: any;
   filteredLanguage: any = "";
   numberOfLoadedLyrics: number = 0;
   subscription: any;
-  releaseDate: any;
-  albumImage: string;
   showImage: boolean = false;
+  test: any = "";
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, private renderer: Renderer2, private filterService: FilterService) {  
@@ -114,11 +110,12 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     //   },
     //   error: error => console.log(error),
     //   complete : () => {}
-    // 
+    this.test = "https://p.scdn.co/mp3-preview/17dc74947c15bfaf6ea9bbb83489fb07eac57c27?cid=4c51f7e54bd546e7a04d4141ff59ce8f%22";
 
      this.apiService.GetAccessToken().subscribe({
       next: (response: any) => {
         this.token= response.access_token;
+        //this.getSpotifyUrls();
       },
       error: error => console.log(error),
       complete : () => {}
@@ -131,6 +128,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       this.filteredLanguage = language;
       console.log("subscribed to: ", this.filteredLanguage);
       this.getLyrics(this.filteredLanguage); // LOADING LYRICS LIST BASED ON THE FILTER
+      this.showImage = false;
     });
 
     this.renderer.listen('document', 'click', (event) => {
@@ -138,6 +136,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
           this.statusClass1 = "rgb(39, 7, 181)";
           this.statusClass2 = "850";
           this.statusClass3 = "none";
+          this.showImage = !this.showImage;
         }
       else if (event.target.id == "titled"){
           this.statusClass10 = "rgb(39, 7, 181)"
@@ -169,9 +168,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     this.lyricList$ = this.apiService.GetLyrics(language);
     this.lyricList$.subscribe({
       next: (response: any) => {
-        //this.lengthLyrics = response.length;
         this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
-        this.lengthLyrics = this.lyricList.length;
         this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array
         this.loadLyrics(); // LOADLYRICS
       },
@@ -197,23 +194,29 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       this.lyricList= [...this.LyricIdsCopy]; // reset the LyricList array
     } 
 
-    // if no double: get it, format and display it: 
     //choose an ID for TESTING:
-    //this.lyricId= 174;
+    //this.lyricId= 165;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     this.quote$.subscribe({
       next: (response: any) => {
+        console.log(response);
         this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
+        this.loadedLyric.lyricId = response.lyricId;
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
-        this.loadedLyric.lyricId = response.lyricId;
-        this.loadedLyric.classic = response.classic;
-        if (response.spotLink?.substring(0,5) == 'httpq'){ 
-          this.loadedLyric.spotLink = response.spotLink;
-          this.link = response.spotLink;
-        }else{   // if there's no spotify link in DB: get it from Spotify
-          this.getSpotifyUrl();
-        }
+        this.loadedLyric.imageUrl = response.imageUrl;
+        this.loadedLyric.previewLink = response.previewLink;
+        if (response.spotLink?.substring(0,5) != 'https' || response.imageUrl?.substring(0,5) != 'https'
+        || response.previewLink?.substring(0,5) != 'https')
+        { 
+          this.getSpotifyUrls();
+        } else {
+          //this.loadedLyric.spotLink = response.spotLink;
+          //this.loadedLyric.ImageUrl = response.albumImage;
+          //this.loadedLyric.previewLink = response.previewLink;
+          //this.loadedLyric.releaseDate = response.releaseDate;
+          }
+
       },
       error: error => console.log("error: ", error),
       complete: () => {}
@@ -226,13 +229,13 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   // END OF LOADLYRICS
 
   loadLyricsIf(){
-    //loadLyrics only when title and performer are unblurred
+    //loadLyrics only when title is unblurred
     if (this.statusClass10 == "rgb(39, 7, 181)" && this.statusClass11 == "rgb(39, 7, 81)"){
       this.loadLyrics();
     }
   }
 
-  formatLyrics (quote: string | undefined, title: string){
+  formatLyrics (quote: string | undefined, title: string){ //format for displaying
     this.formatted = false;
     while (!this.formatted){ // remove points and spaces from the end of the string
       if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
@@ -265,25 +268,26 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   }
   
 
-  getSpotifyUrl(){
+  getSpotifyUrls(){
     this.apiService.getSpotifyInfo(this.token, this.loadedLyric.performer, this.loadedLyric.songTitle).subscribe({
       next: (response:any) => {
         console.log(response);
-        this.link= response.tracks.items[0].external_urls.spotify;
-        this.previewLink = response.tracks.items[0].preview_url;
-        this.releaseDate = response.tracks.items[0].album.release_date;
-        this.albumImage = response.tracks.items[0].album.images[1].url;
-        this.popularity = this.getPopularity(response);
-        this.previewLink = response.tracks.items[0].preview_url;
-        console.log("image which means good: ", this.albumImage);
+        this.loadedLyric.spotLink= response.tracks.items[0].external_urls.spotify;
+        this.loadedLyric.previewLink = response.tracks.items[0].preview_url;
+        this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
+        this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
+        this.loadedLyric.popularity = this.getPopularity(response);
+        //links Object for the HTTP PUT
+        this.apiService.AddSpotLink(this.loadedLyric.lyricId!, this.loadedLyric.spotLink, this.loadedLyric.imageUrl, 
+            this.loadedLyric.previewLink, this.loadedLyric.popularity, this.loadedLyric.releaseDate).subscribe(data => {
+        });
       },
       error: error => {
         this.link="";
         console.log(error);
       },
-      complete: () => {
-        this.apiService.AddSpotLink(this.loadedLyric.lyricId!, this.link).subscribe(data => {
-        });
+      complete: () => { //extend this to update all spotify links in the DB i.e. 
+        // imageUrl, previewUrl, releaseDate, popularity
       }
     })
   }
@@ -294,17 +298,14 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     for (var i: any = 0; i<limit; i++){
       if (response.tracks.items[i].popularity > highest) {
         highest = response.tracks.items[i].popularity;
-        
       } 
-      if (highest>57) i=i+10;
+      if (highest>57) i=i+20;
     } 
-    console.log("popularity: ", highest);
     return highest;
   };
 
   toggleP(){
     this.showImage = !this.showImage;
-    console.log("showImage: ", this.showImage);
   }
 
   ngOnDestroy(){

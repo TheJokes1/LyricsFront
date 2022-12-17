@@ -1,0 +1,7 @@
+<audio #audioElement src="{{src}}">
+    <a href="{{src}}">link</a>
+  </audio>
+  <span (click)="paused ? play() : pause()" class="icon-align-middle">
+    <mat-icon *ngIf="paused" class="icon-size-30">play_circle_outline</mat-icon>
+    <mat-icon *ngIf="!paused" class="icon-size-30">pause_circle_outline</mat-icon>
+  </span>

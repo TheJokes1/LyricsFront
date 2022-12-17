@@ -34,7 +34,7 @@ export class FilterComponent{
   
   onSelection(lang: string){
     this.filterService.updateFilter(lang);
-    this.accordion.closeAll();
+    //this.accordion.closeAll();
     if (this.selectedLanguage != ""){
       this.noFilter = false;
     } else this.noFilter = true;

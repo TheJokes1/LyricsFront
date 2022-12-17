@@ -33,6 +33,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { FilterComponent } from './filter/filter.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { AudioPlayerComponent } from './audio-player/audio-player.component';
 
 
 
@@ -40,7 +41,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
-    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe
+    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,

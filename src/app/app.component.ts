@@ -27,7 +27,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.quote$ = this.apiService.GetRandomQuote;
+    console.log("FIRST CALL");
+    this.quote$ = this.apiService.GetLyric(1);;
     this.quote$.subscribe(res => {
       console.log("quote:", res.quote);
       // this.wordings = res.songTitle;

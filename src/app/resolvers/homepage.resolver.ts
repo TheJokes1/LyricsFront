@@ -11,7 +11,9 @@ export class HomepageResolver implements Resolve<any> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot)
         {
-            return this.apiService.GetRandomQuote;
+            console.log("SECOND CALL");
+
+            return this.apiService.GetLyric(2);
         }
     
 }

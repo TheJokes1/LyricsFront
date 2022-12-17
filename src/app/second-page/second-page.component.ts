@@ -159,7 +159,8 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   
   onAddLyrics(lyrics: string, songTitle: string) {
     this.newTitle = this.formatTitle(this.songTitle);
-    this.newLyric = this.formatLyric(this.lyrics);
+    //this.newLyric = this.formatLyric(this.lyrics);
+    this.newLyric = this.lyrics;
     
     this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
       next: (response:any) => {
@@ -221,8 +222,8 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
 
   formatLyric(lyric: string){
-    var newText = lyric.replaceAll("." , "\n");
-    return newText;
+    // var newText = lyric.replaceAll("." , "\n");
+    // return newText;
   }
 
 }

@@ -5,6 +5,7 @@ import { Performer } from '../second-page/second-page.component';
 import { HttpHeaders } from '@angular/common/http';
 import { Lyric } from '../lyric';
 import { Buffer } from 'buffer';
+//import { AllSpotLinks } from '../allSpotLinks';
 
 // const headers= new HttpHeaders()
 //   .set('content-type', 'application/json')
@@ -23,11 +24,11 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
 
-  get GetRandomQuote() :Observable<Lyric> {
-    return this.http.get<Lyric>(
-        this.baseUrl +`lyrics/random/`
-        )
-  }
+  // get GetRandomQuote() :Observable<Lyric> {
+  //   return this.http.get<Lyric>(
+  //       this.baseUrl +`lyrics/random/`
+  //       )
+  // }
 
   GetPerformers = (q : string) => {
     this.http.get<Performer[]>(
@@ -61,10 +62,12 @@ export class ApiService {
     )
   }
 
-  AddSpotLink = (_id: number, _link: string) => {
+  AddSpotLink = (_id: number, _spotLink: string, _imageUrl: string, 
+    _previewLink: string, _popularity: number, _releaseDate: string) => {
     return this.http.put(
       this.baseUrl + `lyrics/put/${_id}`, 
-      {spotLink: _link} , {observe: 'response'}
+      {spotLink: _spotLink, imageUrl: _imageUrl, previewLink: _previewLink,
+        popularity: _popularity, releaseDate: _releaseDate} , {observe: 'response'}
     )
   }
 

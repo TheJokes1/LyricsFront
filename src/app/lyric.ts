@@ -4,6 +4,10 @@ export interface Lyric {
   songTitle?: string;
   performer?: string;
   language?: string;
-  classic?: boolean,
-  spotLink?: string
+  classic?: boolean;
+  spotLink?: string;
+  releaseDate?: string;
+  ImageUrl?: string;
+  previewLink: string;
+  popularity?: number;
 }

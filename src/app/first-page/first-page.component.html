@@ -17,45 +17,20 @@
       </p>
     </div>
 
-    <!-- LYRICS -->
+    <!-- LYRICS OR IMAGE Toggle-->
     <mat-card-content>  
-      <div class="row">
-        <div class="column left">
-          <a class="next" (click) ="toggleP()" [hidden]="!showImage">
-            <mat-icon>
-              <span class="material-symbols-outlined">
-                arrow_back_ios
-              </span>
-            </mat-icon>
-          </a>
-        </div>
-        <div class="column middle">
-          <p class = "lyrics" (click)="loadLyricsIf()" [innerHtml]="p1 | safeHtml" [hidden]="showImage" >
-          </p>
-          <img [src]=[albumImage] [hidden]="!showImage"/>
-        </div>
-        <div class="column right">
-          <a class="next" (click) ="toggleP()" [hidden]="!showImage">
-            <mat-icon>
-              <span class="material-symbols-outlined">
-                arrow_forward_ios
-              </span>
-            </mat-icon>
-          </a>
-        </div>
-      </div>
-      
+      <p class = "lyrics" (click)="loadLyricsIf()" [innerHtml]="p1 | safeHtml" [hidden]="showImage" >
+      </p>
+      <img [src]=[loadedLyric.imageUrl]  [hidden]="!showImage"/>
       
    <!-- SPOTIFY ICON -->
       <div class="spotify-cont">
-          <a *ngIf="link != '' " [href]=[link] target="_blank">
+          <a *ngIf="link != '' " [href]="link" target="_blank">
             <img class= "spotify" src= "assets/Spotify_Icon.png"/>
           </a>
-          <!-- <mat-chip-list class="chipList" >       
-            <mat-chip class= "classic" color="warn" selected *ngIf= "loadedLyric.classic">
-                Classic
-            </mat-chip>        
-        </mat-chip-list>       -->
+      </div>
+      <div class="spotify-cont">
+         <app-audio-player class="spotify" [src]="loadedLyric.previewLink" ></app-audio-player>
       </div>
     </mat-card-content>
   </mat-card>
