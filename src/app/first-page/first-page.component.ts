@@ -70,7 +70,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   songtitle : string = "";
   title : any;
   LyricIdsCopy: number[] = new Array();
-  loadedLyric: Lyric | any = {};
+  loadedLyric: Lyric = {} as Lyric;
   lyricList$: Observable<Lyric[]>;
   lyricList: number[] = new Array();
 
@@ -84,7 +84,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   random_color: string;
   quote$: Observable<Lyric>;
   token: string;
-  link: any;
   formattedLyrics: any;
   formattedLyrics2: any;
   formattedLyrics3: any;
@@ -110,7 +109,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     //   },
     //   error: error => console.log(error),
     //   complete : () => {}
-    this.test = "https://p.scdn.co/mp3-preview/17dc74947c15bfaf6ea9bbb83489fb07eac57c27?cid=4c51f7e54bd546e7a04d4141ff59ce8f%22";
 
      this.apiService.GetAccessToken().subscribe({
       next: (response: any) => {
@@ -195,7 +193,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     } 
 
     //choose an ID for TESTING:
-    //this.lyricId= 165;
+    //this.lyricId= 217;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     this.quote$.subscribe({
       next: (response: any) => {
@@ -206,17 +204,14 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.performer = response.performer;
         this.loadedLyric.imageUrl = response.imageUrl;
         this.loadedLyric.previewLink = response.previewLink;
+        this.loadedLyric.popularity = response.popularity;
         if (response.spotLink?.substring(0,5) != 'https' || response.imageUrl?.substring(0,5) != 'https'
-        || response.previewLink?.substring(0,5) != 'https')
+          || response.previewLink?.substring(0,5) != 'https' || response.releaseDate == null)
+      
         { 
           this.getSpotifyUrls();
-        } else {
-          //this.loadedLyric.spotLink = response.spotLink;
-          //this.loadedLyric.ImageUrl = response.albumImage;
-          //this.loadedLyric.previewLink = response.previewLink;
-          //this.loadedLyric.releaseDate = response.releaseDate;
-          }
-
+        }
+        else console.log("no need to get spotify urls");
       },
       error: error => console.log("error: ", error),
       complete: () => {}
@@ -271,36 +266,44 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   getSpotifyUrls(){
     this.apiService.getSpotifyInfo(this.token, this.loadedLyric.performer, this.loadedLyric.songTitle).subscribe({
       next: (response:any) => {
-        console.log(response);
+        console.log("spotify says: ", response);
         this.loadedLyric.spotLink= response.tracks.items[0].external_urls.spotify;
         this.loadedLyric.previewLink = response.tracks.items[0].preview_url;
         this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
         this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
-        this.loadedLyric.popularity = this.getPopularity(response);
+        this.loadedLyric.popularity = this.getPopularityAndDate(response);
         //links Object for the HTTP PUT
-        this.apiService.AddSpotLink(this.loadedLyric.lyricId!, this.loadedLyric.spotLink, this.loadedLyric.imageUrl, 
-            this.loadedLyric.previewLink, this.loadedLyric.popularity, this.loadedLyric.releaseDate).subscribe(data => {
+        this.apiService.AddSpotLink(this.loadedLyric.lyricId!, this.loadedLyric.spotLink!, this.loadedLyric.imageUrl!, 
+            this.loadedLyric.previewLink, this.loadedLyric.popularity, this.loadedLyric.releaseDate!).subscribe(data => {
         });
       },
       error: error => {
-        this.link="";
+        this.loadedLyric.spotLink="";
         console.log(error);
       },
       complete: () => { //extend this to update all spotify links in the DB i.e. 
         // imageUrl, previewUrl, releaseDate, popularity
       }
     })
+    console.log("in getSpotifyUrls");
   }
 
-  getPopularity (response: any) : number {
+  getPopularityAndDate (response: any) : number {
     var highest = 2;
+    var earliestDate = +response.tracks.items[0].album.release_date.substring(0,4);
     var limit = response.tracks.items.length;
     for (var i: any = 0; i<limit; i++){
       if (response.tracks.items[i].popularity > highest) {
         highest = response.tracks.items[i].popularity;
       } 
-      if (highest>57) i=i+20;
+      if (+response.tracks.items[i].album.release_date.substring(0,4) < earliestDate
+        && response.tracks.items[i].album.name == this.loadedLyric.songTitle) {
+        earliestDate = +response.tracks.items[i].album.release_date.substring(0,4);
+      }
+      //if (highest>57) i=i+20;
     } 
+    console.log("earliest date: ", earliestDate);
+    this.loadedLyric.releaseDate = earliestDate.toString();
     return highest;
   };
 

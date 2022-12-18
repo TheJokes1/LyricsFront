@@ -72,11 +72,10 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   addPHidden : boolean = true;
   newTitle : string;
   newLyric : string;
-  stringje : string ="";
   selectionMade : boolean= false;
   performer$? : Observable<any>;
   token: any;
-  link: any;
+  loadedLyric: Lyric = {} as Lyric;
 
   constructor(public http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {
@@ -86,8 +85,8 @@ export class SecondPageComponent implements OnInit, AfterViewInit
         debounceTime(200),
         switchMap(q =>
           this.http.get<Performer[]>(
-          `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
-          //`https://localhost:5001/lyrics/performers?searchQuery=${q}`
+          //https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
+          `https://localhost:5001/api/lyrics/performers?searchQuery=${q}`
           )));
 
     //  this.apiService.GetSpotifyCreds().subscribe({
@@ -164,15 +163,20 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     
     this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
       next: (response:any) => {
-        this.link= response.tracks.items[0].external_urls.spotify;
-        console.log("LINK: ", this.link);
+        console.log("spotify says: " ,response);
+        this.loadedLyric.spotLink= response.tracks.items[0].external_urls.spotify;
+        this.loadedLyric.previewLink = response.tracks.items[0].preview_url;
+        this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
+        this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
+        this.loadedLyric.popularity = this.getPopularity(response);
       },
       error: error => {
-        this.link="";
+        this.loadedLyric.spotLink="";
         console.log(error);
       },
       complete: () => {
-        this.apiService.AddLyric(this.idPerformer, this.newLyric, this.newTitle, this.link).subscribe((response: any) => {
+        this.apiService.AddLyric(this.idPerformer, this.newLyric, this.newTitle, 
+          this.loadedLyric.spotLink!).subscribe((response: any) => {
           {
             this.reviewLyrics(this.newLyric, this.newTitle);
           }
@@ -180,6 +184,18 @@ export class SecondPageComponent implements OnInit, AfterViewInit
       }
     })
   }
+
+  getPopularity (response: any) : number {
+    var highest = 2;
+    var limit = response.tracks.items.length;
+    for (var i: any = 0; i<limit; i++){
+      if (response.tracks.items[i].popularity > highest) {
+        highest = response.tracks.items[i].popularity;
+      } 
+      if (highest>57) i=i+20;
+    } 
+    return highest;
+  };
 
   onAddPerformer(){
     this.dialog.open(AddPerformerDialogComponent ,{

@@ -7,7 +7,7 @@ export interface Lyric {
   classic?: boolean;
   spotLink?: string;
   releaseDate?: string;
-  ImageUrl?: string;
+  imageUrl?: string;
   previewLink: string;
   popularity?: number;
 }
