@@ -36,9 +36,10 @@ export class ApiService {
       )
    }
 
-   GetLyrics = (language: string) => {
+   GetLyrics = (language: string, era: string) => {
+    console.log("API: language: " + language + " era: " + era + "")
     return this.http.get<Lyric[]>(
-      this.baseUrl + `lyrics?language=${language}`
+      this.baseUrl + `lyrics?language=${language}&releaseDate=${era}`
     )
    }
 

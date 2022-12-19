@@ -21,6 +21,12 @@
             </mat-select>
         <!-- </mat-form-field> -->
 
+       <mat-select (selectionChange)="onSelection2(selectedEra)" [(value)]="selectedEra"
+            class = "LanguagPick">
+              <mat-option [value]="era.value" 
+              *ngFor="let era of eraList">{{ era.viewValue }}</mat-option>
+        </mat-select>
+
       <!-- </mat-expansion-panel-header>
    
         

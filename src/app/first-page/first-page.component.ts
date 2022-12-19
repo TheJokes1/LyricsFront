@@ -1,9 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren, OnDestroy, PipeTransform, Pipe } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { debounceTime, Observable, startWith, switchMap, take } from 'rxjs';
+import { debounceTime, Observable, startWith, switchMap, take, combineLatest, forkJoin } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
+import { FilterComponent } from '../filter/filter.component';
 import { FilterService } from '../services/filter.service';
 import { DomSanitizer } from '@angular/platform-browser';
 //import { AllSpotLinks } from '../allSpotLinks';
@@ -94,9 +95,11 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   formattedLyrics4: any;
   randomNumber: number;
   lyricId: any;
-  filteredLanguage: any = "";
+  filteredLanguage: string = "";
+  filteredEra: string = "";
   numberOfLoadedLyrics: number = 0;
   subscription: any;
+  subscription2: any;
   showImage: boolean = false;
   test: any = "";
   
@@ -113,21 +116,25 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
      this.apiService.GetAccessToken().subscribe({
       next: (response: any) => {
         this.token= response.access_token;
+        this.getLyrics("", "");
         //this.getSpotifyUrls();
       },
       error: error => console.log(error),
       complete : () => {}
     })
 
-    this.getLyrics("");
-
 
     this.subscription = this.filterService.updateFilter$.pipe().subscribe((language) => {
       this.filteredLanguage = language;
-      console.log("subscribed to: ", this.filteredLanguage);
-      this.getLyrics(this.filteredLanguage); // LOADING LYRICS LIST BASED ON THE FILTER
+      this.getLyrics(this.filteredLanguage, this.filteredEra); // LOADING LYRICS LIST BASED ON THE FILTER
       this.showImage = false;
-    });
+    })
+
+    this.subscription2 = this.filterService.updateFilter2$.pipe().subscribe((era) => {
+      this.filteredEra = era;
+      this.getLyrics(this.filteredLanguage, this.filteredEra); // LOADING LYRICS LIST BASED ON THE FILTER
+      this.showImage = false;
+    })
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
@@ -162,15 +169,31 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   
   // END OF CONSTRUCTOR
 
-  getLyrics(language: string) { //based on the language filter GETALLLYRICS
-    this.lyricList$ = this.apiService.GetLyrics(language);
+  getLyrics(language: string, era: string) { //based on the language/era filters it gets the list of lyrics
+    this.lyricList$ = this.apiService.GetLyrics(language, era);
     this.lyricList$.subscribe({
       next: (response: any) => {
-        this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
-        this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array
-        this.loadLyrics(); // LOADLYRICS
+        if (response.length > 0) {
+          console.log("next: ", response);
+          this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
+          this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array
+          this.loadLyrics(); // LOADLYRICS
+        }
+        else {
+          this.loadedLyric.performer = "No titles found for this filter.";
+          this.loadedLyric.songTitle = "Try something else.";
+          this.statusClass1 = "rgb(39, 7, 181)";
+          this.statusClass2 = "400";
+          this.statusClass3 = "none";
+          this.statusClass10 = "rgb(39, 7, 181)";
+          this.statusClass11 = "rgb(39, 7, 181)";
+          this.statusClass20 = "400";
+          this.statusClass30 = "none";
+          this.formatLyrics("", "");
+          this.showImage = false;
+        }
       },
-      error: error => console.log("error: ", error),
+      error: error => console.log(error),
       complete: () => {}
     });   
   }
@@ -193,7 +216,8 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     } 
 
     //choose an ID for TESTING:
-    //this.lyricId= 217;
+    //---------------------------------
+    //this.lyricId= 125;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     this.quote$.subscribe({
       next: (response: any) => {
@@ -297,7 +321,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         highest = response.tracks.items[i].popularity;
       } 
       if (+response.tracks.items[i].album.release_date.substring(0,4) < earliestDate
-        && response.tracks.items[i].album.name == this.loadedLyric.songTitle) {
+        && response.tracks.items[i].name.toLowerCase().includes(this.loadedLyric.songTitle?.toLowerCase())) {
         earliestDate = +response.tracks.items[i].album.release_date.substring(0,4);
       }
       //if (highest>57) i=i+20;
@@ -313,6 +337,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
 }
