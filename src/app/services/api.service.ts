@@ -18,8 +18,8 @@ import { Buffer } from 'buffer';
 @Injectable()
 export class ApiService {
 
-  baseUrl: string = `https://localhost:5001/api/`;
-  //baseUrl: string = `https://lyricslover.azurewebsites.net/`;
+  //baseUrl: string = `https://localhost:5001/api/`;
+  baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
   
   constructor(private http: HttpClient) {
   }
