@@ -226,6 +226,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.lyricId = response.lyricId;
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
+        this.loadedLyric.spotLink = response.spotLink;
         this.loadedLyric.imageUrl = response.imageUrl;
         this.loadedLyric.previewLink = response.previewLink;
         this.loadedLyric.popularity = response.popularity;
