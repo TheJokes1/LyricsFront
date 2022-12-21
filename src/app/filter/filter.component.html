@@ -13,22 +13,27 @@
         </mat-panel-description> -->
 
         <!-- <mat-form-field class = "LanguagPick"> -->
-            <mat-select (selectionChange)="onSelection(selectedLanguage)" [(value)]="selectedLanguage"
-            class = "LanguagPick">
-            <!-- <mat-label *ngIf="selectedLanguage < 0">Language</mat-label> -->
-                <mat-option [value]="lang.value" 
-                *ngFor="let lang of languageList">{{ lang.viewValue }}</mat-option>
-            </mat-select>
-        <!-- </mat-form-field> -->
+      <mat-select (selectionChange)="onSelection(selectedLanguage)" [(value)]="selectedLanguage"
+      class = "LanguagPick">
+      <!-- <mat-label *ngIf="selectedLanguage < 0">Language</mat-label> -->
+          <mat-option [value]="lang.value" 
+          *ngFor="let lang of languageList">{{ lang.viewValue }}</mat-option>
+      </mat-select>
+      <!-- </mat-form-field> -->
 
-       <mat-select (selectionChange)="onSelection2(selectedEra)" [(value)]="selectedEra"
-            class = "LanguagPick">
-              <mat-option [value]="era.value" 
-              *ngFor="let era of eraList">{{ era.viewValue }}</mat-option>
-        </mat-select>
-
-      <!-- </mat-expansion-panel-header>
-   
+      <mat-select (selectionChange)="onSelection2(selectedEra)" [(value)]="selectedEra"
+          class = "LanguagPick">
+            <mat-option [value]="era.value" 
+            *ngFor="let era of eraList">{{ era.viewValue }}</mat-option>
+      </mat-select>
+      <!-- </mat-expansion-panel-header>-->
+      <mat-form-field class="inputField">
+        <input matInput type="text" [(ngModel)]="textFilter">
+        <button  matSuffix mat-icon-button  (click)="onTextInput(textFilter)">
+          <mat-icon>done</mat-icon>
+        </button>
+      </mat-form-field>
+   <!--
         
     </mat-expansion-panel>
 </mat-accordion>

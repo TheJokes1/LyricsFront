@@ -26,3 +26,8 @@
 mat-select-arrow{
   display: none;
 }
+
+.inputField{
+  width: 120px;
+  margin-left: 20px;
+}

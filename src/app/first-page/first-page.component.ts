@@ -97,9 +97,11 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   lyricId: any;
   filteredLanguage: string = "";
   filteredEra: string = "";
+  filteredText: string = "";
   numberOfLoadedLyrics: number = 0;
   subscription: any;
   subscription2: any;
+  subscription3: any;
   showImage: boolean = false;
   test: any = "";
   
@@ -116,7 +118,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
      this.apiService.GetAccessToken().subscribe({
       next: (response: any) => {
         this.token= response.access_token;
-        this.getLyrics("", "");
+        this.getLyrics("", "", "");
         //this.getSpotifyUrls();
       },
       error: error => console.log(error),
@@ -126,13 +128,19 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     this.subscription = this.filterService.updateFilter$.pipe().subscribe((language) => {
       this.filteredLanguage = language;
-      this.getLyrics(this.filteredLanguage, this.filteredEra); // LOADING LYRICS LIST BASED ON THE FILTER
+      this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
       this.showImage = false;
     })
 
     this.subscription2 = this.filterService.updateFilter2$.pipe().subscribe((era) => {
       this.filteredEra = era;
-      this.getLyrics(this.filteredLanguage, this.filteredEra); // LOADING LYRICS LIST BASED ON THE FILTER
+      this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
+      this.showImage = false;
+    })
+
+    this.subscription3 = this.filterService.updateFilter3$.pipe().subscribe((textFilter) => {
+      this.filteredText = textFilter;
+      this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
       this.showImage = false;
     })
 
@@ -169,8 +177,8 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   
   // END OF CONSTRUCTOR
 
-  getLyrics(language: string, era: string) { //based on the language/era filters it gets the list of lyrics
-    this.lyricList$ = this.apiService.GetLyrics(language, era);
+  getLyrics(language: string, era: string, text: string) { //based on the language/era filters it gets the list of lyrics
+    this.lyricList$ = this.apiService.GetLyrics(language, era, text);
     this.lyricList$.subscribe({
       next: (response: any) => {
         if (response.length > 0) {

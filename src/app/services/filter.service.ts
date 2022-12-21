@@ -7,8 +7,10 @@ import { Observable, shareReplay, Subject } from 'rxjs';
 export class FilterService {
   updateFilter$: Observable<any>;
   updateFilter2$: Observable<any>;
+  updateFilter3$: Observable<any>;
   private languageFilter = new Subject<any>();
   private eraFilter = new Subject<any>();
+  private textFilter = new Subject<any>();
 
   constructor() { 
     console.log("in filter service constructor");
@@ -19,6 +21,9 @@ export class FilterService {
     this.updateFilter2$ =
       this.eraFilter.asObservable();
       //.pipe(shareReplay(1));
+
+      this.updateFilter3$ =
+      this.textFilter.asObservable();
   }
 
   updateFilter(language: string){
@@ -29,4 +34,7 @@ export class FilterService {
     this.eraFilter.next(era);
   }
 
+  updateFilter3(textFilter: string){
+    this.textFilter.next(textFilter);
+  }
 }

@@ -12,6 +12,7 @@ interface Era {
   viewValue: string;
 }
 
+
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -27,6 +28,7 @@ export class FilterComponent{
   selectedEra : any = "";
   panelOpenState: boolean = false;
   noFilter: boolean = true;
+  textFilter: string = "";
 
   languageList: Language[] = [{value:"", viewValue: "----"}, 
     {value: 'eng', viewValue: "ENG"}, 
@@ -49,18 +51,25 @@ export class FilterComponent{
   onSelection(lang: string){
     this.filterService.updateFilter(lang);
     //this.accordion.closeAll();
-    if (this.selectedLanguage != "" && this.selectedEra != ""){
-      this.noFilter = false;
-    } else this.noFilter = true;
+    // if (this.selectedLanguage != "" && this.selectedEra != ""){
+    //   this.noFilter = false;
+    // } else this.noFilter = true;
   }
 
 
   onSelection2(era: string){
     this.filterService.updateFilter2(era);
     //this.accordion.closeAll();
-    if (this.selectedEra != "" && this.selectedLanguage != ""){
-      this.noFilter = false;
-    } else this.noFilter = true;
+    // if (this.selectedEra != "" && this.selectedLanguage != ""){
+    //   this.noFilter = false;
+    // } else this.noFilter = true;
+  }
+
+  onTextInput(text: string){
+    this.filterService.updateFilter3(text);
+    // if (text != ""){
+    //   this.noFilter = false;
+    // } else this.noFilter = true;
   }
 
   closeOnSelection(){
