@@ -85,8 +85,8 @@ export class SecondPageComponent implements OnInit, AfterViewInit
         debounceTime(200),
         switchMap(q =>
           this.http.get<Performer[]>(
-          //https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
-          `https://localhost:5001/api/lyrics/performers?searchQuery=${q}`
+          `https://lyricslover.azurewebsites.net/lyrics/performers?SearchQuery=${q}`
+          //`https://localhost:5001/api/lyrics/performers?searchQuery=${q}`
           )));
 
     //  this.apiService.GetSpotifyCreds().subscribe({
@@ -163,7 +163,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     
     this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
       next: (response:any) => {
-        console.log("spotify says: " ,response);
+        console.log("spotify says:" ,response);
         this.loadedLyric.spotLink= response.tracks.items[0].external_urls.spotify;
         this.loadedLyric.previewLink = response.tracks.items[0].preview_url;
         this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
