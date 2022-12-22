@@ -138,11 +138,10 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       this.showImage = false;
     })
 
-    this.subscription3 = this.filterService.updateFilter3$.pipe().subscribe((textFilter) => {
-      this.filteredText = textFilter;
-      this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
-      this.showImage = false;
-    })
+    this.subscription3 = this.filterService.updateFilter3$.pipe(debounceTime(1000)).subscribe((textFilter) => { 
+      this.filteredText = textFilter; 
+      this.getLyrics(this.filteredLanguage, this.filteredEra, textFilter) // LOADING LYRICS LIST BASED ON THE FILTER
+    });
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
@@ -182,7 +181,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     this.lyricList$.subscribe({
       next: (response: any) => {
         if (response.length > 0) {
-          console.log("next: ", response);
           this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
           this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array
           this.loadLyrics(); // LOADLYRICS
@@ -347,6 +345,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   ngOnDestroy(){
     this.subscription.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
   }
 
 }

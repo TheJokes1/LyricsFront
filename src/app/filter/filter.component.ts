@@ -1,5 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
+import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { FilterService } from '../services/filter.service';
 
 interface Language {
@@ -29,6 +31,8 @@ export class FilterComponent{
   panelOpenState: boolean = false;
   noFilter: boolean = true;
   textFilter: string = "";
+  form = new FormControl('');
+  result: any;
 
   languageList: Language[] = [{value:"", viewValue: "----"}, 
     {value: 'eng', viewValue: "ENG"}, 
@@ -46,7 +50,7 @@ export class FilterComponent{
     {value: '20', viewValue: "2020's"}];
 
   constructor(private filterService: FilterService) { 
-  }
+     }
   
   onSelection(lang: string){
     this.filterService.updateFilter(lang);
@@ -56,7 +60,6 @@ export class FilterComponent{
     // } else this.noFilter = true;
   }
 
-
   onSelection2(era: string){
     this.filterService.updateFilter2(era);
     //this.accordion.closeAll();
@@ -65,8 +68,8 @@ export class FilterComponent{
     // } else this.noFilter = true;
   }
 
-  onTextInput(text: string){
-    this.filterService.updateFilter3(text);
+  onTextInput(event: any){
+    this.filterService.updateFilter3(event.target.value);
     // if (text != ""){
     //   this.noFilter = false;
     // } else this.noFilter = true;
@@ -75,5 +78,4 @@ export class FilterComponent{
   closeOnSelection(){
     this.panelOpenState = false;
   }
-
 }

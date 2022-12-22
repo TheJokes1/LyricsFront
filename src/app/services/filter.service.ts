@@ -13,14 +13,11 @@ export class FilterService {
   private textFilter = new Subject<any>();
 
   constructor() { 
-    console.log("in filter service constructor");
     this.updateFilter$ = 
       this.languageFilter.asObservable();
-      //.pipe(shareReplay(1));
     
     this.updateFilter2$ =
       this.eraFilter.asObservable();
-      //.pipe(shareReplay(1));
 
       this.updateFilter3$ =
       this.textFilter.asObservable();
@@ -31,10 +28,11 @@ export class FilterService {
   }
 
   updateFilter2(era: string){
+    console.log("triggered !!!!!!!!");
     this.eraFilter.next(era);
   }
 
-  updateFilter3(textFilter: string){
+  updateFilter3(textFilter: any){
     this.textFilter.next(textFilter);
   }
 }

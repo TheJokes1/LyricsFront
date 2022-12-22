@@ -18,8 +18,8 @@ import { Buffer } from 'buffer';
 @Injectable()
 export class ApiService {
 
-  //baseUrl: string = `https://localhost:5001/api/`;
-  baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
+  baseUrl: string = `https://localhost:5001/api/`;
+  //baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
   
   constructor(private http: HttpClient) {
   }
@@ -37,7 +37,10 @@ export class ApiService {
    }
 
    GetLyrics = (language: string, era: string, text: string) => {
-    console.log("API: language: " + language + " era: " + era + "")
+    console.log("API: language: " + language + " era: " + era + "" 
+      + " text: " + text);
+    text = text.trim();
+    text = "%20" + text;
     return this.http.get<Lyric[]>(
       this.baseUrl + `lyrics?language=${language}&releaseDate=${era}&SearchQueryTitle=${text}`
     )

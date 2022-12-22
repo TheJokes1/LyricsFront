@@ -28,10 +28,7 @@
       </mat-select>
       <!-- </mat-expansion-panel-header>-->
       <mat-form-field class="inputField">
-        <input matInput type="text" [(ngModel)]="textFilter">
-        <button  matSuffix mat-icon-button  (click)="onTextInput(textFilter)">
-          <mat-icon>done</mat-icon>
-        </button>
+        <input maxlength="12" matInput type="text" [formControl]="form" (keyup)="onTextInput($event)">
       </mat-form-field>
    <!--
         
