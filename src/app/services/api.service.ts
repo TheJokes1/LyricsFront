@@ -18,17 +18,11 @@ import { Buffer } from 'buffer';
 @Injectable()
 export class ApiService {
 
-  baseUrl: string = `https://localhost:5001/api/`;
-  //baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
+  //baseUrl: string = `https://localhost:5001/api/`;
+  baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
   
   constructor(private http: HttpClient) {
   }
-
-  // get GetRandomQuote() :Observable<Lyric> {
-  //   return this.http.get<Lyric>(
-  //       this.baseUrl +`lyrics/random/`
-  //       )
-  // }
 
   GetPerformers = (q : string) => {
     this.http.get<Performer[]>(
