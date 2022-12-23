@@ -99,9 +99,9 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   filteredEra: string = "";
   filteredText: string = "";
   numberOfLoadedLyrics: number = 0;
-  subscription: any;
-  subscription2: any;
-  subscription3: any;
+  // subscription: any;
+  // subscription2: any;
+  // subscription3: any;
   showImage: boolean = false;
   test: any = "";
   
@@ -118,25 +118,31 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       complete : () => {}
     })
 
-    if (localStorage.getItem('checked') === 'true') {
+    if (localStorage.getItem('showArtist') === 'true') {
       this.statusClass1 = "rgb(39, 7, 181)";
       this.statusClass2 = "850";
       this.statusClass3 = "none";
     } 
 
-    this.subscription = this.filterService.languageFilter.subscribe((language) => {
+    if (localStorage.getItem('showTitle') === 'true') { 
+      this.statusClass10 = "rgb(39, 7, 181)";
+      this.statusClass20 = "850";
+      this.statusClass30 = "none";
+    }
+
+    this.filterService.languageFilter.subscribe((language) => {
       this.filteredLanguage = language;
       this.showImage = false;
       this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
     })
 
-    this.subscription2 = this.filterService.eraFilter.subscribe((value) => {
+    this.filterService.eraFilter.subscribe((value) => {
       this.filteredEra = value;
       this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
       this.showImage = false;
     })
 
-    this.subscription3 = this.filterService.textFilter.pipe(debounceTime(1000)).subscribe((value) => {
+    this.filterService.textFilter.pipe(debounceTime(1000)).subscribe((value) => {
       this.filteredText = value; 
       this.showImage = false;
       this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText) // LOADING LYRICS LIST BASED ON THE FILTER
@@ -206,16 +212,17 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   }
 
   loadLyrics() {
-    if (localStorage.getItem('checked') === 'false') {
+    if (localStorage.getItem('showArtist') === 'false') {
       this.statusClass1 = "transparent";
       this.statusClass2 = "400";
       this.statusClass3 = "0 0 13px #000";
-  }
-    this.statusClass10 = "transparent";
-    this.statusClass11 = "transparent";
-    this.statusClass20 = "400";
-    this.statusClass30 = "0 0 13px #000";
-
+    }
+    if (localStorage.getItem('showTitle') === 'false') {
+      this.statusClass10 = "transparent";
+      this.statusClass11 = "transparent";
+      this.statusClass20 = "400";
+      this.statusClass30 = "0 0 13px #000";
+    }
     this.randomNumber = Math.floor(Math.random() * this.lyricList.length); //e.g. 36
     //console.log(this.lyricList);
     this.lyricId = this.lyricList[this.randomNumber]; //e.g. 36e ID in de rij= bv. 45
@@ -346,9 +353,9 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   }
 
   ngOnDestroy(){
-    this.subscription.unsubscribe();
-    this.subscription2.unsubscribe();
-    this.subscription3.unsubscribe();
+    // this.subscription.unsubscribe();
+    // this.subscription2.unsubscribe();
+    // this.subscription3.unsubscribe();
   }
 
 }

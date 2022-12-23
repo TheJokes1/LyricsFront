@@ -38,6 +38,7 @@ export class NavigationComponent implements AfterContentChecked {
     if (this.url.endsWith('Random') || (this.url.endsWith("/"))){
       this.title = '🎵 Quote';
     }
+    if (this.url.endsWith('Settings')) this.title = 'Settings 🪛';
   }
 
 }

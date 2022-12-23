@@ -6,16 +6,24 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  checked: boolean;
+  showArtist: boolean;
+  showTitle: boolean;
+  
   constructor() { }
 
   ngOnInit(): void {
-    this.checked = JSON.parse(localStorage.getItem('checked') || 'false');
+    this.showArtist = JSON.parse(localStorage.getItem('showArtist') || 'false');
+    this.showTitle = JSON.parse(localStorage.getItem('showTitle') || 'false');
   }
 
-  toggleIt(){
-    this.checked = !this.checked;
-    localStorage.setItem('checked', JSON.stringify(this.checked));
+  toggleArtist(){
+    this.showArtist = !this.showArtist;
+    localStorage.setItem('showArtist', JSON.stringify(this.showArtist));
   } 
+
+  toggleTitle(){
+    this.showTitle = !this.showTitle;
+    localStorage.setItem('showTitle', JSON.stringify(this.showTitle));
+  }
 
 }

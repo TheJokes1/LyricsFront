@@ -24,6 +24,15 @@ export class AppComponent implements OnInit {
         console.group ("Router event: ", event.constructor.name);
         this.checkRouterEvent(event)
       });
+
+      if (!localStorage.getItem('showArtist')){
+        //this.router.navigateByUrl('/settings');
+        localStorage.setItem('showArtist', JSON.stringify(true));
+      }
+
+      if (!localStorage.getItem('showTitle')){
+        localStorage.setItem('showTitle', JSON.stringify(false));
+      }
   }
 
   ngOnInit(): void {

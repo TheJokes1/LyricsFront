@@ -172,7 +172,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
 
   onAddPerformer(){
     if (!this.disableAddArtist){
-    console.log("add performerrrrrrrrr");
     this.dialog.open(AddPerformerDialogComponent ,{
       data : { performerName : this.performer }
     }).afterClosed().subscribe
@@ -195,11 +194,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
       complete: () => {}
     })
   }
-
-    // this.performer$.subscribe(response =>{
-    //   console.log(response.headers.get('X-Custom-Header'));
-    // })
-    //}
 
   reviewLyrics(lyrics: string, songTitle: string){
     const checked = this.dialog.open(ReviewLyricsDialogComponent, {

@@ -1,6 +1,15 @@
 <mat-slide-toggle
     class="toggle"
     color="primary"
-    (change)="toggleIt()"
-    [checked]="checked">Always show Artist name
+    (change)="toggleArtist()"
+    [checked]="showArtist">Always show Artist name
+</mat-slide-toggle>
+
+<br>
+
+<mat-slide-toggle
+    class="toggle"
+    color="primary"
+    (change)="toggleTitle()"
+    [checked]="showTitle">Always show Songtitle
 </mat-slide-toggle>
