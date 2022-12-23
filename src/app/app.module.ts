@@ -17,6 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatListModule } from '@angular/material/list';
 import { SecondPageComponent } from './second-page/second-page.component';
 import { ThirdPageComponent } from './third-page/third-page.component';
@@ -34,6 +35,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { FilterComponent } from './filter/filter.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AudioPlayerComponent } from './audio-player/audio-player.component';
+import { SettingsComponent } from './settings/settings.component';
 
 
 
@@ -41,11 +43,11 @@ import { AudioPlayerComponent } from './audio-player/audio-player.component';
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
-    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent
+    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent, SettingsComponent
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,
-    MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSlideToggleModule,
     BrowserAnimationsModule, MatDialogModule, LayoutModule, MatToolbarModule, MatButtonModule,
     MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule, MatChipsModule,
     MatExpansionModule

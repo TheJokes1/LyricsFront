@@ -5,22 +5,12 @@ import { Observable, shareReplay, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class FilterService {
-  updateFilter$: Observable<any>;
-  updateFilter2$: Observable<any>;
-  updateFilter3$: Observable<any>;
-  private languageFilter = new Subject<any>();
-  private eraFilter = new Subject<any>();
-  private textFilter = new Subject<any>();
+
+  languageFilter = new Subject<any>();
+  eraFilter = new Subject<any>();
+  textFilter = new Subject<any>();
 
   constructor() { 
-    this.updateFilter$ = 
-      this.languageFilter.asObservable();
-    
-    this.updateFilter2$ =
-      this.eraFilter.asObservable();
-
-      this.updateFilter3$ =
-      this.textFilter.asObservable();
   }
 
   updateFilter(language: string){
@@ -28,11 +18,10 @@ export class FilterService {
   }
 
   updateFilter2(era: string){
-    console.log("triggered !!!!!!!!");
     this.eraFilter.next(era);
   }
 
-  updateFilter3(textFilter: any){
-    this.textFilter.next(textFilter);
+  updateFilter3(data: any){
+    this.textFilter.next(data);
   }
 }

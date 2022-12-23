@@ -76,6 +76,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   performer$? : Observable<any>;
   token: any;
   loadedLyric: Lyric = {} as Lyric;
+  disableAddArtist : boolean = false;
 
   constructor(public http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {
@@ -88,14 +89,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
           `https://lyricslover.azurewebsites.net/api/lyrics/performers?SearchQuery=${q}`
           //`https://localhost:5001/api/lyrics/performers?searchQuery=${q}`
           )));
-
-    //  this.apiService.GetSpotifyCreds().subscribe({
-    // next: (response: any) => {
-    //   this.token= response.access_token;
-    // },
-    // error: error => console.log(error),
-    // complete : () => {}
-    // })
 
     this.apiService.GetAccessToken().subscribe({
       next: (response: any) => {
@@ -116,36 +109,17 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   onSelection(perf: Performer){
     this.performer = perf.name;
     this.performerName = perf.name;
-    this.makeFilter.disable;
+    //this.makeFilter.disable;
     if (this.lyrics.length>=5 && this.songTitle.length>=2) this.disableButton = false;
     
     this.idPerformer = perf.performerId;
-    this.addPHidden = true;
     this.selectionMade = true;
-    //console.log(typeof(this.mySelect));
   }
 
-  onKeypressEvent(code: any){
+  onKeypressArtist(code: any){
     this.performer = code;
-    if (this.mySelect.isOpen) this.addPHidden= true;
-    if (!this.mySelect.isOpen) this.addPHidden = false;
-    //console.log(this.mySelect.isOpen);
     this.checkStatusSaveButton();
-    this.checkStatusPerformerButton();
     this.selectionMade = false;
-  }
-
-  onKeypressLyric(){
-    this.checkStatusSaveButton();
-  }
-
-  onKeypressTitle(){
-    this.checkStatusSaveButton();
-  }
-
-  checkStatusPerformerButton(){
-    if (this.performer.length <= 2 || this.mySelect.isOpen) this.addPHidden = true
-    else this.addPHidden = false;
   }
 
   checkStatusSaveButton(){
@@ -158,7 +132,6 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   
   onAddLyrics(lyrics: string, songTitle: string) {
     this.newTitle = this.formatTitle(this.songTitle);
-    //this.newLyric = this.formatLyric(this.lyrics);
     this.newLyric = this.lyrics;
     
     this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
@@ -198,26 +171,35 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   };
 
   onAddPerformer(){
+    if (!this.disableAddArtist){
+    console.log("add performerrrrrrrrr");
     this.dialog.open(AddPerformerDialogComponent ,{
       data : { performerName : this.performer }
     }).afterClosed().subscribe
       (result => {
-        console.log("name given: " + typeof(result));
         if (result != undefined) {
           console.log(result);
           this.addPerformer(result);
-          //this.mySelect.nativeElement.value = "";
-          //window.location.reload();
+          this.disableAddArtist = true;
         }
       });
+    }
   }
 
   addPerformer(name: string){
-    this.performer$ = this.apiService.AddPerformer(name);
-    this.performer$.subscribe(response =>{
-      console.log(response.headers.get('X-Custom-Header'));
+    this.apiService.AddPerformer(name).subscribe({
+      next: (response: any) => {
+        this.makeFilter.setValue(name);
+      },
+      error: error => console.log(error),
+      complete: () => {}
     })
   }
+
+    // this.performer$.subscribe(response =>{
+    //   console.log(response.headers.get('X-Custom-Header'));
+    // })
+    //}
 
   reviewLyrics(lyrics: string, songTitle: string){
     const checked = this.dialog.open(ReviewLyricsDialogComponent, {
@@ -225,7 +207,10 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     });
     checked.afterClosed().subscribe(result => {
       console.log(result);
-      window.location.reload();
+      //window.location.reload();
+      this.lyrics = '';
+      this.songTitle = '';
+      this.makeFilter.setValue('');
     }); 
   }
 

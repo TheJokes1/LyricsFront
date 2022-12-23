@@ -14,7 +14,6 @@ interface Era {
   viewValue: string;
 }
 
-
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',

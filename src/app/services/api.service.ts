@@ -34,7 +34,7 @@ export class ApiService {
     console.log("API: language: " + language + " era: " + era + "" 
       + " text: " + text);
     text = text.trim();
-    text = "%20" + text;
+    text = "%20" + text + "%20";
     return this.http.get<Lyric[]>(
       this.baseUrl + `lyrics?language=${language}&releaseDate=${era}&SearchQueryTitle=${text}`
     )

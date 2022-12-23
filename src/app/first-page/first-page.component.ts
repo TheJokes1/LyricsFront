@@ -108,13 +108,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   constructor(public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, private renderer: Renderer2, private filterService: FilterService) {  
 
-    // this.apiService.GetSpotifyCreds().subscribe({
-    //   next: (response: any) => {
-    //     this.token= response.access_token;
-    //   },
-    //   error: error => console.log(error),
-    //   complete : () => {}
-
      this.apiService.GetAccessToken().subscribe({
       next: (response: any) => {
         this.token= response.access_token;
@@ -125,31 +118,39 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       complete : () => {}
     })
 
+    if (localStorage.getItem('checked') === 'true') {
+      this.statusClass1 = "rgb(39, 7, 181)";
+      this.statusClass2 = "850";
+      this.statusClass3 = "none";
+    } 
 
-    this.subscription = this.filterService.updateFilter$.pipe().subscribe((language) => {
+    this.subscription = this.filterService.languageFilter.subscribe((language) => {
       this.filteredLanguage = language;
+      this.showImage = false;
+      this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
+    })
+
+    this.subscription2 = this.filterService.eraFilter.subscribe((value) => {
+      this.filteredEra = value;
       this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
       this.showImage = false;
     })
 
-    this.subscription2 = this.filterService.updateFilter2$.pipe().subscribe((era) => {
-      this.filteredEra = era;
-      this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText); // LOADING LYRICS LIST BASED ON THE FILTER
+    this.subscription3 = this.filterService.textFilter.pipe(debounceTime(1000)).subscribe((value) => {
+      this.filteredText = value; 
       this.showImage = false;
-    })
-
-    this.subscription3 = this.filterService.updateFilter3$.pipe(debounceTime(1000)).subscribe((textFilter) => { 
-      this.filteredText = textFilter; 
-      this.getLyrics(this.filteredLanguage, this.filteredEra, textFilter) // LOADING LYRICS LIST BASED ON THE FILTER
+      this.getLyrics(this.filteredLanguage, this.filteredEra, this.filteredText) // LOADING LYRICS LIST BASED ON THE FILTER
     });
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
+        if (this.showImage == true){
           this.statusClass1 = "rgb(39, 7, 181)";
           this.statusClass2 = "850";
           this.statusClass3 = "none";
-          this.showImage = !this.showImage;
         }
+        this.showImage = !this.showImage;
+      }
       else if (event.target.id == "titled"){
           this.statusClass10 = "rgb(39, 7, 181)"
           this.statusClass20 = "850";
@@ -205,9 +206,11 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   }
 
   loadLyrics() {
-    this.statusClass1 = "transparent";
-    this.statusClass2 = "400";
-    this.statusClass3 = "0 0 13px #000";
+    if (localStorage.getItem('checked') === 'false') {
+      this.statusClass1 = "transparent";
+      this.statusClass2 = "400";
+      this.statusClass3 = "0 0 13px #000";
+  }
     this.statusClass10 = "transparent";
     this.statusClass11 = "transparent";
     this.statusClass20 = "400";
