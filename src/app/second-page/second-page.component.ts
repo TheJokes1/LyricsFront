@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, VERSION, ViewChild } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { asyncScheduler, debounceTime, merge, Observable, startWith, switchMap } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';

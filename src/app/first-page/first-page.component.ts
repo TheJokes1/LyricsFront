@@ -1,10 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren, OnDestroy, PipeTransform, Pipe } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { debounceTime, Observable, startWith, switchMap, take, combineLatest, forkJoin } from 'rxjs';
+import { debounceTime, Observable } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
-import { FilterComponent } from '../filter/filter.component';
 import { FilterService } from '../services/filter.service';
 import { DomSanitizer } from '@angular/platform-browser';
 //import { AllSpotLinks } from '../allSpotLinks';
@@ -79,7 +78,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   statusClass2: string = "400"
   statusClass3: string = "0 0 13px #000;"
   statusClass10: string = "transparent";
-  statusClass11: string = "transparent";
   statusClass20: string = "400"
   statusClass30: string = "0 0 13px #000;" 
   random_color: string;
@@ -99,9 +97,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   filteredEra: string = "";
   filteredText: string = "";
   numberOfLoadedLyrics: number = 0;
-  // subscription: any;
-  // subscription2: any;
-  // subscription3: any;
   showImage: boolean = false;
   test: any = "";
   
@@ -119,15 +114,11 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     })
 
     if (localStorage.getItem('showArtist') === 'true') {
-      this.statusClass1 = "rgb(39, 7, 181)";
-      this.statusClass2 = "850";
-      this.statusClass3 = "none";
+      this.unblurArtist();
     } 
 
     if (localStorage.getItem('showTitle') === 'true') { 
-      this.statusClass10 = "rgb(39, 7, 181)";
-      this.statusClass20 = "850";
-      this.statusClass30 = "none";
+      this.unblurTitle();
     }
 
     this.filterService.languageFilter.subscribe((language) => {
@@ -150,58 +141,66 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
-        if (this.showImage == true){
-          this.statusClass1 = "rgb(39, 7, 181)";
-          this.statusClass2 = "850";
-          this.statusClass3 = "none";
-        }
+        this.unblurArtist();
         this.showImage = !this.showImage;
       }
       else if (event.target.id == "titled"){
-          this.statusClass10 = "rgb(39, 7, 181)"
-          this.statusClass20 = "850";
-          this.statusClass30 = "none";
-          this.statusClass11 = "rgb(39, 7, 81)";
-          this.unblurLyrics();
+        this.unblurTitle();
+        this.showLyricsUnblurred();
       }
       else if (event.target.localName == "div"){
-        this.statusClass1 = "rgb(39, 7, 181)"
-        this.statusClass2 = "850";
-        this.statusClass3 = "none";
-        this.statusClass10 = "rgb(39, 7, 181)"
-        this.statusClass11 = "rgb(39, 7, 81)";
-        this.statusClass20 = "850";
-        this.statusClass30 = "none";
-        this.unblurLyrics();
+        this.unblurArtist();
+        this.unblurTitle();
+        this.showLyricsUnblurred();
       }
     });
   } 
 
+  // END OF CONSTRUCTOR
+
   transform(value: any, ...args: any[]) {
     throw new Error('Method not implemented.');
   }
+
+  blurArtist(){
+    this.statusClass1 = "transparent";
+    this.statusClass2 = "400";
+    this.statusClass3 = "0 0 13px #000";
+  }
+
+  blurTitle(){
+    this.statusClass10 = "transparent";
+    this.statusClass20 = "400";
+    this.statusClass30 = "0 0 13px #000";
+  }
+
+  unblurArtist(){
+    this.statusClass1 = "rgb(39, 7, 181)";
+    this.statusClass2 = "850";
+    this.statusClass3 = "none";
+  }
+
+  unblurTitle(){
+    this.statusClass10 = "rgb(39, 7, 181)";
+    this.statusClass20 = "850";
+    this.statusClass30 = "none";
+  }
   
-  // END OF CONSTRUCTOR
 
   getLyrics(language: string, era: string, text: string) { //based on the language/era filters it gets the list of lyrics
     this.lyricList$ = this.apiService.GetLyrics(language, era, text);
     this.lyricList$.subscribe({
       next: (response: any) => {
-        if (response.length > 0) {
+        if (response.length > 0) { //change observable to array
           this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
           this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array
-          this.loadLyrics(); // LOADLYRICS
+          this.loadLyrics();
         }
         else {
           this.loadedLyric.performer = "No titles found for this filter.";
           this.loadedLyric.songTitle = "Try something else.";
-          this.statusClass1 = "rgb(39, 7, 181)";
-          this.statusClass2 = "400";
-          this.statusClass3 = "none";
-          this.statusClass10 = "rgb(39, 7, 181)";
-          this.statusClass11 = "rgb(39, 7, 181)";
-          this.statusClass20 = "400";
-          this.statusClass30 = "none";
+          this.unblurArtist();
+          this.unblurTitle();
           this.formatLyrics("", "");
           this.showImage = false;
         }
@@ -212,28 +211,22 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   }
 
   loadLyrics() {
-    if (localStorage.getItem('showArtist') === 'false') {
-      this.statusClass1 = "transparent";
-      this.statusClass2 = "400";
-      this.statusClass3 = "0 0 13px #000";
-    }
-    if (localStorage.getItem('showTitle') === 'false') {
-      this.statusClass10 = "transparent";
-      this.statusClass11 = "transparent";
-      this.statusClass20 = "400";
-      this.statusClass30 = "0 0 13px #000";
-    }
+    if (localStorage.getItem('showArtist') === 'false') // blur/unblur the right elements
+      this.blurArtist();
+    if (localStorage.getItem('showTitle') === 'false') 
+      this.blurTitle();
+    
     this.randomNumber = Math.floor(Math.random() * this.lyricList.length); //e.g. 36
     //console.log(this.lyricList);
-    this.lyricId = this.lyricList[this.randomNumber]; //e.g. 36e ID in de rij= bv. 45
+    this.lyricId = this.lyricList[this.randomNumber]; //e.g. 36e ID in the list = eg. id 45
     this.lyricList.splice(this.randomNumber, 1); //remove the used ID from the list
     if (this.lyricList.length == 0) {
-      this.lyricList= [...this.LyricIdsCopy]; // reset the LyricList array
+      this.lyricList= [...this.LyricIdsCopy]; // reset the LyricList array to original state
     } 
 
-    //choose an ID for TESTING:
+    //choose an ID for TESTING if needed:
     //---------------------------------
-    //this.lyricId= 125;
+    //this.lyricId= 239;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     this.quote$.subscribe({
       next: (response: any) => {
@@ -248,7 +241,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.popularity = response.popularity;
         if (response.spotLink?.substring(0,5) != 'https' || response.imageUrl?.substring(0,5) != 'https'
           || response.previewLink?.substring(0,5) != 'https' || response.releaseDate == null)
-      
         { 
           this.getSpotifyUrls();
         }
@@ -266,7 +258,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   loadLyricsIf(){
     //loadLyrics only when title is unblurred
-    if (this.statusClass10 == "rgb(39, 7, 181)" && this.statusClass11 == "rgb(39, 7, 81)"){
+    if (this.statusClass10 == "rgb(39, 7, 181)"){
       this.loadLyrics();
     }
   }
@@ -293,13 +285,15 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     // try replacing all titles in the quote with a blur
     this.p1= this.lyrics;
-    const reg = new RegExp(title, "gi");
-    this.p1 = this.p1.replace(reg,`<b>${title}</b>`);
-    this.p1= `<style> b {color: black; font-weight:400; filter: blur(6px);} </style>` + this.p1;
+    if (localStorage.getItem('showTitle') === 'false') {
+      const reg = new RegExp(title, "gi");
+      this.p1 = this.p1.replace(reg,`<b>${title}</b>`);
+      this.p1= `<style> b {color: black; font-weight:400; filter: blur(6px);} </style>` + this.p1;
+    }
     return this.lyrics;
   }
 
-  unblurLyrics(){ //remove all styling from p1
+  showLyricsUnblurred(){ //remove all styling from p1
     this.p1 = this.lyrics;
   }
   
@@ -322,11 +316,8 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.spotLink="";
         console.log(error);
       },
-      complete: () => { //extend this to update all spotify links in the DB i.e. 
-        // imageUrl, previewUrl, releaseDate, popularity
-      }
+      complete: () => {}
     })
-    console.log("in getSpotifyUrls");
   }
 
   getPopularityAndDate (response: any) : number {
@@ -348,7 +339,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     return highest;
   };
 
-  toggleP(){
+  toggleP(){ //show or hide album image
     this.showImage = !this.showImage;
   }
 
