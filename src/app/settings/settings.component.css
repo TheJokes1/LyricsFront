@@ -2,6 +2,10 @@
     margin-left: 20px;;
 }
 
-p{
+.higher{  
+    padding-bottom: 30px;
+}
+
+.bottom{
     margin-left: 20px;
 }
