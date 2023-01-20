@@ -39,6 +39,7 @@ export class NavigationComponent implements AfterContentChecked {
       this.title = '🎵 Quote';
     }
     if (this.url.endsWith('Settings')) this.title = 'Settings 🪛';
+    if (this.url.endsWith('Favorites')) this.title = 'My 💖 Artists';
   }
 
 }

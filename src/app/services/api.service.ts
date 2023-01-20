@@ -60,7 +60,7 @@ export class ApiService {
     )
   }
 
-  AddSpotLink = (_id: number, _spotLink: string, _imageUrl: string, 
+  AddSpotifyLinks = (_id: number, _spotLink: string, _imageUrl: string, 
     _previewLink: string, _popularity: number, _releaseDate: string) => {
     return this.http.put(
       this.baseUrl + `lyrics/put/${_id}`, 
@@ -69,7 +69,7 @@ export class ApiService {
     )
   }
 
-  GetAccessToken = () => { // API does the call to Spotify
+  GetAccessToken = () => { // Backend API does the call to Spotify
     return this.http.post( 
       this.baseUrl + `SpotController/`,
       {observe: 'response'}

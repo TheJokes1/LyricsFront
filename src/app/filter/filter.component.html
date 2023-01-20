@@ -5,14 +5,17 @@
         <!-- <mat-panel-title *ngIf="!panelOpenState">
           {{ selectedLanguage | uppercase }}
         </mat-panel-title>
-        <mat-panel-description *ngIf="!panelOpenState && noFilter">
-          <mat-icon><span class="material-symbols-outlined">
-            filter_alt
+        <mat-panel-description *ngIf="!panelOpenState && noFilter"> -->
+
+      <mat-icon><span class="material-symbols-outlined">
+            filter_list
             </span>
-          </mat-icon>
-        </mat-panel-description> -->
+          </mat-icon>   
+
+        <!-- </mat-panel-description>  -->
 
         <!-- <mat-form-field class = "LanguagPick"> -->
+     
       <mat-select (selectionChange)="onSelection(selectedLanguage)" [(value)]="selectedLanguage"
       class = "LanguagPick">
       <!-- <mat-label *ngIf="selectedLanguage < 0">Language</mat-label> -->

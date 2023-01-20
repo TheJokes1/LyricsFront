@@ -141,7 +141,7 @@ export class SecondPageComponent implements OnInit, AfterViewInit
         this.loadedLyric.previewLink = response.tracks.items[0].preview_url;
         this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
         this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
-        this.loadedLyric.popularity = this.getPopularity(response);
+        this.loadedLyric.popularity = this.getPopularityAndDate(response);
       },
       error: error => {
         this.loadedLyric.spotLink="";
@@ -149,24 +149,34 @@ export class SecondPageComponent implements OnInit, AfterViewInit
       },
       complete: () => {
         this.apiService.AddLyric(this.idPerformer, this.newLyric, this.newTitle, 
-          this.loadedLyric.spotLink!).subscribe((response: any) => {
-          {
-            this.reviewLyrics(this.newLyric, this.newTitle);
-          }
+        this.loadedLyric.spotLink!).subscribe({
+            next: (response: any) => {
+              this.apiService.AddSpotifyLinks(response.lyricId!, this.loadedLyric.spotLink!, this.loadedLyric.imageUrl!, 
+              this.loadedLyric.previewLink, this.loadedLyric.popularity!, this.loadedLyric.releaseDate!).subscribe(data => {
+              });
+              this.reviewLyrics(this.newLyric, this.newTitle); //dialog box for user to review lyrics
+            }
         });
       }
     })
   }
 
-  getPopularity (response: any) : number {
+  getPopularityAndDate (response: any) : number {
     var highest = 2;
+    var earliestDate = +response.tracks.items[0].album.release_date.substring(0,4);
     var limit = response.tracks.items.length;
     for (var i: any = 0; i<limit; i++){
       if (response.tracks.items[i].popularity > highest) {
         highest = response.tracks.items[i].popularity;
       } 
-      if (highest>57) i=i+20;
+      if (+response.tracks.items[i].album.release_date.substring(0,4) < earliestDate
+        && response.tracks.items[i].name.toLowerCase().includes(this.loadedLyric.songTitle?.toLowerCase())) {
+        earliestDate = +response.tracks.items[i].album.release_date.substring(0,4);
+      }
+      //if (highest>57) i=i+20;
     } 
+    console.log("earliest date: ", earliestDate);
+    this.loadedLyric.releaseDate = earliestDate.toString();
     return highest;
   };
 
@@ -222,3 +232,50 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
 
 }
+
+
+
+
+
+// constructor(){
+//   `https://lyricslover.azurewebsites.net/api/lyrics/performers?SearchQuery=${q}`
+//    this.apiService.GetAccessToken()
+// }
+
+// onSelection(perf: Performer){
+//    A performer is selected from the dropdown
+// }
+
+// onAddLyrics(lyrics: string, songTitle: string) {
+//   ====> formatTitle();
+//   this.apiService.getSpotifyInfo(){
+//     next: (response:any) => {
+//       fill in the spotify info from the response
+//       ====> this.getPopularityAndDate
+//     },
+//     complete: () => {
+//       this.apiService.AddLyric(){
+//         this.apiService.AddSpotifyLinks();
+//         ====> this.reviewLyrics(this.newLyric, this.newTitle); //dialog box for user to review lyrics
+//     }}
+
+// getPopularityAndDate (response: any) : number {
+// };
+
+// onAddPerformer(){  ====> called when user clicks on the add artist button
+//    Dialog box for user to add a new performer
+//    ====> this.addPerformer(result);
+// }
+
+// addPerformer(name: string){
+//    this.apiService.AddPerformer(name).subscribe({
+//    })
+// }
+
+// reviewLyrics(lyrics: string, songTitle: string){
+//    Dialog box for user to review lyrics
+// }
+
+// formatTitle(title: string){
+//    Uppercase first letter of each word
+// }

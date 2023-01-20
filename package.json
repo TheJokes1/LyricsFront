@@ -26,6 +26,7 @@
     "@angular/platform-browser-dynamic": "^14.1.0",
     "@angular/router": "^14.1.0",
     "@auth0/auth0-angular": "^1.11.0",
+    "bootstrap": "^5.3.0-alpha1",
     "Buffer": "^0.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

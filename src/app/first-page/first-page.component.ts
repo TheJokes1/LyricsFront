@@ -226,11 +226,11 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     //choose an ID for TESTING if needed:
     //---------------------------------
-    //this.lyricId= 239;
+    //this.lyricId= 248;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     this.quote$.subscribe({
       next: (response: any) => {
-        console.log(response);
+        //console.log(response); SHOW RESPONSE HERE IN CONSOLE
         this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
         this.loadedLyric.lyricId = response.lyricId;
         this.loadedLyric.songTitle = response.songTitle;
@@ -308,9 +308,9 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
         this.loadedLyric.popularity = this.getPopularityAndDate(response);
         //links Object for the HTTP PUT
-        this.apiService.AddSpotLink(this.loadedLyric.lyricId!, this.loadedLyric.spotLink!, this.loadedLyric.imageUrl!, 
+        this.apiService.AddSpotifyLinks(this.loadedLyric.lyricId!, this.loadedLyric.spotLink!, this.loadedLyric.imageUrl!, 
             this.loadedLyric.previewLink, this.loadedLyric.popularity, this.loadedLyric.releaseDate!).subscribe(data => {
-        });
+          console.log("spotify links added to db: ", data)});
       },
       error: error => {
         this.loadedLyric.spotLink="";
