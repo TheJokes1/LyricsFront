@@ -131,8 +131,10 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
   
   onAddLyrics(lyrics: string, songTitle: string) {
-    this.newTitle = this.formatTitle(this.songTitle);
-    this.newLyric = this.lyrics;
+    this.newTitle = this.formatTitle(songTitle);
+    this.newLyric = this.formatLyric(lyrics);
+    this.disableButton = true;
+    this.disableAddArtist = true;
     
     this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
       next: (response:any) => {
@@ -149,10 +151,11 @@ export class SecondPageComponent implements OnInit, AfterViewInit
       },
       complete: () => {
         this.apiService.AddLyric(this.idPerformer, this.newLyric, this.newTitle, 
-        this.loadedLyric.spotLink!).subscribe({
+          this.loadedLyric.spotLink!).subscribe({
             next: (response: any) => {
               this.apiService.AddSpotifyLinks(response.lyricId!, this.loadedLyric.spotLink!, this.loadedLyric.imageUrl!, 
-              this.loadedLyric.previewLink, this.loadedLyric.popularity!, this.loadedLyric.releaseDate!).subscribe(data => {
+              this.loadedLyric.previewLink, this.loadedLyric.popularity!, this.loadedLyric.releaseDate!)
+                .subscribe(data => {
               });
               this.reviewLyrics(this.newLyric, this.newTitle); //dialog box for user to review lyrics
             }
@@ -170,7 +173,8 @@ export class SecondPageComponent implements OnInit, AfterViewInit
         highest = response.tracks.items[i].popularity;
       } 
       if (+response.tracks.items[i].album.release_date.substring(0,4) < earliestDate
-        && response.tracks.items[i].name.toLowerCase().includes(this.loadedLyric.songTitle?.toLowerCase())) {
+        && response.tracks.items[i].name.toLowerCase().includes(this.songTitle?.toLowerCase())
+        && response.tracks.items[i].artists[0].name.toLowerCase().includes(this.performerName?.toLowerCase())) {
         earliestDate = +response.tracks.items[i].album.release_date.substring(0,4);
       }
       //if (highest>57) i=i+20;
@@ -227,8 +231,9 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   }
 
   formatLyric(lyric: string){
-    // var newText = lyric.replaceAll("." , "\n");
-    // return newText;
+    var newText = lyric.replaceAll("<" , "");
+    var newText = newText.replaceAll(">" , "");
+    return newText;
   }
 
 }

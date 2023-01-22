@@ -226,7 +226,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     //choose an ID for TESTING if needed:
     //---------------------------------
-    //this.lyricId= 248;
+    //this.lyricId= 256;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     this.quote$.subscribe({
       next: (response: any) => {
@@ -273,15 +273,17 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.formatted = true;
       }
     }
+
+    // add line breaks
     this.formattedLyrics2= this.formattedLyrics.trim();
     this.formattedLyrics3 = this.formattedLyrics2.replaceAll('?', '?\n')
     this.formattedLyrics4 = this.formattedLyrics3.replaceAll('\n\n', '\n');
     this.lyrics = this.formattedLyrics4.replaceAll('.', '\n');
 
-    const titleL= title.toLowerCase();
-    const quoteL= this.lyrics.toLowerCase(); 
-    const position = quoteL.indexOf(titleL);
-    quote= this.lyrics;
+    // const titleL= title.toLowerCase();
+    // const quoteL= this.lyrics.toLowerCase(); 
+    // const position = quoteL.indexOf(titleL);
+    // quote= this.lyrics;
 
     // try replacing all titles in the quote with a blur
     this.p1= this.lyrics;
@@ -307,7 +309,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
         this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
         this.loadedLyric.popularity = this.getPopularityAndDate(response);
-        //links Object for the HTTP PUT
+        //links Object for the HTTP  PUT
         this.apiService.AddSpotifyLinks(this.loadedLyric.lyricId!, this.loadedLyric.spotLink!, this.loadedLyric.imageUrl!, 
             this.loadedLyric.previewLink, this.loadedLyric.popularity, this.loadedLyric.releaseDate!).subscribe(data => {
           console.log("spotify links added to db: ", data)});
@@ -316,11 +318,13 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.spotLink="";
         console.log(error);
       },
-      complete: () => {}
+      complete: () => {
+        
+      }
     })
   }
 
-  getPopularityAndDate (response: any) : number {
+  getPopularityAndDate (response: any) : number { //get popularity and release date from spotify API
     var highest = 2;
     var earliestDate = +response.tracks.items[0].album.release_date.substring(0,4);
     var limit = response.tracks.items.length;
@@ -329,10 +333,11 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         highest = response.tracks.items[i].popularity;
       } 
       if (+response.tracks.items[i].album.release_date.substring(0,4) < earliestDate
-        && response.tracks.items[i].name.toLowerCase().includes(this.loadedLyric.songTitle?.toLowerCase())) {
-        earliestDate = +response.tracks.items[i].album.release_date.substring(0,4);
-      }
-      //if (highest>57) i=i+20;
+        && response.tracks.items[i].name.toLowerCase().includes(this.loadedLyric.songTitle?.toLowerCase())
+        && response.tracks.items[i].artists[0].name.toLowerCase().includes(this.performerName?.toLowerCase())) {
+      earliestDate = +response.tracks.items[i].album.release_date.substring(0,4);
+    }
+      //if (highest>75) i=i+20;
     } 
     console.log("earliest date: ", earliestDate);
     this.loadedLyric.releaseDate = earliestDate.toString();

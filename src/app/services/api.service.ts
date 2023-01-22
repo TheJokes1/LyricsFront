@@ -31,8 +31,8 @@ export class ApiService {
    }
 
    GetLyrics = (language: string, era: string, text: string) => {
-    console.log("API: language: " + language + " era: " + era + "" 
-      + " text: " + text);
+    //console.log("API: language: " + language + " era: " + era + "" 
+     // + " text: " + text);
     text = text.trim();
     text = "%20" + text + "%20";
     return this.http.get<Lyric[]>(
