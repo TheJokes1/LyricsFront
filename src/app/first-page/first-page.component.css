@@ -87,6 +87,11 @@ h3{
   white-space: pre-wrap;
 }
 
+.lyricImage {
+  display: flex;
+  justify-content: center;
+}
+
 .spotify-cont{
   text-align: center;
 }

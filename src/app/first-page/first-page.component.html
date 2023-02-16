@@ -6,9 +6,6 @@
       <p #ps id="perf" class="perfTitle" 
         [ngStyle]="{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">
         {{loadedLyric.performer}} 
-        <!-- <span>
-          <mat-icon color= "accent" class="star" >star</mat-icon>
-        </span> -->
       </p>
       <p #ps id="titled" class="perfTitle"
         [ngStyle]="{'color' :statusClass10, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">
@@ -17,21 +14,24 @@
     </div>
 
     <!-- LYRICS OR IMAGE Toggle-->
-    <mat-card-content>  
+    <mat-card-content class="lyricImage">  
       <p class = "lyrics" (click)="loadLyricsIf()" [innerHtml]="p1 | safeHtml" [hidden]="showImage"></p>
       <img [src]=[loadedLyric.imageUrl]  [hidden]="!showImage"/>
     </mat-card-content>
   
+    <!-- PREVIEW -->
+    <mat-card-content>
+      <div class="spotify-cont">
+        <app-audio-player id="preview" class="spotify" [src]="loadedLyric.previewLink" #audioPlayer></app-audio-player>
+      </div>
+    </mat-card-content>
+
     <!-- SPOTIFY ICON -->
     <mat-card-content> 
       <div class="spotify-cont">
           <a *ngIf="loadedLyric.spotLink != '' " [href]="loadedLyric.spotLink" target="_blank">
             <img class= "spotify" src= "assets/Spotify_Icon.png"/>
           </a>
-      </div>
-    <!-- PREVIEW -->
-      <div class="spotify-cont">
-         <app-audio-player id="preview" class="spotify" [src]="loadedLyric.previewLink" #audioPlayer></app-audio-player>
       </div>
     </mat-card-content>
   </mat-card>

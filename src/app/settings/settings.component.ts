@@ -16,7 +16,7 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.showArtist = JSON.parse(localStorage.getItem('showArtist') || 'false');
     this.showTitle = JSON.parse(localStorage.getItem('showTitle') || 'false');
-    this.previewDuration = parseInt(JSON.parse(localStorage.getItem('previewDuration') || '2'));
+    this.previewDuration = parseInt(JSON.parse(localStorage.getItem('previewDuration') || '3'));
   }
 
   toggleArtist(){

@@ -25,7 +25,7 @@ export class AudioPlayerComponent implements AfterViewInit {
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "preview"){
         console.log('preview clicked.');
-      this.play();
+        this.play();
       }
     })
   }
