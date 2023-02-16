@@ -1,5 +1,6 @@
 <app-filter></app-filter>
 <div mat-dialog-content class="lyrics-container">
+
   <mat-card [ngStyle]="{'background-color' :random_color}" class = "mat-width">
     <div class="lyric-card-top" >
       <!-- ARTIST and TITLE -->
@@ -20,19 +21,15 @@
     </mat-card-content>
   
     <!-- PREVIEW -->
-    <mat-card-content>
       <div class="spotify-cont">
         <app-audio-player id="preview" class="spotify" [src]="loadedLyric.previewLink" #audioPlayer></app-audio-player>
       </div>
-    </mat-card-content>
 
     <!-- SPOTIFY ICON -->
-    <mat-card-content> 
       <div class="spotify-cont">
           <a *ngIf="loadedLyric.spotLink != '' " [href]="loadedLyric.spotLink" target="_blank">
             <img class= "spotify" src= "assets/Spotify_Icon.png"/>
           </a>
       </div>
-    </mat-card-content>
   </mat-card>
 </div>

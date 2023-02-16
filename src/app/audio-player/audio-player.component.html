@@ -2,6 +2,6 @@
     <a href="{{src}}">link</a>
 </audio>
   <span (click)="paused ? play() : pause()" class="icon-align-middle">
-    <button id="preview" *ngIf="paused" class="icon-size-30">preview</button>
+    <mat-icon id="preview" *ngIf="paused" class="icon-size-30">play_arrow</mat-icon>
     <!-- <mat-icon *ngIf="!paused" class="icon-size-30">pause</mat-icon> -->
   </span>
