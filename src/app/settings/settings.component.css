@@ -1,3 +1,9 @@
 .toggle{
-    margin-left: 20px;;
+    margin-left: 20px;
 }
+
+
+.value-label {
+    font-weight: 600;
+    margin-left: 10px;
+  }

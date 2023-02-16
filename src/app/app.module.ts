@@ -17,7 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatListModule } from '@angular/material/list';
 import { SecondPageComponent } from './second-page/second-page.component';
 import { ThirdPageComponent } from './third-page/third-page.component';
@@ -35,9 +35,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { FilterComponent } from './filter/filter.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AudioPlayerComponent } from './audio-player/audio-player.component';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatCardModule } from '@angular/material/card';
 import { SettingsComponent } from './settings/settings.component';
-
-
 
 @NgModule({
   declarations: [
@@ -50,7 +50,7 @@ import { SettingsComponent } from './settings/settings.component';
     MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSlideToggleModule,
     BrowserAnimationsModule, MatDialogModule, LayoutModule, MatToolbarModule, MatButtonModule,
     MatSidenavModule, MatIconModule, MatListModule, AppRoutingModule, MatChipsModule,
-    MatExpansionModule
+    MatExpansionModule, MatSliderModule, MatCardModule
     //AuthModule.forRoot(env.auth),
 
   ],

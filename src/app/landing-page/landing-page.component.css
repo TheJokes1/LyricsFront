@@ -2,20 +2,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40%;
+  /* margin-top: 40%; */
+  height: 100%;
 }
 
 img{
     width: 70%;
+    height: auto;
 }
 
-/* img{
-    width: 85%;
-    height: 85%;
-} */
-
 .loader{
-    text-align: center;
+  text-align: center;
+  padding-top: 20px;
 }
 
 

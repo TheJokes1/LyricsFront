@@ -1,25 +1,50 @@
-<mat-slide-toggle
-    class="toggle"
-    color="primary"
-    (change)="toggleArtist()"
-    [checked]="showArtist">Always show Artist name
-</mat-slide-toggle>
+<mat-card>
+    <mat-card-content>
+    <h4 class="card-titles">Show artist/Songtitle</h4>
+        <mat-slide-toggle
+            class="toggle"
+            color="primary"
+            (change)="toggleArtist()"
+            [checked]="showArtist">Always show Artist name
+        </mat-slide-toggle>
 
-<br/>
-<mat-slide-toggle
-    class="toggle"
-    color="primary"
-    (change)="toggleTitle()"
-    [checked]="showTitle">Always show Songtitle
-</mat-slide-toggle>
+        <br/>
+        <mat-slide-toggle
+            class="toggle"
+            color="primary"
+            (change)="toggleTitle()"
+            [checked]="showTitle">Always show Songtitle
+        </mat-slide-toggle>
+    </mat-card-content>
+</mat-card>
 
-<br>
+
+<mat-card>
+    <mat-card-content>
+        <h4 class="card-titles">Preview</h4>
+        <div >
+            <label class="toggle">Duration of preview in seconds:</label>
+            <label class="value-label">{{ previewDuration }}</label>
+        </div>
+        <div class="toggle">
+            <span>1</span>
+            <mat-slider 
+                class="toggle" 
+                color="primary" min="1" max="5" step="1" [(ngModel)]= "previewDuration"
+                (change) = "OnSliderChange()"
+                [showTickMarks]="showTicks" discrete>
+            </mat-slider>
+            <span style="margin-left: 10px">5</span>
+        </div>
+    </mat-card-content>
+</mat-card>
+
 <br>
 <div class="toggle">
     <mat-icon>
         pan_tool_alt
     </mat-icon>   
-    <span>Tap on the artist for album art</span>
+    <span>Tap on the artist for album art/to unblur</span>
 </div>
 
 <div class="toggle">

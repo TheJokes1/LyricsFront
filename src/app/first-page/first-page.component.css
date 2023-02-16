@@ -51,8 +51,7 @@ h3{
 }
 
 .perfTitle{
-  text-shadow: 0 0 18px #000;
-  color: black;
+  text-shadow: 0 0 18px #000; 
   
 }
 
@@ -77,7 +76,7 @@ h3{
 }
 
 .lyrics{
-  color:rgb(39, 7, 81);
+  color: white;
   font-size: 1.35em;
   font-weight: bolder;
   width: 88%;
@@ -102,6 +101,10 @@ h3{
 
 .blur {
   color:blueviolet;
+}
+
+.mat-width{
+  width: 100%;
 }
 
 

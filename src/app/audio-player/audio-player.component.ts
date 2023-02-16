@@ -13,10 +13,15 @@ export class AudioPlayerComponent implements AfterViewInit {
   @Input() public volume: number = 1.0; 
   @ViewChild('audioElement', { static: false }) public _audioRef:  ElementRef;
   private audio: HTMLMediaElement;
+  previewTime: number;
+  timeOut: number;
 
   public constructor() {
     //this.src = 'https://p.scdn.co/mp3-preview/17dc74947c15bfaf6ea9bbb83489fb07eac57c27?cid=4c51f7e54bd546e7a04d4141ff59ce8f%22';
-   }
+    this.previewTime = parseInt(JSON.parse(localStorage.getItem('previewDuration') || '2')) * 1000;
+    //this.timeOut = this.previewTime
+    //this.previewTime = JSON.parse(localStorage.getItem('previewDuration') || 'false');
+  }
 
   public pause(): void {
     if (this.audio) {
@@ -38,8 +43,26 @@ export class AudioPlayerComponent implements AfterViewInit {
       if (this.audio.readyState >= 2) {
         this.audio.play();
         this.audioStateLabel = 'Playing...'
+        setTimeout(() => {
+          this.stop();
+        }, this.previewTime);
       }
     }
+  }
+
+  stop() {
+    this.audio.pause();
+    this.audio.currentTime = 0;
+  }
+
+  ngOnInit(){
+    // this._audioRef.nativeElement.onended = () => {
+    //   this._audioRef.nativeElement.pause();
+    // }
+  }
+
+  getAudioElement() {
+    return this._audioRef.nativeElement;
   }
 
   public ngAfterViewInit() {

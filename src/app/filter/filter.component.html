@@ -7,10 +7,10 @@
         </mat-panel-title>
         <mat-panel-description *ngIf="!panelOpenState && noFilter"> -->
 
-      <mat-icon><span class="material-symbols-outlined">
+      <!-- <mat-icon><span class="material-symbols-outlined">
             filter_list
             </span>
-          </mat-icon>   
+          </mat-icon>    -->
 
         <!-- </mat-panel-description>  -->
 
@@ -26,12 +26,12 @@
 
       <mat-select (selectionChange)="onSelection2(selectedEra)" [(value)]="selectedEra"
           class = "LanguagPick">
-            <mat-option [value]="era.value" 
+            <mat-option [value]="era.value"
             *ngFor="let era of eraList">{{ era.viewValue }}</mat-option>
       </mat-select>
       <!-- </mat-expansion-panel-header>-->
       <mat-form-field class="inputField">
-        <input maxlength="12" matInput type="text" [formControl]="form" (keyup)="onTextInput($event)">
+        <input maxlength="12" matInput type="text" placeholder="word filter" [formControl]="form" (keyup)="onTextInput($event)">
       </mat-form-field>
    <!--
         

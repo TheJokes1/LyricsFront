@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren, OnDestroy, PipeTransform, Pipe } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Renderer2, ViewChildren, OnDestroy, PipeTransform, Pipe, AfterViewInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable } from 'rxjs';
 import { ApiService } from '../services/api.service';
@@ -6,6 +6,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Lyric } from '../lyric';
 import { FilterService } from '../services/filter.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AudioPlayerComponent } from '../audio-player/audio-player.component';
+
+
 //import { AllSpotLinks } from '../allSpotLinks';
 
 @Pipe({ name: "safeHtml" })
@@ -58,8 +61,8 @@ export interface FavouritePerformer {
   styleUrls: ['./first-page.component.css']
 })
 
-export class FirstPageComponent implements OnDestroy, PipeTransform {
-
+export class FirstPageComponent implements OnDestroy, AfterViewInit, PipeTransform {
+  @ViewChild('audioPlayer', { static: false }) audioPlayer: AudioPlayerComponent;
   disablePerfomer: boolean = false;
   disableButton: boolean = true;
   makeFilter = new FormControl('');
@@ -74,10 +77,10 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   lyricList$: Observable<Lyric[]>;
   lyricList: number[] = new Array();
 
-  statusClass1: string = "transparent";
+  statusClass1: string; // = "transparent";
   statusClass2: string = "400"
   statusClass3: string = "0 0 13px #000;"
-  statusClass10: string = "transparent";
+  statusClass10: string; // = "transparent";
   statusClass20: string = "400"
   statusClass30: string = "0 0 13px #000;" 
   random_color: string;
@@ -99,14 +102,15 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   numberOfLoadedLyrics: number = 0;
   showImage: boolean = false;
   test: any = "";
+  titlesColor: string;
   
   constructor(public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, private renderer: Renderer2, private filterService: FilterService) {  
 
-     this.apiService.GetAccessToken().subscribe({
+     this.apiService.GetAccessToken().subscribe({ //get the spotify access token through the backend.
       next: (response: any) => {
         this.token= response.access_token;
-        this.getLyrics("", "", "");
+        this.getLyrics("", "", ""); 
         //this.getSpotifyUrls();
       },
       error: error => console.log(error),
@@ -120,7 +124,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     if (localStorage.getItem('showTitle') === 'true') { 
       this.unblurTitle();
     }
-
+    // EMPLOYED FILTERS
     this.filterService.languageFilter.subscribe((language) => {
       this.filteredLanguage = language;
       this.showImage = false;
@@ -158,6 +162,18 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   // END OF CONSTRUCTOR
 
+  ngAfterViewInit() {
+    const audioElement = this.audioPlayer.getAudioElement();
+    audioElement.currentTime = 0;
+    audioElement.onended = () => {
+      audioElement.pause();
+    };
+    setTimeout(() => {
+      audioElement.pause();
+    }, 1000);
+    //audioElement.play();
+  }
+
   transform(value: any, ...args: any[]) {
     throw new Error('Method not implemented.');
   }
@@ -175,13 +191,13 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   }
 
   unblurArtist(){
-    this.statusClass1 = "rgb(39, 7, 181)";
+    this.statusClass1 = this.titlesColor;
     this.statusClass2 = "850";
     this.statusClass3 = "none";
   }
 
   unblurTitle(){
-    this.statusClass10 = "rgb(39, 7, 181)";
+    this.statusClass10 = this.titlesColor;
     this.statusClass20 = "850";
     this.statusClass30 = "none";
   }
@@ -211,10 +227,30 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   }
 
   loadLyrics() {
+    // SET ALL COLORS
+    var colors = ["rgb(200, 162, 200)", "rgb(188, 127, 130)", "rgb(155, 191, 150)", "rgb(225, 158, 132)", "rgb(144, 166, 202)", "rgb(218, 191, 122)", "rgb(190, 190, 188)"]
+    var titlesColors = [
+      // "rgb(170, 98, 115)",   // Dusty Pink
+      // "rgb(146, 111, 85)",   // Khaki
+      // "rgb(111, 142, 121)",  // Sage Green
+      // "rgb(172, 118, 105)",  // Peachy Tan
+      "rgb(89, 112, 145)",   // Steel Blue
+      "rgb(123, 104, 130)",  // Amethyst
+      "rgb(122, 122, 162)"   // Slate Gray
+    ]
+    
+    
+    this.random_color = colors[Math.floor(Math.random() * colors.length)];
+    this.titlesColor = titlesColors[Math.floor(Math.random() * titlesColors.length)];
+    console.log('titles color: ', this.titlesColor);
+
     if (localStorage.getItem('showArtist') === 'false') // blur/unblur the right elements
-      this.blurArtist();
+      {this.blurArtist();}
+    else {this.statusClass1 = this.titlesColor;}
+
     if (localStorage.getItem('showTitle') === 'false') 
-      this.blurTitle();
+      {this.blurTitle();}
+      else {this.statusClass10 = this.titlesColor;}
     
     this.randomNumber = Math.floor(Math.random() * this.lyricList.length); //e.g. 36
     //console.log(this.lyricList);
@@ -249,18 +285,14 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       error: error => console.log("error: ", error),
       complete: () => {}
     });
-
-    var colors = ['#E497DA', '#DFF67F', '#B2F8F4', '#B2E2F8', '#CEB2F8',
-      '#FBDEFF', '#FFDEED','#F5A8A0', '#F5E2A0','#F9A02C'];
-    this.random_color = colors[Math.floor(Math.random() * colors.length)];
   }
   // END OF LOADLYRICS
 
   loadLyricsIf(){
     //loadLyrics only when title is unblurred
-    if (this.statusClass10 == "rgb(39, 7, 181)"){
+    //if (this.statusClass10 == "rgb(66, 66, 66)"){
       this.loadLyrics();
-    }
+    //}
   }
 
   formatLyrics (quote: string | undefined, title: string){ //format for displaying
@@ -306,6 +338,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         console.log("spotify says: ", response);
         this.loadedLyric.spotLink= response.tracks.items[0].external_urls.spotify;
         this.loadedLyric.previewLink = response.tracks.items[0].preview_url;
+        
         this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
         this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
         this.loadedLyric.popularity = this.getPopularityAndDate(response);
