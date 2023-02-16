@@ -61,7 +61,7 @@ export interface FavouritePerformer {
   styleUrls: ['./first-page.component.css']
 })
 
-export class FirstPageComponent implements OnDestroy, AfterViewInit, PipeTransform {
+export class FirstPageComponent implements OnDestroy, PipeTransform {
   @ViewChild('audioPlayer', { static: false }) audioPlayer: AudioPlayerComponent;
   disablePerfomer: boolean = false;
   disableButton: boolean = true;
@@ -157,22 +157,13 @@ export class FirstPageComponent implements OnDestroy, AfterViewInit, PipeTransfo
         this.unblurTitle();
         this.showLyricsUnblurred();
       }
+      else if (event.target.id == "preview"){
+        console.log('preview clicked.');
+      }
     });
   } 
 
   // END OF CONSTRUCTOR
-
-  ngAfterViewInit() {
-    const audioElement = this.audioPlayer.getAudioElement();
-    audioElement.currentTime = 0;
-    audioElement.onended = () => {
-      audioElement.pause();
-    };
-    setTimeout(() => {
-      audioElement.pause();
-    }, 1000);
-    //audioElement.play();
-  }
 
   transform(value: any, ...args: any[]) {
     throw new Error('Method not implemented.');

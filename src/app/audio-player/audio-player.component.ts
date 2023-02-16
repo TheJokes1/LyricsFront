@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild, Renderer2 } from '@angular/core';
 
 @Component({
   selector: 'app-audio-player',
@@ -8,7 +8,7 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 export class AudioPlayerComponent implements AfterViewInit {
   @Input() public src: string;
   @Input() public autoplay: boolean = false;
-  @Input() public showStateLabel: boolean = false;
+  //@Input() public showStateLabel: boolean = false;
   public audioStateLabel = 'Audio sample';
   @Input() public volume: number = 1.0; 
   @ViewChild('audioElement', { static: false }) public _audioRef:  ElementRef;
@@ -16,11 +16,18 @@ export class AudioPlayerComponent implements AfterViewInit {
   previewTime: number;
   timeOut: number;
 
-  public constructor() {
+  public constructor(private renderer : Renderer2) {
     //this.src = 'https://p.scdn.co/mp3-preview/17dc74947c15bfaf6ea9bbb83489fb07eac57c27?cid=4c51f7e54bd546e7a04d4141ff59ce8f%22';
     this.previewTime = parseInt(JSON.parse(localStorage.getItem('previewDuration') || '2')) * 1000;
     //this.timeOut = this.previewTime
     //this.previewTime = JSON.parse(localStorage.getItem('previewDuration') || 'false');
+
+    this.renderer.listen('document', 'click', (event) => {
+      if (event.target.id == "preview"){
+        console.log('preview clicked.');
+      this.play();
+      }
+    })
   }
 
   public pause(): void {
