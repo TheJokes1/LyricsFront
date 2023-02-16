@@ -230,10 +230,10 @@ export class FirstPageComponent implements OnDestroy, AfterViewInit, PipeTransfo
     // SET ALL COLORS
     var colors = ["rgb(200, 162, 200)", "rgb(188, 127, 130)", "rgb(155, 191, 150)", "rgb(225, 158, 132)", "rgb(144, 166, 202)", "rgb(218, 191, 122)", "rgb(190, 190, 188)"]
     var titlesColors = [
-      // "rgb(170, 98, 115)",   // Dusty Pink
-      // "rgb(146, 111, 85)",   // Khaki
-      // "rgb(111, 142, 121)",  // Sage Green
-      // "rgb(172, 118, 105)",  // Peachy Tan
+      "rgb(170, 98, 115)",   // Dusty Pink
+      "rgb(146, 111, 85)",   // Khaki
+      "rgb(111, 142, 121)",  // Sage Green
+      "rgb(172, 118, 105)",  // Peachy Tan
       "rgb(89, 112, 145)",   // Steel Blue
       "rgb(123, 104, 130)",  // Amethyst
       "rgb(122, 122, 162)"   // Slate Gray
