@@ -10,7 +10,7 @@ export class AudioPlayerComponent implements AfterViewInit {
   @Input() public autoplay: boolean = false;
   //@Input() public showStateLabel: boolean = false;
   public audioStateLabel = 'Audio sample';
-  @Input() public volume: number = 1.0; 
+  @Input() public volume: number = 0; 
   @ViewChild('audioElement', { static: false }) public _audioRef:  ElementRef;
   private audio: HTMLMediaElement;
   previewTime: number;
