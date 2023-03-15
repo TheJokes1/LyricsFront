@@ -27,7 +27,7 @@ export class PlaylistComponent implements OnInit, AfterViewInit {
   spotifyUrl: string = `https://accounts.spotify.com/`;
   redirect_uri = "http://localhost:4200/Playlist";
   aToken: any = "";
-  playlists: Array<{ name: string, url: string, id: string }> = [];
+  playlists: Array<{ name: string, url: string, id: string, img: string }> = [];
 
   constructor(private apiService: ApiService, private http: HttpClient) { }
   
@@ -94,7 +94,6 @@ export class PlaylistComponent implements OnInit, AfterViewInit {
     window.history.pushState("", "", this.redirect_uri); //clean the URL (remove the spotify api code)
     this.apiService.getSpotifyUserId(access_token).subscribe({
       next: (response: any) => {
-        console.log(response);
         this.getPlaylist(response.id);
       },
       error: (err) => {
@@ -111,17 +110,30 @@ export class PlaylistComponent implements OnInit, AfterViewInit {
         console.log(response);
         for (let index = 0; index < response.items.length; index++){
           const obj = {name : response.items[index].name, id : response.items[index].id,
-            url: response.items[index].uri}
+            url: response.items[index].tracks.href, img: response.items[index].images[0].url}
           this.playlists.push(obj);
         }
         console.log("PLAYLISTS: ", this.playlists);
       },
       error: (err) => {
         console.log(err);
-      },
-      complete: () => {
       }
-      
+    });
+  }
+
+  accessPlaylist(value: any){
+    console.log("liiiiiist: ", value);
+    this.getPlaylistTracks(value.url);
+  }
+
+  getPlaylistTracks(url: any){
+    this.apiService.GetPlaylistTracks(url, this.aToken).subscribe({
+      next: (response: any) => {
+        console.log("TRAAACKS: ", response);
+      },
+      error: (err) => {
+        console.log(err);
+      }
     });
   }
 

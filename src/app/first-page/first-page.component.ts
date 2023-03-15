@@ -264,7 +264,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.imageUrl = response.imageUrl;
         this.loadedLyric.previewLink = response.previewLink;
         this.loadedLyric.popularity = response.popularity;
-        if (response.spotLink?.substring(0,5) != 'HAATEETEEPEE' || response.imageUrl?.substring(0,5) != 'https'
+        if (response.spotLink?.substring(0,5) != 'https' || response.imageUrl?.substring(0,5) != 'https'
           || response.previewLink?.substring(0,5) != 'https' || response.releaseDate == null)
         { 
           this.getSpotifyUrls();

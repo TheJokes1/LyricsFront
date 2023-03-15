@@ -15,7 +15,7 @@ const routes: Routes = [
     {path: 'Favorites', component: ThirdPageComponent},
     {path: 'Settings', component: SettingsComponent},
     {path: 'Playlist', component: PlaylistComponent},
-    //{path: '**', redirectTo: ''}
+    {path: '**', redirectTo: ''}
   ]
  
 

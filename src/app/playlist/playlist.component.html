@@ -1,19 +1,15 @@
-<p>{{ geconnecteerd }}</p>
-
 <body onload="onPageLoad()">
 <!-- <body> -->
-    <button type="button" class="btn btn-primary"
+    <button *ngIf="!aToken" type="button" class="btn btn-primary"
         (click)= "requestAuthorization()">
         Connect
     </button>
 
     <div *ngFor="let item of playlists">
         <ul>
-          <li>{{ item.name }}
-            <br>
-             {{ item.id }}
-             <br/>
-             {{ item.url }}
+          <li>
+                <img (click)= "accessPlaylist(item)" class = "image" [src]= "item.img">
+                <a (click)= "accessPlaylist(item)"> {{ item.name }}</a>
           </li>
         </ul>
       </div>

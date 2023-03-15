@@ -150,6 +150,20 @@ export class ApiService {
     );
   }
 
+  GetPlaylistTracks(link: any, token: any){
+    let headers = new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token
+    })
+    const url: string = link;
+
+    return this.http.get(
+      link,
+      {headers: headers}
+    );
+  }
+
 } 
   
   
