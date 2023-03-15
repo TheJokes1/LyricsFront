@@ -38,12 +38,14 @@ import { AudioPlayerComponent } from './audio-player/audio-player.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCardModule } from '@angular/material/card';
 import { SettingsComponent } from './settings/settings.component';
+import { PlaylistComponent } from './playlist/playlist.component';
+import { PrettyjsonPipe } from './prettyjson.pipe';
 
 @NgModule({
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
-    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent, SettingsComponent
+    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent, SettingsComponent, PlaylistComponent, PrettyjsonPipe
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,

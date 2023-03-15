@@ -1,0 +1,23 @@
+<p>{{ geconnecteerd }}</p>
+
+<body onload="onPageLoad()">
+<!-- <body> -->
+    <button type="button" class="btn btn-primary"
+        (click)= "requestAuthorization()">
+        Connect
+    </button>
+
+    <div *ngFor="let item of playlists">
+        <ul>
+          <li>{{ item.name }}
+            <br>
+             {{ item.id }}
+             <br/>
+             {{ item.url }}
+          </li>
+        </ul>
+      </div>
+</body>
+
+
+  

@@ -109,6 +109,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
      this.apiService.GetAccessToken().subscribe({ //get the spotify access token through the backend.
       next: (response: any) => {
+        console.log("response Spotify: ", response);
         this.token= response.access_token;
         this.getLyrics("", "", ""); 
         //this.getSpotifyUrls();
@@ -158,7 +159,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.showLyricsUnblurred();
       }
       else if (event.target.id == "preview"){
-        console.log('preview clicked.');
       }
     });
   } 
@@ -228,12 +228,10 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       "rgb(89, 112, 145)",   // Steel Blue
       "rgb(123, 104, 130)",  // Amethyst
       "rgb(122, 122, 162)"   // Slate Gray
-    ]
-    
+    ]    
     
     this.random_color = colors[Math.floor(Math.random() * colors.length)];
     this.titlesColor = titlesColors[Math.floor(Math.random() * titlesColors.length)];
-    console.log('titles color: ', this.titlesColor);
 
     if (localStorage.getItem('showArtist') === 'false') // blur/unblur the right elements
       {this.blurArtist();}
@@ -266,7 +264,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
         this.loadedLyric.imageUrl = response.imageUrl;
         this.loadedLyric.previewLink = response.previewLink;
         this.loadedLyric.popularity = response.popularity;
-        if (response.spotLink?.substring(0,5) != 'https' || response.imageUrl?.substring(0,5) != 'https'
+        if (response.spotLink?.substring(0,5) != 'HAATEETEEPEE' || response.imageUrl?.substring(0,5) != 'https'
           || response.previewLink?.substring(0,5) != 'https' || response.releaseDate == null)
         { 
           this.getSpotifyUrls();
@@ -281,12 +279,12 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   loadLyricsIf(){
     //loadLyrics only when title is unblurred
-    //if (this.statusClass10 == "rgb(66, 66, 66)"){
+    if (this.statusClass10 != "transparent"){
       this.loadLyrics();
-    //}
+    }
   }
 
-  formatLyrics (quote: string | undefined, title: string){ //format for displaying
+  formatLyrics (quote: string | undefined, title: string){ //format for displaying correctly
     this.formatted = false;
     while (!this.formatted){ // remove points and spaces from the end of the string
       if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
@@ -302,11 +300,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
     this.formattedLyrics3 = this.formattedLyrics2.replaceAll('?', '?\n')
     this.formattedLyrics4 = this.formattedLyrics3.replaceAll('\n\n', '\n');
     this.lyrics = this.formattedLyrics4.replaceAll('.', '\n');
-
-    // const titleL= title.toLowerCase();
-    // const quoteL= this.lyrics.toLowerCase(); 
-    // const position = quoteL.indexOf(titleL);
-    // quote= this.lyrics;
 
     // try replacing all titles in the quote with a blur
     this.p1= this.lyrics;

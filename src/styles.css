@@ -6,6 +6,12 @@
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
+p{
+  margin-bottom: (5 px);
+  line-height: 1.3em;
+  display: block;
+}
+
 /* @import '~@angular/material/theming'; */
 
 /* fallback */
@@ -32,3 +38,6 @@
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 } */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

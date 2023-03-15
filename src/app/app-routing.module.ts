@@ -5,6 +5,7 @@ import { HomepageResolver } from "./resolvers/homepage.resolver";
 import { SecondPageComponent } from "./second-page/second-page.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { ThirdPageComponent } from "./third-page/third-page.component";
+import { PlaylistComponent } from "./playlist/playlist.component";
 
 
 const routes: Routes = [
@@ -13,7 +14,8 @@ const routes: Routes = [
     {path: 'Add', component: SecondPageComponent},
     {path: 'Favorites', component: ThirdPageComponent},
     {path: 'Settings', component: SettingsComponent},
-    {path: '**', redirectTo: ''}
+    {path: 'Playlist', component: PlaylistComponent},
+    //{path: '**', redirectTo: ''}
   ]
  
 
