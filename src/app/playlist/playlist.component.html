@@ -5,15 +5,16 @@
         Connect
     </button>
 
-    <div *ngFor="let item of playlists">
-        <ul>
-          <li>
-                <img (click)= "accessPlaylist(item)" class = "image" [src]= "item.img">
-                <a (click)= "accessPlaylist(item)"> {{ item.name }}</a>
-          </li>
-        </ul>
-      </div>
+    <ol>
+      <!-- use of ng-container to NUMBER the list items -->
+        <ng-container *ngFor="let item of playlists"> 
+        <li>
+          <div class="playlists">
+            <img class = "image" [src]= "item.img">
+            <a (click) = "accessPlaylist(item)"> {{ item.name }}</a>
+          </div>
+        </li>
+        </ng-container>
+    </ol>
+
 </body>
-
-
-  

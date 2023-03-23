@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AddPerformerDialogComponent } from '../add-performer-dialog/add-performer-dialog.component';
-import { Lyric } from '../lyric';
+import { Lyric } from '../Shared/Lyric';
 
 export interface DialogLyricData {
   dLyrics: string;
@@ -244,10 +244,10 @@ export class SecondPageComponent implements OnInit, AfterViewInit
 
 // constructor(){
 //   `https://lyricslover.azurewebsites.net/api/lyrics/performers?SearchQuery=${q}`
-//    this.apiService.GetAccessToken()
+//    this.apiService.GetAccessToken()    VOOR SPOTIFY
 // }
 
-// onSelection(perf: Performer){
+// onSelection(perf: Performer){ 
 //    A performer is selected from the dropdown
 // }
 

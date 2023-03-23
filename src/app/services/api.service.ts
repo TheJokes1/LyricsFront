@@ -3,7 +3,7 @@ import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
 import { buffer, Observable } from 'rxjs';
 import { Performer } from '../second-page/second-page.component'; 
 import { HttpHeaders } from '@angular/common/http';
-import { Lyric } from '../lyric';
+import { Lyric } from '../Shared/Lyric';
 //import { Buffer } from 'buffer';
 //import { AllSpotLinks } from '../allSpotLinks';
 
@@ -21,7 +21,8 @@ export class ApiService {
 
   //baseUrl: string = `https://localhost:5001/api/`;
   baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
-
+  limit: number= 50;
+  baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
   
   constructor(private http: HttpClient) {
   }
@@ -142,7 +143,7 @@ export class ApiService {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token
     })
-    const url: string = 'https://api.spotify.com/v1/users/'+ id + '/playlists?offset=0&limit=20';
+    const url: string = 'https://api.spotify.com/v1/users/'+ id + '/playlists?offset=0&limit='+this.limit;
 
     return this.http.get(
       url,
@@ -150,19 +151,34 @@ export class ApiService {
     );
   }
 
-  GetPlaylistTracks(link: any, token: any){
+  getPlaylistTracks(link: string, token: string){
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token
     })
-    const url: string = link;
 
     return this.http.get(
       link,
       {headers: headers}
     );
   }
+
+  getLyricsFromMM(token: string, artist: string, title: string){
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token
+    });
+      const urlMM: string = this.baseUrlMM + 'matcher.lyrics.get?q_track=' + title +'&q_artist=' 
+        + artist 
+        + '&apikey=' + token;
+  
+      return this.http.get( 
+        urlMM,
+        { headers: headers }
+        )
+      }
 
 } 
   

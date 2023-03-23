@@ -6,6 +6,7 @@ import { SecondPageComponent } from "./second-page/second-page.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { ThirdPageComponent } from "./third-page/third-page.component";
 import { PlaylistComponent } from "./playlist/playlist.component";
+import { PlaylistSongComponent } from "./playlist-song/playlist-song.component";
 
 
 const routes: Routes = [
@@ -15,7 +16,10 @@ const routes: Routes = [
     {path: 'Favorites', component: ThirdPageComponent},
     {path: 'Settings', component: SettingsComponent},
     {path: 'Playlist', component: PlaylistComponent},
-    {path: '**', redirectTo: ''}
+      {path: '', children: [
+        {path: 'Playlist/Songs', component: PlaylistSongComponent}
+      ]},
+    {path: '**', redirectTo: '', pathMatch: 'full'}
   ]
  
 

@@ -7,7 +7,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { RouterModule, Routes } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from './reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
@@ -24,7 +23,6 @@ import { ThirdPageComponent } from './third-page/third-page.component';
 import { FirstPageComponent, SafeHtmlPipe } from './first-page/first-page.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { AuthModule } from '@auth0/auth0-angular';
-import { environment as env } from '../environments/environment';
 import { AddPerformerDialogComponent } from './add-performer-dialog/add-performer-dialog.component';
 import { SplashScreenStateService } from './services/splash-screen-state.service';
 import { SplashComponent } from './components/splash.component';
@@ -40,12 +38,14 @@ import { MatCardModule } from '@angular/material/card';
 import { SettingsComponent } from './settings/settings.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { PrettyjsonPipe } from './prettyjson.pipe';
+import { PlaylistSongComponent } from './playlist-song/playlist-song.component';
 
 @NgModule({
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
-    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent, SettingsComponent, PlaylistComponent, PrettyjsonPipe
+    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent, 
+    SettingsComponent, PlaylistComponent, PrettyjsonPipe, PlaylistSongComponent
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule,

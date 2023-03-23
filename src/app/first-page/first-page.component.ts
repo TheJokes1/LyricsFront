@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Observable } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Lyric } from '../lyric';
+import { Lyric } from '../Shared/Lyric';
 import { FilterService } from '../services/filter.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AudioPlayerComponent } from '../audio-player/audio-player.component';
@@ -107,16 +107,18 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   constructor(public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, private renderer: Renderer2, private filterService: FilterService) {  
 
-     this.apiService.GetAccessToken().subscribe({ //get the spotify access token through the backend.
-      next: (response: any) => {
-        console.log("response Spotify: ", response);
-        this.token= response.access_token;
-        this.getLyrics("", "", ""); 
-        //this.getSpotifyUrls();
-      },
-      error: error => console.log(error),
-      complete : () => {}
-    })
+    //  this.apiService.GetAccessToken().subscribe({ //get the spotify access token through the backend.
+    //   next: (response: any) => {
+    //     console.log("response Spotify: ", response);
+    //     this.token= response.access_token;
+    //     this.getLyrics("", "", ""); 
+    //     //this.getSpotifyUrls();
+    //   },
+    //   error: error => console.log(error),
+    //   complete : () => {}
+    // })
+    this.getLyrics("", "", ""); 
+    // ATTENTION ALL UNITS: THE LINE ABOVE IS DOUBLE: ALSO IN ABOVE CALL
 
     if (localStorage.getItem('showArtist') === 'true') {
       this.unblurArtist();

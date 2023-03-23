@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { filter, Observable } from 'rxjs';
 import { ApiService } from './services/api.service';
 import { SplashScreenStateService } from './services/splash-screen-state.service';
-import { Lyric } from './lyric';
+import { Lyric } from './Shared/Lyric';
 import { ActivatedRouteSnapshot, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent, RouterLink } from '@angular/router';
 
 @Component({
