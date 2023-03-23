@@ -59,9 +59,11 @@ export class PlaylistSongComponent {
   artist: string;
   title: string;
   allTracks: Array<{artist: '', title: ''}> = [];
+  allTracksCopy: Array<{artist: '', title: ''}> = [];
 
   constructor(private renderer: Renderer2, private dataService: DataService, private apiService: ApiService) {
     this.allTracks = this.dataService.tracksPlaylist;
+    this.allTracksCopy = [...this.allTracks];
     console.log("all tracks: ", this.allTracks);
     this.getLyrics();
     this.loadedLyric.spotLink = "";
@@ -114,7 +116,10 @@ export class PlaylistSongComponent {
   }
 
   loadLyricsIf(){
-    this.getLyrics();
+    if (this.statusClass10 != "transparent"){
+      this.quote = "";
+      this.getLyrics();
+    }
   }
 
   getLyrics() {
@@ -145,11 +150,13 @@ export class PlaylistSongComponent {
 
     this.artist = this.allTracks[this.randomNumber].artist;
     this.title = this.allTracks[this.randomNumber].title;
+    this.title = this.title.split("-")[0];
+    this.title = this.title.split("&")[0];
+    this.title = this.title.split("(")[0];
 
-    this.allTracks.splice(this.randomNumber, 1); //remove the used ID from the list
-    console.log("arrray after splice: ", this.allTracks);
-    if (this.allTracks.length == 0) {
-      this.allTracks= this.dataService.tracksPlaylist; // reset the LyricList array to original state
+    this.allTracks.splice(this.randomNumber, 1); //remove the used object from the array
+    if (this.allTracks.length === 0) {
+      this.allTracks= [...this.allTracksCopy]; // reset the LyricList array to original state
     } 
 
     this.getSongs3();
@@ -157,6 +164,7 @@ export class PlaylistSongComponent {
 
   formatLyrics (quote: string | undefined, title: string){ //format for displaying correctly
     this.formatted = false;
+    quote = quote?.split("******")[0];
     while (!this.formatted){ // remove points and spaces from the end of the string
       if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
         this.formattedLyrics = quote.substring(0,quote.length-1);
@@ -188,9 +196,13 @@ export class PlaylistSongComponent {
   getSongs3(){ //deze call haalt lyrics op o.b.v. titel en artist
     this.apiService.getLyricsFromMM(this.token1, this.artist, this.title).subscribe({
       next: (response: any) => {
-        this.quote = response.message.body.lyrics.lyrics_body;
-
-        },
+        console.log("response from MM: ", response);
+        if (response.message.body.length != 0){
+          this.quote = response.message.body.lyrics.lyrics_body;
+        } else {
+          this.quote = "";
+          this.getLyrics();
+        }},
       error: (err: any) => {
         console.log(err);
       },

@@ -202,7 +202,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       next: (response: any) => {
         if (response.length > 0) { //change observable to array
           this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
-          this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array
+          this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array later 
           this.loadLyrics();
         }
         else {
