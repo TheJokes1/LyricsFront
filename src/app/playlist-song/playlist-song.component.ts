@@ -57,7 +57,9 @@ export class PlaylistSongComponent {
   token1 : string = '7fdc6e3e5841981064618c82bbab2c20';
   dictionary = new Map<string, string>();
   artist: string;
+  artistToSearch: string;
   title: string;
+  titleToSearch: string;
   allTracks: Array<{artist: '', title: ''}> = [];
   allTracksCopy: Array<{artist: '', title: ''}> = [];
 
@@ -138,21 +140,26 @@ export class PlaylistSongComponent {
     this.random_color = colors[Math.floor(Math.random() * colors.length)];
     this.titlesColor = titlesColors[Math.floor(Math.random() * titlesColors.length)];
 
-    if (localStorage.getItem('showArtist') === 'false') // blur/unblur the right elements
-      {this.blurArtist();}
-    else {this.statusClass1 = this.titlesColor;}
+    // if (localStorage.getItem('showArtist') === 'false') // blur/unblur the right elements
+    //   {this.blurArtist();}
+    // else //{this.statusClass1 = this.titlesColor;} 
+    //   {this.unblurArtist();}
 
-    if (localStorage.getItem('showTitle') === 'false') 
-      {this.blurTitle();}
-      else {this.statusClass10 = this.titlesColor;}
+    localStorage.getItem('showArtist') === 'false' ? this.blurArtist() : this.unblurArtist();    
+    localStorage.getItem('showTitle') === 'false' ? this.blurTitle() : this.unblurTitle();    
+
+    // if (localStorage.getItem('showTitle') === 'false') 
+    //   {this.blurTitle();}
+    //   else //{this.statusClass10 = this.titlesColor; this.statusClass30 = 'none'}
+    //     this.unblurTitle();
     
     this.randomNumber = Math.floor(Math.random() * this.allTracks.length); //e.g. 36
 
-    this.artist = this.allTracks[this.randomNumber].artist;
-    this.title = this.allTracks[this.randomNumber].title;
-    this.title = this.title.split("-")[0];
-    this.title = this.title.split("&")[0];
-    this.title = this.title.split("(")[0];
+    this.artistToSearch = this.allTracks[this.randomNumber].artist;
+    this.titleToSearch = this.allTracks[this.randomNumber].title;
+    this.titleToSearch = this.titleToSearch.split("-")[0];
+    this.titleToSearch = this.titleToSearch.split("&")[0];
+    this.titleToSearch = this.titleToSearch.split("(")[0];
 
     this.allTracks.splice(this.randomNumber, 1); //remove the used object from the array
     if (this.allTracks.length === 0) {
@@ -174,10 +181,20 @@ export class PlaylistSongComponent {
       }
     }
     // add line breaks
-    this.formattedLyrics2= this.formattedLyrics.trim();
-    this.formattedLyrics3 = this.formattedLyrics2.replaceAll('?', '?\n')
-    this.formattedLyrics4 = this.formattedLyrics3.replaceAll('\n\n', '\n');
-    this.lyrics = this.formattedLyrics4.replaceAll('.', '\n');
+    // this.formattedLyrics2= this.formattedLyrics.trim();
+    // this.formattedLyrics3 = this.formattedLyrics2.replaceAll('?', '?\n')
+    // this.formattedLyrics4 = this.formattedLyrics3.replaceAll('\n\n', '\n');
+    this.lyrics = this.formattedLyrics //.replaceAll('.', '\n');
+
+    let lineFeedPositions = [];
+
+    let nextLineFeedPosition = this.quote.indexOf("\n");
+    while (nextLineFeedPosition >= 0) {
+      lineFeedPositions.push(nextLineFeedPosition);
+      nextLineFeedPosition = this.quote.indexOf("\n", nextLineFeedPosition + 1);
+    }
+
+    console.log("lineFeeds: ", lineFeedPositions);
 
     // try replacing all titles in the quote with a blur
     this.p1= this.lyrics;
@@ -194,11 +211,12 @@ export class PlaylistSongComponent {
   }
 
   getSongs3(){ //deze call haalt lyrics op o.b.v. titel en artist
-    this.apiService.getLyricsFromMM(this.token1, this.artist, this.title).subscribe({
+    this.apiService.getLyricsFromMM(this.token1, this.artistToSearch, this.titleToSearch).subscribe({
       next: (response: any) => {
         console.log("response from MM: ", response);
         if (response.message.body.length != 0){
           this.quote = response.message.body.lyrics.lyrics_body;
+          console.log(this.quote);
         } else {
           this.quote = "";
           this.getLyrics();
@@ -208,6 +226,8 @@ export class PlaylistSongComponent {
       },
       complete: () => {
         this.formatLyrics(this.quote, this.title);
+        this.title = this.titleToSearch;
+        this.artist = this.artistToSearch;
       }}
       )
     }
