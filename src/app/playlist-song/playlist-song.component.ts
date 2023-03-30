@@ -22,10 +22,6 @@ export class SafeHtmlPipe implements PipeTransform {
   styleUrls: ['./playlist-song.component.scss']
 })
 export class PlaylistSongComponent {
-  // lyricList: Array<{artist: string, title: string, quote: string}> = [
-  //   { artist: "The Smiths", title: "Sweet and tender hooligan", quote: "Hello sweet hooligan"},
-  //   { artist: "The Doors", title: "Light my fire", quote: "Baby light my fire" }
-  // ];
   random_color: string;
   titlesColor: string;
   statusClass1: any;
@@ -38,17 +34,14 @@ export class PlaylistSongComponent {
   showImage: any= false;
   loadedLyric: Lyric = {} as Lyric;  
   formatted: boolean;
-  formattedLyrics: any;
-  formattedLyrics2: any;
-  formattedLyrics3: any;
-  formattedLyrics4: any;
   lyrics: any;
   p1: any;
   statusClass2: string;
   statusClass3: string;
   statusClass20: string;
   statusClass30: string;
-  chosenPlaylist: Playlist = {} as Playlist;
+  //chosenPlaylist: Playlist = {} as Playlist;
+  chosenPlaylist: string;
   playlistUrl: any;
   aToken: any;
   tracks: Array<{artist: string, title: string}> = [];
@@ -62,9 +55,13 @@ export class PlaylistSongComponent {
   titleToSearch: string;
   allTracks: Array<{artist: '', title: ''}> = [];
   allTracksCopy: Array<{artist: '', title: ''}> = [];
+  activeChunk: number = 0;
+  titlePlaylist: string;
 
   constructor(private renderer: Renderer2, private dataService: DataService, private apiService: ApiService) {
-    this.allTracks = this.dataService.tracksPlaylist;
+    this.allTracks = this.dataService.tracksPlaylist; //Array
+    this.titlePlaylist = this.dataService.chosenPlaylist.name; //Object.name
+    console.log(this.titlePlaylist);
     this.allTracksCopy = [...this.allTracks];
     console.log("all tracks: ", this.allTracks);
     this.getLyrics();
@@ -87,6 +84,10 @@ export class PlaylistSongComponent {
       else if (event.target.id == "preview"){
       }
     });
+  }
+
+  showLyricsUnblurred(){ //remove all styling from p1
+    this.p1 = this.lyrics;
   }
 
   transform(value: any, ...args: any[]) {
@@ -121,6 +122,9 @@ export class PlaylistSongComponent {
     if (this.statusClass10 != "transparent"){
       this.quote = "";
       this.getLyrics();
+      this.activeChunk = 0;
+      this.p1 = "";
+      //document.getElementById('result')!.style.cssText = 'height:100px';
     }
   }
 
@@ -140,21 +144,11 @@ export class PlaylistSongComponent {
     this.random_color = colors[Math.floor(Math.random() * colors.length)];
     this.titlesColor = titlesColors[Math.floor(Math.random() * titlesColors.length)];
 
-    // if (localStorage.getItem('showArtist') === 'false') // blur/unblur the right elements
-    //   {this.blurArtist();}
-    // else //{this.statusClass1 = this.titlesColor;} 
-    //   {this.unblurArtist();}
-
     localStorage.getItem('showArtist') === 'false' ? this.blurArtist() : this.unblurArtist();    
     localStorage.getItem('showTitle') === 'false' ? this.blurTitle() : this.unblurTitle();    
-
-    // if (localStorage.getItem('showTitle') === 'false') 
-    //   {this.blurTitle();}
-    //   else //{this.statusClass10 = this.titlesColor; this.statusClass30 = 'none'}
-    //     this.unblurTitle();
     
     this.randomNumber = Math.floor(Math.random() * this.allTracks.length); //e.g. 36
-
+    // SET the artist and title here (random choice from array)
     this.artistToSearch = this.allTracks[this.randomNumber].artist;
     this.titleToSearch = this.allTracks[this.randomNumber].title;
     this.titleToSearch = this.titleToSearch.split("-")[0];
@@ -166,76 +160,78 @@ export class PlaylistSongComponent {
       this.allTracks= [...this.allTracksCopy]; // reset the LyricList array to original state
     } 
 
+    //FORCE A CERTAIN SONG TO DISPLAY HERE :-)))))
+    // this.titleToSearch = "wild live'";
+    // this.artistToSearch = "Chris Isaak";
     this.getSongs3();
   }
 
-  formatLyrics (quote: string | undefined, title: string){ //format for displaying correctly
+  formatLyrics (quote: string | undefined, title: string, chunkToShow: number){ //format quote for displaying it correctly
     this.formatted = false;
     quote = quote?.split("******")[0];
-    while (!this.formatted){ // remove points and spaces from the end of the string
-      if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
-        this.formattedLyrics = quote.substring(0,quote.length-1);
-      } else {
-        this.formattedLyrics = quote;
-        this.formatted = true;
-      }
+    console.log("QUOOOOOOOTE: ", quote);
+
+    let lineFeedPositions = this.listUpLinefeeds();
+    let doubleLineBreaks: any = this.listUpDoubleLineBreaks(lineFeedPositions);
+    this.lyrics = this.quote.substring(0, doubleLineBreaks[chunkToShow]); //SHOWCHUNK 0!!
+
+    // try replacing all titles in the quote with a blur
+    this.p1= this.lyrics;
+    //console.log("p1 and title: ", this.p1, this.titleToSearch);
+    if (localStorage.getItem('showTitle') === 'false') {
+      const reg = new RegExp(this.titleToSearch, "gi");
+      this.p1 = this.p1.replace(reg,`<b>${this.titleToSearch}</b>`);
+      this.p1= `<style> b {color: black; font-weight:400; filter: blur(6px);} </style>` + this.p1;
     }
-    // add line breaks
-    // this.formattedLyrics2= this.formattedLyrics.trim();
-    // this.formattedLyrics3 = this.formattedLyrics2.replaceAll('?', '?\n')
-    // this.formattedLyrics4 = this.formattedLyrics3.replaceAll('\n\n', '\n');
-    this.lyrics = this.formattedLyrics //.replaceAll('.', '\n');
+    //return this.lyrics;
+  }
 
+  listUpLinefeeds() {
     let lineFeedPositions = [];
-
     let nextLineFeedPosition = this.quote.indexOf("\n");
     while (nextLineFeedPosition >= 0) {
       lineFeedPositions.push(nextLineFeedPosition);
       nextLineFeedPosition = this.quote.indexOf("\n", nextLineFeedPosition + 1);
     }
-
-    console.log("lineFeeds: ", lineFeedPositions);
-
-    // try replacing all titles in the quote with a blur
-    this.p1= this.lyrics;
-    if (localStorage.getItem('showTitle') === 'false') {
-      const reg = new RegExp(title, "gi");
-      this.p1 = this.p1.replace(reg,`<b>${title}</b>`);
-      this.p1= `<style> b {color: black; font-weight:400; filter: blur(6px);} </style>` + this.p1;
-    }
-    return this.lyrics;
+    return lineFeedPositions;
   }
 
-  showLyricsUnblurred(){ //remove all styling from p1
-    this.p1 = this.lyrics;
+  listUpDoubleLineBreaks(lineFeedPositions: any){
+    let doubleLineBreaks = [];
+    for (let position = 0; position < lineFeedPositions.length; position++) {
+      const x1 = lineFeedPositions[position];
+      const x2 = lineFeedPositions[position + 1];
+      if (x2 - x1 === 1) 
+        doubleLineBreaks.push(x1);
+    }
+    return doubleLineBreaks;
+  }
+
+  moreChunks(){
+    this.activeChunk++;
+    this.formatLyrics(this.quote, this.title, this.activeChunk);
   }
 
   getSongs3(){ //deze call haalt lyrics op o.b.v. titel en artist
     this.apiService.getLyricsFromMM(this.token1, this.artistToSearch, this.titleToSearch).subscribe({
       next: (response: any) => {
-        console.log("response from MM: ", response);
-        if (response.message.body.length != 0){
-          this.quote = response.message.body.lyrics.lyrics_body;
-          console.log(this.quote);
+        if (response.message.header.status_code == 404 || 
+          response.message.body.lyrics.lyrics_body.length == 0){
+            this.quote = "";
+            this.getLyrics();
         } else {
-          this.quote = "";
-          this.getLyrics();
+          console.log(response.message.body.lyrics.lyrics_body);
+          this.quote = response.message.body.lyrics.lyrics_body;
         }},
       error: (err: any) => {
         console.log(err);
+        console.log("we are in error");
       },
       complete: () => {
-        this.formatLyrics(this.quote, this.title);
+        this.formatLyrics(this.quote, this.titleToSearch, this.activeChunk);
         this.title = this.titleToSearch;
         this.artist = this.artistToSearch;
       }}
       )
     }
-
-
 }
-
-
-
-
-//  

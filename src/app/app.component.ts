@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
     console.log("FIRST CALL");
     this.quote$ = this.apiService.GetLyric(1);;
     this.quote$.subscribe(res => {
-      console.log("quote:", res.quote);
+      console.log("quote:", res);
       // this.wordings = res.songTitle;
       //this.splashScreenStateService.stop();
       //this.route.navigateByUrl('/');

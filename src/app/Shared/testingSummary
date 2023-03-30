@@ -1,0 +1,103 @@
+  accessSpotifyLogic(){
+    if (localStorage.getItem('access_token') != undefined && 
+        localStorage.getItem('refresh_token') != undefined &&
+        localStorage.getItem('spotify_userId') != undefined){
+            this.requestAuthorization();
+        } else {
+            this.getPlaylists(this.localStorage.getItem('spotify_userId'),
+            localStorage.getItem('access_token'));
+        }
+
+  }
+  
+
+  
+  
+  
+  ngOnInit(): void {
+    console.log('OnInit');
+    this.onPageLoad();
+  }
+
+  onPageLoad(){
+    if (window.location.search.length > 0) {
+      this.handleRedirect();
+    }
+  }
+
+  handleRedirect(){
+    var code = this.getCode(); 
+    this.fetchAccessToken(code!);
+    //window.history.pushState("", "", this.redirect_uri);
+  }
+
+  getCode(){
+    return code;
+  }
+
+  fetchAccessToken(code: string){
+    this.callAuthorizationApi(code).subscribe({
+      next: (response: any) => {
+        this.getUserId();
+      }
+    });
+  }
+
+  getUserId() {
+    this.apiService.getSpotifyUserId(this.aToken).subscribe({
+      next: (response: any) => {
+        this.getPlaylists(response.id, this.aToken);
+      },
+  });
+}
+
+
+getPlaylists(id: string, token: string){
+  this.apiService.GetPlaylists(id, token).subscribe({
+      error: (err) => {
+        this.useRefreshToken();
+      }
+  });
+}
+  
+  useRefreshToken(){
+    this.callAuthorizationApiRefresh(this.rToken).subscribe({
+      next: (response: any) => {
+        this.getUserId();
+      }
+    });
+  }
+  
+  accessPlaylist(value: any){
+    this.getPlaylistTracks(this.dataService.chosenPlaylist.url);
+  }
+    
+  handleResponse(){
+    console.log("handled");
+  }
+
+  callAuthorizationApi(code: any){
+
+    return this.http.post("https://accounts.spotify.com/api/token", 
+      httpParams.toString()
+    );
+  }
+
+  callAuthorizationApiRefresh(refresh_token: any){
+    return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
+    );
+  }
+  
+
+  requestAuthorization(){
+    window.location.href = this.url;
+  }
+
+  getPlaylistTracks(url: any){
+    this.apiService.getPlaylistTracks(url, this.aToken).subscribe({
+      complete: () => {
+        this.router.navigateByUrl('Playlist/Songs');
+      }
+  });
+}
+

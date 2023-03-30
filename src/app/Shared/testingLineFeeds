@@ -1,0 +1,229 @@
+constructor
+
+If you can play on fiddle
+How's about a British jig and reel?
+Speaking King's English in quotation
+As railhead towns feel the steel mills rust
+Water froze
+In the generation 172
+173
+Clear as winter ice
+This is your paradise 215
+216
+There ain't no need for ya
+There ain't no need for ya
+Go straight to hell, boys
+Go straight to hell, boys
+
+Wanna join in a chorus of the Amerasian blues
+When it's Christmas out in Ho Chi Minh City
+Kiddie say, papa papa papa papa papa-san, take me home
+See me, got photo, photo, photograph of you
+...
+
+******* This Lyrics is NOT for Commercial use *******
+(1409623080597)
+
+
+
+  constructor(private apiService: ApiService, private http: HttpClient, private router: Router, private dataService: DataService) { }
+  
+  ngAfterViewInit(): void { 
+  }
+
+  ngOnInit(): void {
+    console.log('OnInit');
+    this.onPageLoad();
+  }
+
+  onPageLoad(){
+    if (window.location.search.length > 0) {
+      this.handleRedirect();
+    }
+  }
+
+  handleRedirect(){
+    var code = this.getCode(); 
+    this.fetchAccessToken(code!);
+    //window.history.pushState("", "", this.redirect_uri);
+  }
+
+  getCode(){
+    let code = null;
+    const queryString = window.location.search; // the code spotify sends back in the URL
+    if ( queryString.length > 0 ){
+        const urlParams = new URLSearchParams(queryString);
+        code = urlParams.get('code')
+    }
+    return code;
+  }
+
+  fetchAccessToken(code: string){
+    let body = this.spotifyUrl + "api/token?";
+    body += "grant_type=authorization_code";
+    body += "&code=" + code; 
+    body += "&redirect_uri=" + encodeURI(this.redirect_uri);
+    //body += "&client_id=" + this.client_id;
+    //body += "&client_secret=" + this.client_secret;
+    this.callAuthorizationApi(code).subscribe({
+      next: (response: any) => {
+        if (response.access_token.length > 0){
+          localStorage.setItem("access_token", response.access_token);
+          this.aToken = response.access_token;
+        }
+        if (response.refresh_token != undefined){
+          localStorage.setItem("refresh_token", response.refresh_token);
+        }
+        this.getUserId();
+      },
+      error: (err) => {
+        console.log(err.headers);
+      }
+    });
+  }
+
+  getUserId() {
+    this.aToken = localStorage.getItem('access_token');
+    //window.history.pushState("", "", this.redirect_uri); //clean the URL (remove the spotify api code)
+    this.apiService.getSpotifyUserId(this.aToken).subscribe({
+      next: (response: any) => {
+        console.log("GetSpotifyUserId: ", response);
+        this.userId = response.id;
+        this.getPlaylists(response.id, this.aToken);
+      },
+      error: (err) => { 
+      console.log('getuserid error: ', err);
+    }
+  });
+  //this.apiService.spotifyCall("GET", PLAYLISTS, null, access_token, this.handleResponse );
+  
+}
+
+
+getPlaylists(id: string, token: string){
+  this.apiService.GetPlaylists(id, token).subscribe({
+    next: (response: any) => {
+      for (let index = 0; index < response.items.length; index++){
+        if (this.userId == response.items[index].owner.id && response.items[index].images.length>0 ){
+          const obj = {name : response.items[index].name, id : response.items[index].id,
+            url: response.items[index].tracks.href, img: response.items[index].images[0].url}
+            this.playlists.push(obj);
+          }
+        }
+        console.log("PLAYLISTS: ", this.playlists);
+      },
+      error: (err) => {
+        console.log(err);
+        if (err.status == 401) console.log ("we need to refresh");
+        this.useRefreshToken();
+      }
+  });
+}
+  
+  useRefreshToken(){
+    this.rToken = localStorage.getItem('refresh_token');
+    this.userId = localStorage.getItem('spotify_userId');
+    console.log(this.rToken, this.userId);
+    this.callAuthorizationApiRefresh(this.rToken).subscribe({
+      next: (response: any) => {
+        if (response.access_token.length > 0){
+          localStorage.setItem("access_token", response.access_token);
+          this.aToken = response.access_token;
+        }
+        this.getUserId();
+      },
+      error: (error )=> {
+        console.log(error);
+      }
+    });
+  }
+  
+  accessPlaylist(value: any){
+    this.dataService.chosenPlaylist.url = value.url;
+    this.dataService.chosenPlaylist.name = value.name;
+    this.dataService.chosenPlaylist.img = value.img;
+    this.dataService.chosenPlaylist.id = value.id;
+    //this.dataService.chosenPlaylist.url = value.url;
+    //this.router.navigate(['/Playlist/Songs']);
+    this.getPlaylistTracks(this.dataService.chosenPlaylist.url);
+  }
+    
+  handleResponse(){
+    console.log("handled");
+  }
+
+  callAuthorizationApi(code: any){
+    let httpParams = new HttpParams()
+    .append("grant_type", "authorization_code")
+    .append("code", code)
+    .append("redirect_uri", this.redirect_uri);
+    let headers = new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
+                              + btoa(this.client_id + ":" + this.client_secret)
+    });
+
+    return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
+      
+      { headers: headers }
+    );
+  }
+
+  callAuthorizationApiRefresh(refresh_token: any){
+    let httpParams = new HttpParams()
+    .append("grant_type", "refresh_token")
+    .append("refresh_token", refresh_token)
+    let headers = new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
+                              + btoa(this.client_id + ":" + this.client_secret)
+    });
+
+    return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
+      
+      { headers: headers }
+    );
+  }
+  
+
+  requestAuthorization(){
+    this.url = this.spotifyUrl;
+    this.url += "authorize";
+    this.url += "?client_id=" + this.client_id;
+    this.url += "&response_type=code";
+    this.url += "&redirect_uri=" + encodeURI(this.redirect_uri);
+    this.url += "&show_dialog=true";
+    //this.url += "&scope=user-read-private user-read-email user-modify-playback-state user-read-playback-position user-library-read streaming user-read-playback-state user-read-recently-played playlist-read-private";
+    this.url += "&scope=user-read-playback-position user-library-read playlist-read-private";
+    // change to playlist-read-collaborative   if wanted so
+    window.location.href = this.url;
+  }
+
+  ngOnDestroy(): void {
+    //this.dataService.chosenPlaylist = this.chosenPlaylist;
+  }
+
+  getPlaylistTracks(url: any){
+    this.apiService.getPlaylistTracks(url, this.aToken).subscribe({
+      next: (response: any) => {
+        for (let index = 0; index < response.items.length; index++){
+          const obj = { artist : response.items[index].track.artists[0].name, 
+           title: response.items[index].track.name} ;
+          //this.tracks.push(obj);
+          this.dataService.tracksPlaylist.push(obj);
+        }
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {
+        console.log('Complete mapping songs', this.dataService.tracksPlaylist);
+        this.router.navigateByUrl('Playlist/Songs');
+        // MAKE THE CALL FOR PLAYLISTSONGCOMpONENT
+      }
+  });
+}
+
+}

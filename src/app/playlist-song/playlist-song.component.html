@@ -1,14 +1,15 @@
-<div mat-dialog-content class="lyrics-container">
+<h3 class ="title">Your playlist: {{ titlePlaylist }}</h3>
 
+<div mat-dialog-content class="lyrics-container">
 
     <mat-card [ngStyle]="{'background-color' :random_color}" class = "mat-width">
       <div class="lyric-card-top" >
         <!-- ARTIST and TITLE -->
-        <p #ps id="perf" class="perfTitle" 
+        <p *ngIf= "artist != undefined" #ps id="perf" class="perfTitle" 
           [ngStyle]="{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">
           {{ artist }} 
         </p>
-        <p #ps id="titled" class="perfTitle"
+        <p *ngIf= "title != undefined" #ps id="titled" class="perfTitle"
           [ngStyle]="{'color' :statusClass10, 'font-weight' : statusClass20, 'text-shadow' : statusClass30}">
           {{ title }}
         </p>
@@ -16,8 +17,11 @@
   
       <!-- LYRICS OR IMAGE Toggle-->
       <mat-card-content class="lyricImage">  
-        <p class = "lyrics" (click)="loadLyricsIf()" [innerHtml]="p1 | safeHtml" [hidden]="showImage"></p>
-        <img [src]=[loadedLyric.imageUrl]  [hidden]="!showImage"/>
+        <p class = "lyrics" (click)="loadLyricsIf()" [innerHtml]="p1 | safeHtml"></p>
+        <!-- [hidden]="showImage" -->
+        <img [src]=[loadedLyric.imageUrl]  />
+        <!-- [hidden]="!showImage" -->
+        
       </mat-card-content>
     
       <!-- PREVIEW -->
@@ -26,10 +30,15 @@
         </div> -->
   
       <!-- SPOTIFY ICON -->
-        <div class="spotify-cont">
+        <!-- <div class="spotify-cont">
             <a *ngIf="loadedLyric.spotLink != '' " [href]="loadedLyric.spotLink" target="_blank">
               <img class= "spotify" src= "assets/Spotify_Icon.png"/>
             </a>
-        </div>
+        </div> -->
+
+        <!-- <div class="nextButton">
+          <button mat-raised-button color= "accent"
+            (click)= "moreChunks()">Show more</button>
+        </div> -->
     </mat-card>
   </div>

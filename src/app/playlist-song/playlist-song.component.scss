@@ -2,118 +2,120 @@ h3{
     text-align: center;
   }
   
-  .column {
-    float: left;
-  }
-  
-  .left {
-    width: 5%;
-  }
-  
-  .middle{
-    width: 90%;
-  }
-  
-  .right {
-    width: 5%;
-  }
-  
-  .next{
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    font-size: x-large;
-    font-weight: bold;
-    margin-right: 1px;
-    margin-top: 100px;
-  }
-  
-  .filters{
-    margin-left: 0px;
-  }
-  
-  .lyrics-container{
-    width: 100%;
-    height: 100%;
-    /* outline: solid 1px black; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-  }
-  
-  .lyric-card-top {
-    font-size: 1.25em;
-    font-weight: 100;
-    margin: 0 auto;
-    text-align: center;
-    ;
-  }
-  
-  .perfTitle{
-    text-shadow: 0 0 18px #000; 
-    
-  }
-  
-  .chipList{
-    text-align: center;
-  }
-  
-  .classic{
-    width: 18%;
-    margin: 0 auto;
-    display: block;
-  }
-  
-  .p{
-    /* font-weight: bold; */
-    color:rgb(250, 248, 248);
-    color: transparent;
-    text-shadow: 0;
-    margin: 0 auto;
-    /* margin-bottom: 5%; */
-    text-align: center;
-  }
-  
-  .lyrics{
-    color: whitesmoke;
-    font-size: 1.50em;
-    font-weight: bolder;
-    width: 88%;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 25px;
-    margin-bottom: 5px;
-    white-space: pre-wrap;
-  }
-  
-  .lyricImage {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .spotify-cont{
-    text-align: center;
-  }
-  
-  .spotify{
-    width: 25px;
-    height: 25px;
-    margin: 0 auto;
-    margin-bottom: 10px;
-    margin-top: 20px;
-  }
-  
-  .blur {
-    color:blueviolet;
-  }
-  
-  .mat-width{
-    width: 100%;
-    height: 100%;
-  }
-  
-  
-  
-  
-  
+.column {
+  float: left;
+}
+
+.left {
+  width: 5%;
+}
+
+.middle{
+  width: 90%;
+}
+
+.right {
+  width: 5%;
+}
+
+.next{
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: x-large;
+  font-weight: bold;
+  margin-right: 1px;
+  margin-top: 100px;
+}
+
+.filters{
+  margin-left: 0px;
+}
+
+.lyrics-container{
+  width: 100%;
+  height: 100%;
+  /* outline: solid 1px black; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.lyric-card-top {
+  font-size: 1.25em;
+  font-weight: 100;
+  margin: 0 auto;
+  text-align: center;
+  ;
+}
+
+.perfTitle{
+  text-shadow: 0 0 18px #000; 
+}
+
+.chipList{
+  text-align: center;
+}
+
+.classic{
+  width: 18%;
+  margin: 0 auto;
+  display: block;
+}
+
+.p{
+  /* font-weight: bold; */
+  color:rgb(250, 248, 248);
+  color: transparent;
+  text-shadow: 0;
+  margin: 0 auto;
+  /* margin-bottom: 5%; */
+  text-align: center;
+}
+
+.lyrics{
+  color: whitesmoke;
+  font-size: 1.50em;
+  font-weight: bolder;
+  width: 88%;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 5px;
+  white-space: pre-wrap;
+}
+
+.lyricImage {
+  display: flex;
+  justify-content: center;
+}
+
+.spotify-cont{
+  text-align: center;
+}
+
+.spotify{
+  width: 25px;
+  height: 25px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.blur {
+  color:blueviolet;
+}
+
+.mat-width{
+  width: 100%;
+  height: 100%;
+}
+
+.nextButton{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-bottom: 30px;
+}
+

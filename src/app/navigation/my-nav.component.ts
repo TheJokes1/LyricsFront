@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { DataService } from '../services/data.service';
 
 
 @Component({
@@ -15,7 +16,7 @@ export class NavigationComponent implements AfterContentChecked {
   auth: any;
   title: string;
         
-  constructor( @Inject(DOCUMENT) private doc: Document,private breakpointObserver: BreakpointObserver) {
+  constructor( @Inject(DOCUMENT) private doc: Document,private data: DataService, private breakpointObserver: BreakpointObserver) {
   }
   
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -40,6 +41,7 @@ export class NavigationComponent implements AfterContentChecked {
     }
     if (this.url.endsWith('Settings')) this.title = 'Settings 🪛';
     if (this.url.endsWith('Favorites')) this.title = 'My 💖 Artists';
+    if (this.url.endsWith('Playlist')) this.title = 'My Playlists';
+    if (this.url.endsWith('Songs'))  this.title = 'My songs';
   }
-
 }
