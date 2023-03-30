@@ -17,10 +17,15 @@
   
       <!-- LYRICS OR IMAGE Toggle-->
       <mat-card-content class="lyricImage">  
-        <p class = "lyrics" (click)="loadLyricsIf()" [innerHtml]="p1 | safeHtml"></p>
-        <!-- [hidden]="showImage" -->
-        <img [src]=[loadedLyric.imageUrl]  />
-        <!-- [hidden]="!showImage" -->
+        <ng-container *ngIf="p1">
+          <p class="lyrics" (click)="loadLyricsIf()" [innerHTML]="p1 | safeHtml"></p>
+          <!-- [hidden]="showImage" -->
+          <img [src]=[loadedLyric.imageUrl] />
+          <!-- [hidden]="!showImage" -->
+        </ng-container>
+        <ng-container *ngIf="!p1">
+          <p>Loading lyrics...</p>
+        </ng-container>
         
       </mat-card-content>
     

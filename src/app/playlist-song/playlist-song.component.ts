@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit, Pipe, PipeTransform, Renderer2 } from '@angular/core';
+import { Component, Input, NgZone, OnInit, Pipe, PipeTransform, Renderer2 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from '../services/data.service';
 import { ApiService } from '../services/api.service';
@@ -58,7 +58,8 @@ export class PlaylistSongComponent {
   activeChunk: number = 0;
   titlePlaylist: string;
 
-  constructor(private renderer: Renderer2, private dataService: DataService, private apiService: ApiService) {
+  constructor(private renderer: Renderer2, private dataService: DataService, private apiService: ApiService,
+    private zone: NgZone) {
     this.allTracks = this.dataService.tracksPlaylist; //Array
     this.titlePlaylist = this.dataService.chosenPlaylist.name; //Object.name
     console.log(this.titlePlaylist);
