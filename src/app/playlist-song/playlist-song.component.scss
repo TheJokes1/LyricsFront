@@ -119,3 +119,24 @@ h3{
     padding-bottom: 30px;
 }
 
+
+
+@media only screen and (max-width: 767px) {
+  .mat-width {
+    width: 100%;
+  }
+  .lyric-card-top {
+    text-align: center;
+    padding: 10px;
+  }
+  .lyric-card-top p {
+    margin: 0;
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .lyrics-container {
+    padding: 10px;
+  }
+}
+
+

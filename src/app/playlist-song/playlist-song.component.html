@@ -1,7 +1,7 @@
 <h3 class ="title">Your playlist: {{ titlePlaylist }}</h3>
 
 <div class="lyrics-container">
-  <ng-container *ngIf="artist && title">
+  <ng-container *ngIf= "artist && title">
     <mat-card [ngStyle]= "{'background-color' :random_color}" class = "mat-width">
       <div class="lyric-card-top" >
         <!-- ARTIST and TITLE -->
