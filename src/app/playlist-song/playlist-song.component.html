@@ -2,11 +2,11 @@
 
 <div mat-dialog-content class="lyrics-container">
 
-    <mat-card [ngStyle]="{'background-color' :random_color}" class = "mat-width">
+    <mat-card [ngStyle]= "{'background-color' :random_color}" class = "mat-width">
       <div class="lyric-card-top" >
         <!-- ARTIST and TITLE -->
         <p *ngIf= "artist != undefined" #ps id="perf" class="perfTitle" 
-          [ngStyle]="{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">
+          [ngStyle]= "{'color' :statusClass1, 'font-weight' : statusClass2, 'text-shadow' : statusClass3}">
           {{ artist }} 
         </p>
         <p *ngIf= "title != undefined" #ps id="titled" class="perfTitle"
