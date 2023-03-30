@@ -20,7 +20,7 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   client_secret = "ed88fa0c5b4b480c92fc6ca3f982d617";
   spotifyUrl: string = `https://accounts.spotify.com/`;
   //redirect_uri = "http://localhost:4200/Playlist";
-  redirect_uri = "https://thejokes1.github.io/Playlist";
+  redirect_uri = "https://thejokes1.github.io/LyricsFront/Playlist";
   aToken: any = "";
   playlists: Array<{ name: string, url: string, id: string, img: string }> = [];
   userId : any;
