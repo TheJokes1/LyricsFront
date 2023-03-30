@@ -32,9 +32,9 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   constructor(private apiService: ApiService, private http: HttpClient, private router: Router, private dataService: DataService) { }
   
   accessSpotifyLogic(){
-    console.log(localStorage.getItem('access_token'), 
-    localStorage.getItem('refresh_token'),
-    localStorage.getItem('spotify_userId'));
+    //console.log(localStorage.getItem('access_token'), 
+    //localStorage.getItem('refresh_token'),
+    //localStorage.getItem('spotify_userId'));
     if (localStorage.getItem('access_token') != undefined && 
         localStorage.getItem('refresh_token') != undefined &&
         localStorage.getItem('spotify_userId') != undefined){
@@ -120,7 +120,7 @@ export class PlaylistComponent implements OnInit, OnDestroy {
 getPlaylists(id: string, token: string){
   this.apiService.GetPlaylists(id, token).subscribe({
     next: (response: any) => {
-      console.log(response);
+      //console.log(response);
       for (let index = 0; index < response.items.length; index++){
         if (this.userId == response.items[index].owner.id && response.items[index].images.length>0 ){
           
