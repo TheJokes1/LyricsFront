@@ -1,5 +1,7 @@
 h3{
     text-align: center;
+    display: flex;
+    vertical-align: middle;
   }
   
 .column {
@@ -45,13 +47,9 @@ h3{
 .lyric-card-top {
   font-size: 1.25em;
   font-weight: 100;
-  margin: 0 auto;
+  // margin: 0 auto;
   text-align: center;
   ;
-}
-
-.perfTitle{
-  text-shadow: 0 0 18px #000; 
 }
 
 .chipList{
@@ -72,6 +70,16 @@ h3{
   margin: 0 auto;
   /* margin-bottom: 5%; */
   text-align: center;
+}
+
+.perfArtist{
+  text-shadow: 0 0 18px #000; 
+  margin-bottom: 10px;
+}
+
+.perfTitle{
+  padding: 10px;
+  text-shadow: 0 0 18px #000; 
 }
 
 .lyrics{
@@ -115,18 +123,22 @@ h3{
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 10px;
 }
 
 .spotify{
   width: 25px;
   height: 25px;
-  margin: 0 auto;
-  margin-bottom: 10px;
-  margin-top: 20px;
+  vertical-align: middle;
+  // margin: 0 auto;
+  //margin-bottom: 10px;
+  //margin-top: 20px;
 }
 
 .title{
   margin-left: 10px;
+  margin-bottom: 0px;
+  vertical-align: middle;
 }
 
 
