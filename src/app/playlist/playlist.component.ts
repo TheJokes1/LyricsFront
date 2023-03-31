@@ -77,12 +77,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   }
 
   fetchAccessToken(code: string){ //with the code provided in URL redirect
-    let body = this.spotifyUrl + "api/token?";
-    body += "grant_type=authorization_code";
-    body += "&code=" + code; 
-    body += "&redirect_uri=" + encodeURI(this.redirect_uri);
-    //body += "&client_id=" + this.client_id;
-    //body += "&client_secret=" + this.client_secret;
     this.callAuthorizationApi(code).subscribe({
       next: (response: any) => {
         if (response.access_token.length > 0){
