@@ -47,7 +47,6 @@ export class PlaylistSongComponent {
   tracks: Array<{artist: string, title: string}> = [];
   router: any;
   baseUrl: string = 'https://api.musixmatch.com/ws/1.1/';
-  token1 : string = '7fdc6e3e5841981064618c82bbab2c20';
   dictionary = new Map<string, string>();
   artist: string;
   artistToSearch: string;
