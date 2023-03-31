@@ -38,12 +38,14 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('access_token') != undefined && 
         localStorage.getItem('refresh_token') != undefined &&
         localStorage.getItem('spotify_userId') != undefined){
+          console.log("local storage OK");
           this.userId= localStorage.getItem('spotify_userId');
-          this.getPlaylists(localStorage.getItem('spotify_userId')!,
-          localStorage.getItem('access_token')!);
-        } else {
-          this.requestAuthorization();
-        }
+          this.getPlaylists(this.userId!,
+            localStorage.getItem('access_token')!);
+          } else {
+            console.log("local storage NOT OK");
+            this.requestAuthorization();
+         }
 
   }
 
@@ -120,7 +122,7 @@ export class PlaylistComponent implements OnInit, OnDestroy {
 getPlaylists(id: string, token: string){
   this.apiService.GetPlaylists(id, token).subscribe({
     next: (response: any) => {
-      //console.log(response);
+      console.log(response);
       for (let index = 0; index < response.items.length; index++){
         if (this.userId == response.items[index].owner.id && response.items[index].images.length>0 ){
           

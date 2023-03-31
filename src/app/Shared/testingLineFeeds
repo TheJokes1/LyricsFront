@@ -227,3 +227,10 @@ getPlaylists(id: string, token: string){
 }
 
 }
+
+
+
+https://localhost:5001/api/SpotController/GetMMTrackLyrics
+  ?title=August&artist=Pieter-Jan%20De%20Smet
+
+  https://localhost:5001/api/lyrics?language=&releaseDate=&SearchQueryTitle=%20%20

@@ -95,14 +95,6 @@ h3{
   text-align: center;
 }
 
-.spotify{
-  width: 25px;
-  height: 25px;
-  margin: 0 auto;
-  margin-bottom: 10px;
-  margin-top: 20px;
-}
-
 .blur {
   color:blueviolet;
 }
@@ -119,6 +111,23 @@ h3{
     padding-bottom: 30px;
 }
 
+.titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spotify{
+  width: 25px;
+  height: 25px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.title{
+  margin-left: 10px;
+}
 
 
 @media only screen and (max-width: 767px) {

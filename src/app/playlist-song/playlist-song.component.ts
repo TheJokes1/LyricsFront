@@ -213,13 +213,36 @@ export class PlaylistSongComponent {
     this.formatLyrics(this.quote, this.title, this.activeChunk);
   }
 
-  getSongs3(){ //deze call haalt lyrics op o.b.v. titel en artist
-    this.apiService.getLyricsFromMM(this.token1, this.artistToSearch, this.titleToSearch).subscribe({
+  // getSongs3(){ //deze call haalt lyrics op MusixMatch o.b.v. titel en artist
+  //   this.apiService.getLyricsFromMM(this.token1, this.artistToSearch, this.titleToSearch).subscribe({
+  //     next: (response: any) => {
+  //       if (response.message.header.status_code == 404 || 
+  //         response.message.body.lyrics.lyrics_body.length == 0){
+  //           this.quote = "";
+  //           this.getLyrics();
+  //       } else {
+  //         console.log(response.message.body.lyrics.lyrics_body);
+  //         this.quote = response.message.body.lyrics.lyrics_body;
+  //       }},
+  //     error: (err: any) => {
+  //       console.log(err);
+  //       console.log("we are in error");
+  //     },
+  //     complete: () => {
+  //       this.formatLyrics(this.quote, this.titleToSearch, this.activeChunk);
+  //       this.title = this.titleToSearch;
+  //       this.artist = this.artistToSearch;
+  //     }}
+  //     )
+  //   }
+
+  getSongs3(){
+    this.apiService.GetMMTrackLyrics(this.titleToSearch, this.artistToSearch).subscribe({
       next: (response: any) => {
         if (response.message.header.status_code == 404 || 
-          response.message.body.lyrics.lyrics_body.length == 0){
-            this.quote = "";
-            this.getLyrics();
+                  response.message.body.lyrics.lyrics_body.length == 0){
+              this.quote = "";
+              this.getLyrics();
         } else {
           console.log(response.message.body.lyrics.lyrics_body);
           this.quote = response.message.body.lyrics.lyrics_body;
@@ -232,7 +255,7 @@ export class PlaylistSongComponent {
         this.formatLyrics(this.quote, this.titleToSearch, this.activeChunk);
         this.title = this.titleToSearch;
         this.artist = this.artistToSearch;
-      }}
-      )
-    }
+      }
+    })
+  }
 }
