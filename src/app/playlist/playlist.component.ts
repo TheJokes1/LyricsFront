@@ -50,7 +50,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('OnInit');
     this.onPageLoad();
   }
 
@@ -62,8 +61,8 @@ export class PlaylistComponent implements OnInit, OnDestroy {
 
   handleRedirect(){
     var code = this.getCode(); 
+    window.history.pushState("", "", this.redirect_uri);
     this.fetchAccessToken(code!);
-    //window.history.pushState("", "", this.redirect_uri);
   }
 
   getCode(){
@@ -73,12 +72,14 @@ export class PlaylistComponent implements OnInit, OnDestroy {
         const urlParams = new URLSearchParams(queryString);
         code = urlParams.get('code')
     }
+    console.log('code: ', code);
     return code;
   }
 
   fetchAccessToken(code: string){ //with the code provided in URL redirect
     this.callAuthorizationApi(code).subscribe({
       next: (response: any) => {
+        console.log("response from auth API: ", response);
         if (response.access_token.length > 0){
           localStorage.setItem("access_token", response.access_token);
           this.aToken = response.access_token;
@@ -99,7 +100,7 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     //window.history.pushState("", "", this.redirect_uri); //clean the URL (remove the spotify api code)
     this.apiService.getSpotifyUserId(this.aToken).subscribe({
       next: (response: any) => {
-        console.log("GetSpotifyUserId: ", response);
+        console.log("User: ", response);
         this.userId = response.id;
         localStorage.setItem("spotify_userId", this.userId);
         this.getPlaylists(response.id, this.aToken);
@@ -109,7 +110,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     }
   });
   //this.apiService.spotifyCall("GET", PLAYLISTS, null, access_token, this.handleResponse );
-  
 }
 
 
@@ -118,16 +118,15 @@ getPlaylists(id: string, token: string){
     next: (response: any) => {
       console.log(response);
       for (let index = 0; index < response.items.length; index++){
-        if (this.userId == response.items[index].owner.id && response.items[index].images.length>0 ){
-          
-          const obj = {name : response.items[index].name, 
-            id : response.items[index].id,
-            url: response.items[index].tracks.href, 
-            img: response.items[index].images[0].url}
-          this.playlists.push(obj);
+        if (this.userId == response.items[index].owner.id 
+            && response.items[index].images.length>0 ){
+              const obj = {name : response.items[index].name, 
+              id : response.items[index].id,
+              url: response.items[index].tracks.href, 
+              img: response.items[index].images[0].url}
+              this.playlists.push(obj);
             // this.apiService.getTest().pipe(map((data: any) => { data.Data = data.Data.map((item: any) => 
             //   ({ projectName: item['Project Name'], projectCode: item.PCode }); return data; })
-
           }
         }
         console.log("PLAYLISTS: ", this.playlists);
