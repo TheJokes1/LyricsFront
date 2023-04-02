@@ -215,6 +215,7 @@ export class PlaylistSongComponent {
   getSongs3(){
     this.apiService.GetMMTrackLyrics(this.titleToSearch, this.artistToSearch).subscribe({
       next: (response: any) => {
+        console.log("RESPOOOOOONSE: ", response)
         if (response.message.header.status_code == 404 || 
                   response.message.body.lyrics.lyrics_body.length == 0){
               this.quote = "";

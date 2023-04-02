@@ -90,13 +90,13 @@ export class SecondPageComponent implements OnInit, AfterViewInit
           //`https://localhost:5001/api/lyrics/performers?searchQuery=${q}`
           )));
 
-    this.apiService.GetAccessToken().subscribe({
-      next: (response: any) => {
-        this.token= response.access_token;
-      },
-      error: error => console.log(error),
-      complete : () => {}
-    })
+    // this.apiService.GetAccessToken().subscribe({
+    //   next: (response: any) => {
+    //     this.token= response.access_token;
+    //   },
+    //   error: error => console.log(error),
+    //   complete : () => {}
+    // })
   }
 
   ngOnInit(){

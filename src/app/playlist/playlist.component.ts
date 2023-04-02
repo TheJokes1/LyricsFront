@@ -16,11 +16,10 @@ const PLAYLISTS = "https://api.spotify.com/v1/me/playlists";
 })
 export class PlaylistComponent implements OnInit, OnDestroy {
   url: string;
-  client_id = "4c51f7e54bd546e7a04d4141ff59ce8f";
-  client_secret = "ed88fa0c5b4b480c92fc6ca3f982d617";
   spotifyUrl: string = `https://accounts.spotify.com/`;
   //redirect_uri = "http://localhost:4200/Playlist";
   redirect_uri = "https://thejokes1.github.io/LyricsFront/Playlist";
+  client_id= "4c51f7e54bd546e7a04d4141ff59ce8f";
   aToken: any = "";
   playlists: Array<{ name: string, url: string, id: string, img: string }> = [];
   userId : any;
@@ -77,19 +76,20 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   }
 
   fetchAccessToken(code: string){ //with the code provided in URL redirect
-    this.callAuthorizationApi(code).subscribe({
-      next: (response: any) => {
+    // this.callAuthorizationApi(code).subscribe({
+      this.apiService.GetAccessTokenWithCode(code).subscribe({
+        next: (response: any) => {
         console.log("response from auth API: ", response);
-        if (response.access_token.length > 0){
-          localStorage.setItem("access_token", response.access_token);
+        if (response.accessToken.length > 0){
+          localStorage.setItem("access_token", response.accessToken);
           this.aToken = response.access_token;
         }
-        if (response.refresh_token != undefined){
-          localStorage.setItem("refresh_token", response.refresh_token);
+        if (response.refreshToken != undefined){
+          localStorage.setItem("refresh_token", response.refreshToken);
         }
         this.getUserId();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.log(err.headers);
       }
     });
@@ -143,7 +143,7 @@ getPlaylists(id: string, token: string){
     this.rToken = localStorage.getItem('refresh_token');
     this.userId = localStorage.getItem('spotify_userId');
     console.log(this.rToken, this.userId);
-    this.callAuthorizationApiRefresh(this.rToken).subscribe({
+    this.apiService.GetRefreshToken(this.rToken).subscribe({
       next: (response: any) => {
         if (response.access_token.length > 0){
           localStorage.setItem("access_token", response.access_token);
@@ -151,7 +151,7 @@ getPlaylists(id: string, token: string){
         }
         this.getUserId();
       },
-      error: (error )=> {
+      error: (error: any )=> {
         console.log(error);
       }
     });
@@ -172,39 +172,39 @@ getPlaylists(id: string, token: string){
   }
 
   callAuthorizationApi(code: any){
-    let httpParams = new HttpParams()
-    .append("grant_type", "authorization_code")
-    .append("code", code)
-    .append("redirect_uri", this.redirect_uri);
-    let headers = new HttpHeaders({
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
-                              + btoa(this.client_id + ":" + this.client_secret)
-    });
+    // let httpParams = new HttpParams()
+    // .append("grant_type", "authorization_code")
+    // .append("code", code)
+    // .append("redirect_uri", this.redirect_uri);
+    // let headers = new HttpHeaders({
+    //   Accept: 'application/json',
+    //   'Content-Type': 'application/x-www-form-urlencoded',
+    //   Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
+    //                           + btoa(this.client_id + ":" + this.client_secret)
+    // });
 
-    return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
+    // return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
       
-      { headers: headers }
-    );
+    //   { headers: headers }
+    // );
   }
 
-  callAuthorizationApiRefresh(refresh_token: any){
-    let httpParams = new HttpParams()
-    .append("grant_type", "refresh_token")
-    .append("refresh_token", refresh_token)
-    let headers = new HttpHeaders({
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
-                              + btoa(this.client_id + ":" + this.client_secret)
-    });
+  // callAuthorizationApiRefresh(refresh_token: any){
+  //   let httpParams = new HttpParams()
+  //   .append("grant_type", "refresh_token")
+  //   .append("refresh_token", refresh_token)
+  //   let headers = new HttpHeaders({
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/x-www-form-urlencoded',
+  //     Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
+  //                             + btoa(this.client_id + ":" + this.client_secret)
+  //   });
 
-    return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
+  //   return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
       
-      { headers: headers }
-    );
-  }
+  //     { headers: headers }
+  //   );
+  // }
   
 
   requestAuthorization(){

@@ -4,12 +4,6 @@ import { buffer, Observable } from 'rxjs';
 import { Performer } from '../second-page/second-page.component'; 
 import { HttpHeaders } from '@angular/common/http';
 import { Lyric } from '../Shared/Lyric';
-//import { Buffer } from 'buffer';
-//import { AllSpotLinks } from '../allSpotLinks';
-
-// const headers= new HttpHeaders()
-//   .set('content-type', 'application/json')
-//   .set('Access-Control-Allow-Origin', '*');
 
 
 @Injectable({
@@ -23,6 +17,7 @@ export class ApiService {
   baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
   limit: number= 50;
   baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
+  baseUrlSpot: string = `https://localhost:5001/api/spot/`
   
   constructor(private http: HttpClient) {
   }
@@ -76,13 +71,24 @@ export class ApiService {
     )
   }
 
-  GetAccessToken = () => { // Backend API does the call to Spotify
+  GetAccessToken(code: any){ // Backend API does the call to Spotify
     return this.http.post( 
-      this.baseUrl + `SpotController/`,
+      this.baseUrl + `spot?` + code,
       {observe: 'response'}
     )
   }
 
+  GetAccessTokenWithCode(code: any){
+    const url = `${this.baseUrl}Spot/${code}`;
+    return this.http.post(url, { observe: 'response' });
+  }
+
+  GetRefreshToken(token: string){
+    const url = `${this.baseUrl}spot/refresh_token`;
+    const body = { refresh_token: token };
+    return this.http.post(url, body);
+  }
+  
   AuthSpotifyWithToken(code: any, redirect_uri : string){
      let headers = new HttpHeaders({
       Accept: 'application/json',
@@ -170,21 +176,21 @@ export class ApiService {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token
     });
-      const urlMM: string = this.baseUrlMM + 'matcher.lyrics.get?q_track=' + title +'&q_artist=' 
-        + artist 
-        + '&apikey=' + token;
-  
-      return this.http.get( 
-        urlMM,
-        { headers: headers }
-        )
-      }
+    const urlMM: string = this.baseUrlMM + 'matcher.lyrics.get?q_track=' + title +'&q_artist=' 
+      + artist 
+      + '&apikey=' + token;
 
-      GetMMTrackLyrics = (title: string, artist: string) => {
-        return this.http.get(
-          this.baseUrl + `SpotController` + `?title=${title}` + `&artist=${artist}`
-          )
-      }
+    return this.http.get( 
+      urlMM,
+      { headers: headers }
+      )
+  }
+
+  GetMMTrackLyrics = (title: string, artist: string) => {
+    return this.http.get(
+      this.baseUrl + `Spot` + `?title=${title}` + `&artist=${artist}`
+    );
+  }
 
 } 
   
