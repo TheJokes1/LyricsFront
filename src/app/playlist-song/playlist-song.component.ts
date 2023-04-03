@@ -23,6 +23,7 @@ export class SafeHtmlPipe implements PipeTransform {
 })
 export class PlaylistSongComponent {
   random_color: string;
+  random_color2: string;
   titlesColor: string;
   statusClass1: any;
   statusClass10: any;
@@ -56,6 +57,9 @@ export class PlaylistSongComponent {
   allTracksCopy: Array<{artist: '', title: ''}> = [];
   activeChunk: number = 0;
   titlePlaylist: string;
+  choice1: any;
+  choice2: any;
+  choice3: any;
 
   constructor(private renderer: Renderer2, private dataService: DataService, private apiService: ApiService,
     private zone: NgZone) {
@@ -128,6 +132,40 @@ export class PlaylistSongComponent {
     }
   }
 
+  makeGuesses(){
+    let aantalSongs= this.allTracks.length;
+    let random1 = Math.floor(Math.random() * aantalSongs);
+    while (random1 == this.randomNumber){
+      random1 = Math.floor(Math.random() * aantalSongs);
+    }
+    let random2 = Math.floor(Math.random() * aantalSongs);
+    while (random2 == this.randomNumber || random1 == random2){
+      random2 = Math.floor(Math.random() * aantalSongs);
+    }
+
+    // Create an array with the values
+    let values = [random1, random2, this.randomNumber];
+
+    // Shuffle the array randomly
+    values.sort(() => Math.random() - 0.5);
+
+    // Assign the shuffled values back to the variables
+    this.choice1 = this.allTracks[values[0]];
+    this.choice2 = this.allTracks[values[1]];
+    this.choice3 = this.allTracks[values[2]];
+
+    if (localStorage.getItem('showArtist') == 'true'){
+      this.choice1.artist = undefined;
+      this.choice2.artist = undefined;
+      this.choice3.artist = undefined;
+    } else {
+      this.choice1.title = undefined;
+      this.choice2.title = undefined;
+      this.choice3.title = undefined;
+
+    }
+  }
+
   getLyrics() {
     // SET ALL COLORS
     var colors = ["rgb(200, 162, 200)", "rgb(188, 127, 130)", "rgb(155, 191, 150)", "rgb(225, 158, 132)", "rgb(144, 166, 202)", "rgb(218, 191, 122)", "rgb(190, 190, 188)"]
@@ -142,6 +180,7 @@ export class PlaylistSongComponent {
     ]    
     
     this.random_color = colors[Math.floor(Math.random() * colors.length)];
+    this.random_color2 = colors[Math.floor(Math.random() * colors.length)];
     this.titlesColor = titlesColors[Math.floor(Math.random() * titlesColors.length)];
 
     localStorage.getItem('showArtist') === 'false' ? this.blurArtist() : this.unblurArtist();    
@@ -154,6 +193,10 @@ export class PlaylistSongComponent {
     this.titleToSearch = this.titleToSearch.split("-")[0];
     this.titleToSearch = this.titleToSearch.split("&")[0];
     this.titleToSearch = this.titleToSearch.split("(")[0];
+    console.log("search titles: ", this.artistToSearch, this.titleToSearch);
+    this.choice1 = this.allTracks[this.randomNumber];
+    this.makeGuesses();
+
 
     this.allTracks.splice(this.randomNumber, 1); //remove the used object from the array
     if (this.allTracks.length === 0) {

@@ -14,7 +14,7 @@ const PLAYLISTS = "https://api.spotify.com/v1/me/playlists";
   templateUrl: './playlist.component.html',
   styleUrls: ['./playlist.component.scss'],
 })
-export class PlaylistComponent implements OnInit, OnDestroy {
+export class PlaylistComponent implements OnInit {
   url: string;
   spotifyUrl: string = `https://accounts.spotify.com/`;
   //redirect_uri = "http://localhost:4200/Playlist";
@@ -37,7 +37,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('access_token') != undefined && 
         localStorage.getItem('refresh_token') != undefined &&
         localStorage.getItem('spotify_userId') != undefined){
-          console.log("local storage OK");
           this.userId= localStorage.getItem('spotify_userId');
           this.getPlaylists(this.userId!,
             localStorage.getItem('access_token')!);
@@ -45,7 +44,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
             console.log("local storage NOT OK");
             this.requestAuthorization();
          }
-
   }
 
   ngOnInit(): void {
@@ -71,7 +69,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
         const urlParams = new URLSearchParams(queryString);
         code = urlParams.get('code')
     }
-    console.log('code: ', code);
     return code;
   }
 
@@ -79,7 +76,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     // this.callAuthorizationApi(code).subscribe({
       this.apiService.GetAccessTokenWithCode(code).subscribe({
         next: (response: any) => {
-        console.log("response from auth API: ", response);
         if (response.accessToken.length > 0){
           localStorage.setItem("access_token", response.accessToken);
           this.aToken = response.access_token;
@@ -97,7 +93,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
 
   getUserId() {
     this.aToken = localStorage.getItem('access_token');
-    //window.history.pushState("", "", this.redirect_uri); //clean the URL (remove the spotify api code)
     this.apiService.getSpotifyUserId(this.aToken).subscribe({
       next: (response: any) => {
         console.log("User: ", response);
@@ -109,14 +104,12 @@ export class PlaylistComponent implements OnInit, OnDestroy {
       console.log('getuserid error: ', err);
     }
   });
-  //this.apiService.spotifyCall("GET", PLAYLISTS, null, access_token, this.handleResponse );
 }
 
 
 getPlaylists(id: string, token: string){
   this.apiService.GetPlaylists(id, token).subscribe({
     next: (response: any) => {
-      console.log(response);
       for (let index = 0; index < response.items.length; index++){
         if (this.userId == response.items[index].owner.id 
             && response.items[index].images.length>0 ){
@@ -142,9 +135,9 @@ getPlaylists(id: string, token: string){
   useRefreshToken(){
     this.rToken = localStorage.getItem('refresh_token');
     this.userId = localStorage.getItem('spotify_userId');
-    console.log(this.rToken, this.userId);
     this.apiService.GetRefreshToken(this.rToken).subscribe({
       next: (response: any) => {
+        console.log(response);
         if (response.access_token.length > 0){
           localStorage.setItem("access_token", response.access_token);
           this.aToken = response.access_token;
@@ -162,50 +155,8 @@ getPlaylists(id: string, token: string){
     this.dataService.chosenPlaylist.name = value.name;
     this.dataService.chosenPlaylist.img = value.img;
     this.dataService.chosenPlaylist.id = value.id;
-    //this.dataService.chosenPlaylist.url = value.url;
-    //this.router.navigate(['/Playlist/Songs']);
     this.getPlaylistTracks(this.dataService.chosenPlaylist.url);
   }
-    
-  handleResponse(){
-    console.log("handled");
-  }
-
-  callAuthorizationApi(code: any){
-    // let httpParams = new HttpParams()
-    // .append("grant_type", "authorization_code")
-    // .append("code", code)
-    // .append("redirect_uri", this.redirect_uri);
-    // let headers = new HttpHeaders({
-    //   Accept: 'application/json',
-    //   'Content-Type': 'application/x-www-form-urlencoded',
-    //   Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
-    //                           + btoa(this.client_id + ":" + this.client_secret)
-    // });
-
-    // return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
-      
-    //   { headers: headers }
-    // );
-  }
-
-  // callAuthorizationApiRefresh(refresh_token: any){
-  //   let httpParams = new HttpParams()
-  //   .append("grant_type", "refresh_token")
-  //   .append("refresh_token", refresh_token)
-  //   let headers = new HttpHeaders({
-  //     Accept: 'application/json',
-  //     'Content-Type': 'application/x-www-form-urlencoded',
-  //     Authorization: 'Basic ' //+ Buffer.from(this.client_id + ":" + this.client_secret, 'base64')  //code.toString('base64').
-  //                             + btoa(this.client_id + ":" + this.client_secret)
-  //   });
-
-  //   return this.http.post("https://accounts.spotify.com/api/token", httpParams.toString(),
-      
-  //     { headers: headers }
-  //   );
-  // }
-  
 
   requestAuthorization(){
     this.url = this.spotifyUrl;
@@ -220,17 +171,12 @@ getPlaylists(id: string, token: string){
     window.location.href = this.url;
   }
 
-  ngOnDestroy(): void {
-    //this.dataService.chosenPlaylist = this.chosenPlaylist;
-  }
-
   getPlaylistTracks(url: any){
     this.apiService.getPlaylistTracks(url, localStorage.getItem('access_token')!).subscribe({
       next: (response: any) => {
         for (let index = 0; index < response.items.length; index++){
           const obj = { artist : response.items[index].track.artists[0].name, 
            title: response.items[index].track.name} ;
-          //this.tracks.push(obj);
           this.dataService.tracksPlaylist.push(obj);
         }
       },
