@@ -15,8 +15,8 @@ import { DataService } from './data.service';
 @Injectable()
 export class ApiService {
 
-  //baseUrl: string = `https://localhost:5001/api/`;
-  baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
+  baseUrl: string = `https://localhost:5001/api/`;
+  //baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
   limit: number= 50;
   baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
   baseUrlSpot: string = `https://localhost:5001/api/spot/`
@@ -74,9 +74,9 @@ export class ApiService {
     )
   }
 
-  GetAccessToken(code: any){ // Backend API does the call to Spotify
+  GetAccessToken(){ // Backend API does the call to Spotify
     return this.http.post( 
-      this.baseUrl + `spot?` + code,
+      this.baseUrl + `spot/GetAccessToken`,
       {observe: 'response'}
     )
   }
