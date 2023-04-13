@@ -21,12 +21,16 @@ export class SettingsComponent implements OnInit {
 
   toggleArtist(){
     this.showArtist = !this.showArtist;
+    this.showTitle = !this.showTitle;
     localStorage.setItem('showArtist', JSON.stringify(this.showArtist));
+    localStorage.setItem('showTitle', JSON.stringify(this.showTitle));
   } 
-
+  
   toggleTitle(){
     this.showTitle = !this.showTitle;
+    this.showArtist = !this.showArtist;
     localStorage.setItem('showTitle', JSON.stringify(this.showTitle));
+    localStorage.setItem('showArtist', JSON.stringify(this.showArtist));
   }
 
   OnSliderChange(){

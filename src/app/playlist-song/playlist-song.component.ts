@@ -26,6 +26,10 @@ export class PlaylistSongComponent {
   random_color2: string;
   titlesColor: string;
   statusClass1: any;
+  statusClass2: string;
+  statusClass3: string;
+  statusClass20: string;
+  statusClass30: string;
   statusClass10: any;
   randomNumber: number;
   lyricId: any;
@@ -37,10 +41,6 @@ export class PlaylistSongComponent {
   formatted: boolean;
   lyrics: any;
   p1: any;
-  statusClass2: string;
-  statusClass3: string;
-  statusClass20: string;
-  statusClass30: string;
   //chosenPlaylist: Playlist = {} as Playlist;
   chosenPlaylist: string;
   playlistUrl: any;
@@ -50,31 +50,44 @@ export class PlaylistSongComponent {
   baseUrl: string = 'https://api.musixmatch.com/ws/1.1/';
   dictionary = new Map<string, string>();
   artist: string;
-  artistToSearch: string;
+  artistToSearch: any;
   title: string;
-  titleToSearch: string;
-  allTracks: Array<{artist: '', title: ''}> = [];
+  titleToSearch: any;
+  allTracks: any;
   allTracksCopy: Array<{artist: '', title: ''}> = [];
   activeChunk: number = 0;
   titlePlaylist: string;
-  choice1: any;
-  choice2: any;
-  choice3: any;
+  choice1: any = "";
+  choice2: any = "ttt";
+  choice3: any = "ttt";
+  showArtist: boolean;
 
-  constructor(private renderer: Renderer2, private dataService: DataService, private apiService: ApiService,
-    private zone: NgZone) {
+  constructor(private renderer: Renderer2, public dataService: DataService, private apiService: ApiService) {
+    console.log("from datashare: ", this.dataService.tracksPlaylist);
     this.allTracks = this.dataService.tracksPlaylist; //Array
+    for (let index = 0; index < this.dataService.tracksPlaylist.length; index++) {
+        const element = this.dataService.tracksPlaylist[index];
+        this.allTracks[index] = element;
+      }
+    console.log("full array: ", this.allTracks);
     this.titlePlaylist = this.dataService.chosenPlaylist.name; //Object.name
-    console.log(this.titlePlaylist);
     this.allTracksCopy = [...this.allTracks];
-    console.log("all tracks: ", this.allTracks);
+
+    if (localStorage.getItem('showArtist') == 'true'){
+      this.showArtist = true;
+      //this.unblurArtist();
+    } else {
+      this.showArtist = false;
+      //this.unblurTitle();
+    }
+   
     this.getLyrics();
     this.loadedLyric.spotLink = "";
     this.loadedLyric.imageUrl = "";
     this.renderer.listen('document', 'click', (event) => {
       if (event.target.id == "perf") {
         this.unblurArtist();
-        this.showImage = !this.showImage;
+        //this.showImage = !this.showImage;
       }
       else if (event.target.id == "titled"){
         this.unblurTitle();
@@ -133,7 +146,7 @@ export class PlaylistSongComponent {
   }
 
   makeGuesses(){
-    let aantalSongs= this.allTracks.length;
+    let aantalSongs = this.allTracks.length;
     let random1 = Math.floor(Math.random() * aantalSongs);
     while (random1 == this.randomNumber){
       random1 = Math.floor(Math.random() * aantalSongs);
@@ -150,20 +163,16 @@ export class PlaylistSongComponent {
     values.sort(() => Math.random() - 0.5);
 
     // Assign the shuffled values back to the variables
-    this.choice1 = this.allTracks[values[0]];
-    this.choice2 = this.allTracks[values[1]];
-    this.choice3 = this.allTracks[values[2]];
-
-    if (localStorage.getItem('showArtist') == 'true'){
-      this.choice1.artist = undefined;
-      this.choice2.artist = undefined;
-      this.choice3.artist = undefined;
+    if (this.showArtist){
+      this.choice1 = this.allTracks[values[0]].title;
+      this.choice2 = this.allTracks[values[1]].title;
+      this.choice3 = this.allTracks[values[2]].title;
     } else {
-      this.choice1.title = undefined;
-      this.choice2.title = undefined;
-      this.choice3.title = undefined;
-
+      this.choice1 = this.allTracks[values[0]].artist;
+      this.choice2 = this.allTracks[values[1]].artist;
+      this.choice3 = this.allTracks[values[2]].artist;
     }
+    this.allTracks.splice(this.randomNumber, 1); //remove the used object from the array
   }
 
   getLyrics() {
@@ -183,40 +192,52 @@ export class PlaylistSongComponent {
     this.random_color2 = colors[Math.floor(Math.random() * colors.length)];
     this.titlesColor = titlesColors[Math.floor(Math.random() * titlesColors.length)];
 
-    localStorage.getItem('showArtist') === 'false' ? this.blurArtist() : this.unblurArtist();    
-    localStorage.getItem('showTitle') === 'false' ? this.blurTitle() : this.unblurTitle();    
-    
-    this.randomNumber = Math.floor(Math.random() * this.allTracks.length); //e.g. 36
-    // SET the artist and title here (random choice from array)
-    this.artistToSearch = this.allTracks[this.randomNumber].artist;
-    this.titleToSearch = this.allTracks[this.randomNumber].title;
-    this.titleToSearch = this.titleToSearch.split("-")[0];
-    this.titleToSearch = this.titleToSearch.split("&")[0];
-    this.titleToSearch = this.titleToSearch.split("(")[0];
-    console.log("search titles: ", this.artistToSearch, this.titleToSearch);
-    this.choice1 = this.allTracks[this.randomNumber];
-    this.makeGuesses();
+    this.showArtist === false ? this.blurArtist() : this.unblurArtist();   
+    this.showArtist === false ? this.unblurTitle() : this.blurTitle();
 
+    this.chooseArtist();
+    this.getSongs3();
 
-    this.allTracks.splice(this.randomNumber, 1); //remove the used object from the array
     if (this.allTracks.length === 0) {
+      console.log("we need a RESET");
+      alert("reset");
       this.allTracks= [...this.allTracksCopy]; // reset the LyricList array to original state
+      this.chooseArtist();
+      this.getSongs3();
     } 
-
+    
     //FORCE A CERTAIN SONG TO DISPLAY HERE :-)))))
     // this.titleToSearch = "wild live'";
     // this.artistToSearch = "Chris Isaak";
-    this.getSongs3();
+    
   }
-
+  
+  chooseArtist(){
+    this.artistToSearch = undefined;
+    while (!this.artistToSearch) {
+      this.randomNumber = Math.floor(Math.random() * this.allTracks.length); //e.g. 36
+      // SET the artist and title here (random choice from array)
+      //console.log("deze willen we: ", this.allTracks[this.randomNumber].artist);
+      this.artistToSearch = this.allTracks[this.randomNumber].artist;
+      this.titleToSearch = this.allTracks[this.randomNumber].title;
+      this.titleToSearch = this.titleToSearch.split("-")[0];
+      this.titleToSearch = this.titleToSearch.split("&")[0];
+      this.titleToSearch = this.titleToSearch.split("(")[0];
+      this.choice1 = this.allTracks[this.randomNumber];
+      console.log("Uit While loop in getLyrics i.e. To Search: ", this.randomNumber, this.artistToSearch, this.titleToSearch);
+      console.log("gespicede array: ", this.allTracks);
+    }
+    this.makeGuesses();
+  }
+  
   formatLyrics (quote: string | undefined, title: string, chunkToShow: number){ //format quote for displaying it correctly
     this.formatted = false;
     quote = quote?.split("******")[0];
-    console.log("QUOOOOOOOTE: ", quote);
 
     let lineFeedPositions = this.listUpLinefeeds();
     let doubleLineBreaks: any = this.listUpDoubleLineBreaks(lineFeedPositions);
     this.lyrics = this.quote.substring(0, doubleLineBreaks[chunkToShow]); //SHOWCHUNK 0!!
+    //console.log("after chuncking: ", this.lyrics);
 
     // try replacing all titles in the quote with a blur
     this.p1= this.lyrics;
@@ -258,13 +279,13 @@ export class PlaylistSongComponent {
   getSongs3(){
     this.apiService.GetMMTrackLyrics(this.titleToSearch, this.artistToSearch).subscribe({
       next: (response: any) => {
-        console.log("RESPOOOOOONSE: ", response)
         if (response.message.header.status_code == 404 || 
-                  response.message.body.lyrics.lyrics_body.length == 0){
-              this.quote = "";
-              this.getLyrics();
+            response.message.body.lyrics.lyrics_body.length == 0){
+          console.log("404 on ", this.artistToSearch);
+          this.quote = "";
+          this.getLyrics();
         } else {
-          console.log(response.message.body.lyrics.lyrics_body);
+          console.log(response.message.body.lyrics.lyrics_body.substring(0, 40));
           this.quote = response.message.body.lyrics.lyrics_body;
         }},
       error: (err: any) => {

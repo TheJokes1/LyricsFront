@@ -50,17 +50,19 @@
     </mat-card>
 </div>
 <br>
-<mat-card [ngStyle]= "{'background-color' :random_color2}" >
-  <div class="lyric-card-top"  >
-    <p class="lyrics" >
-      {{ choice1.artist || choice1.title}} 
+<mat-card [ngStyle]= "{'background-color' :random_color2}">
+  <div class="lyric-card-top">
+    <p class="lyrics">
+      {{ choice1 }} 
     </p>
-    <p  class="lyrics">
-      {{ choice2.artist || choice2.title}}
+    <p class="lyrics">
+      {{ choice2 }}
     </p>
-    <p  class="lyrics">
-      {{ choice3.artist || choice3.title}}
+    <p class="lyrics">
+      {{ choice3 }}
     </p>
   </div>
 </mat-card>
+
+
 

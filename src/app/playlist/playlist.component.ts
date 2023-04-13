@@ -24,7 +24,8 @@ export class PlaylistComponent implements OnInit {
   playlists: Array<{ name: string, url: string, id: string, img: string }> = [];
   userId : any;
   chosenPlaylist: Playlist = {name:'', url:'', id:'', img:''};
-  tracks: Array<{artist: string, title: string}> = [];
+  //tracks: Array<{artist: string, title: string}> = [];
+  tracks: any;
   rToken: any;
 
 
@@ -98,7 +99,7 @@ export class PlaylistComponent implements OnInit {
         console.log("User: ", response);
         this.userId = response.id;
         localStorage.setItem("spotify_userId", this.userId);
-        this.getPlaylists(response.id, this.aToken);
+        this.getPlaylists(this.userId, this.aToken);
       },
       error: (err) => { 
       console.log('getuserid error: ', err);
@@ -110,6 +111,7 @@ export class PlaylistComponent implements OnInit {
 getPlaylists(id: string, token: string){
   this.apiService.GetPlaylists(id, token).subscribe({
     next: (response: any) => {
+      console.log("playlists reponse: ", response);
       for (let index = 0; index < response.items.length; index++){
         if (this.userId == response.items[index].owner.id 
             && response.items[index].images.length>0 ){
@@ -166,29 +168,47 @@ getPlaylists(id: string, token: string){
     this.url += "&redirect_uri=" + encodeURI(this.redirect_uri);
     this.url += "&show_dialog=true";
     //this.url += "&scope=user-read-private user-read-email user-modify-playback-state user-read-playback-position user-library-read streaming user-read-playback-state user-read-recently-played playlist-read-private";
-    this.url += "&scope=user-read-playback-position user-library-read playlist-read-private";
+    this.url += "&scope=user-read-playback-position user-library-read playlist-read-private playlist-read-collaborative";
     // change to playlist-read-collaborative   if wanted so
     window.location.href = this.url;
   }
 
-  getPlaylistTracks(url: any){
-    this.apiService.getPlaylistTracks(url, localStorage.getItem('access_token')!).subscribe({
-      next: (response: any) => {
-        for (let index = 0; index < response.items.length; index++){
-          const obj = { artist : response.items[index].track.artists[0].name, 
-           title: response.items[index].track.name} ;
-          this.dataService.tracksPlaylist.push(obj);
-        }
-      },
-      error: (err) => {
-        console.log(err);
-      },
-      complete: () => {
-        console.log('Complete mapping songs', this.dataService.tracksPlaylist);
-        this.router.navigateByUrl('Playlist/Songs');
-        // MAKE THE CALL FOR PLAYLISTSONGCOMpONENT
-      }
+//   getPlaylistTracks(url: any){
+//     this.apiService.getPlaylistTracks(url, localStorage.getItem('access_token')!).subscribe({
+//       next: (response: any) => {
+//         console.log(response);
+//         for (let index = 0; index < response.items.length; index++){
+//           const obj = { artist : response.items[index].track.artists[0].name, 
+//            title: response.items[index].track.name} ;
+//           this.dataService.tracksPlaylist.push(obj);
+//         }
+//       },
+//       error: (err) => {
+//         console.log(err);
+//       },
+//       complete: () => {
+//         console.log('Complete mapping songs', this.dataService.tracksPlaylist);
+//         this.router.navigateByUrl('Playlist/Songs');
+//         // MAKE THE CALL FOR PLAYLISTSONGCOMpONENT
+//       }
+//   });
+// }
+
+getPlaylistTracks(url: any){
+  this.apiService.getPlaylistTracks(url, localStorage.getItem('access_token')!).subscribe({
+    next: (tracks) => {
+      this.tracks = tracks;
+    },
+    error: (error: any) => {
+      console.log(error);
+    },
+    complete: () => {
+      this.dataService.tracksPlaylist = this.tracks;
+      this.router.navigateByUrl('Playlist/Songs');
+    }
   });
 }
+
+
 
 }

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
-import { buffer, Observable } from 'rxjs';
+import { buffer, map, Observable, tap } from 'rxjs';
 import { Performer } from '../second-page/second-page.component'; 
 import { HttpHeaders } from '@angular/common/http';
 import { Lyric } from '../Shared/Lyric';
+import { Track, TrackData } from '../Shared/Track';
+import { DataService } from './data.service';
 
 
 @Injectable({
@@ -18,8 +20,9 @@ export class ApiService {
   limit: number= 50;
   baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
   baseUrlSpot: string = `https://localhost:5001/api/spot/`
-  
-  constructor(private http: HttpClient) {
+  private tracks: Track[] = [];
+
+  constructor(private http: HttpClient, private dataService: DataService) {
   }
 
   GetPerformers = (q : string) => {
@@ -167,7 +170,37 @@ export class ApiService {
     return this.http.get(
       link,
       {headers: headers}
-    );
+    )
+    .pipe(
+      map((response: any) => {
+        //console.log(response);
+        let counter = 1;
+        const tracks: TrackData[] = [];
+        response.items.forEach((item: any) => {
+          if (item.track.artists[0].name.length > 0) {
+            const track: TrackData = {
+              artist: item.track.artists[0].name,
+              title: item.track.name
+            };
+            if (track.artist != undefined){
+              //console.log(`${counter}. ${track.artist} - ${track.title}`); // log track with number
+              tracks.push(track);
+              counter++;
+            }
+
+          }
+        });
+        console.log("in api: ", tracks);
+        return tracks;
+      }),
+      // tap((data: TrackData[]) => {
+      //   const tracks: Track[] = data.map((trackData: TrackData) => ({
+      //     artist: trackData.artist,
+      //     title: trackData.title
+      //   }));
+        //this.dataService.tracksPlaylist = tracks;
+      //})
+    )
   }
 
   getLyricsFromMM(token: string, artist: string, title: string){
