@@ -19,7 +19,6 @@ export class ApiService {
   baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
   limit: number= 50;
   baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
-  baseUrlSpot: string = `https://localhost:5001/api/spot/`
   private tracks: Track[] = [];
 
   constructor(private http: HttpClient, private dataService: DataService) {

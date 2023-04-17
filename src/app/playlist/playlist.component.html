@@ -1,20 +1,22 @@
 <body onload="onPageLoad()">
 <!-- <body> -->
-    <button *ngIf="!aToken" type="button" class="btn btn-primary"
-        (click)= "accessSpotifyLogic()">
-        Show Spotify Playlists
-    </button>
+  <button *ngIf="!aToken" type="button" class="btn btn-primary"
+      (click)= "accessSpotifyLogic()">
+      Show Spotify Playlists
+  </button>
 
-    <ol>
-      <!-- use of ng-container to NUMBER the list items -->
-        <ng-container *ngFor="let item of playlists"> 
-        <li>
-          <div class="playlists">
-            <img class = "image" [src]= "item.img">
-            <a (click) = "accessPlaylist(item)"> {{ item.name }}</a>
-          </div>
-        </li>
-        </ng-container>
-    </ol>
+  <ol *ngIf= "!notAuthorizedText">
+    <!-- use of ng-container to NUMBER the list items -->
+      <ng-container *ngFor="let item of playlists"> 
+      <li>
+        <div class="playlists">
+          <img class = "image" [src]= "item.img">
+          <a (click) = "accessPlaylist(item)"> {{ item.name }}</a>
+        </div>
+      </li>
+      </ng-container>
+  </ol>
+
+  <h3 *ngIf= "notAuthorizedText"> You are not part of the Spotify developer program</h3>
 
 </body>

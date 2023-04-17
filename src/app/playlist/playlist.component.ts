@@ -27,6 +27,7 @@ export class PlaylistComponent implements OnInit {
   //tracks: Array<{artist: string, title: string}> = [];
   tracks: any;
   rToken: any;
+  notAuthorizedText: boolean = false;
 
 
   constructor(private apiService: ApiService, private http: HttpClient, private router: Router, private dataService: DataService) { }
@@ -87,7 +88,8 @@ export class PlaylistComponent implements OnInit {
         this.getUserId();
       },
       error: (err: any) => {
-        console.log(err.headers);
+        console.log(err);
+        
       }
     });
   }
@@ -96,13 +98,16 @@ export class PlaylistComponent implements OnInit {
     this.aToken = localStorage.getItem('access_token');
     this.apiService.getSpotifyUserId(this.aToken).subscribe({
       next: (response: any) => {
-        console.log("User: ", response);
+        console.log("UserId request: ", response);
         this.userId = response.id;
         localStorage.setItem("spotify_userId", this.userId);
         this.getPlaylists(this.userId, this.aToken);
       },
       error: (err) => { 
-      console.log('getuserid error: ', err);
+      console.log(err.status);
+      if (err.status == 403) {
+        this.notAuthorizedText = true;
+      }
     }
   });
 }
@@ -194,21 +199,18 @@ getPlaylists(id: string, token: string){
 //   });
 // }
 
-getPlaylistTracks(url: any){
-  this.apiService.getPlaylistTracks(url, localStorage.getItem('access_token')!).subscribe({
-    next: (tracks) => {
-      this.tracks = tracks;
-    },
-    error: (error: any) => {
-      console.log(error);
-    },
-    complete: () => {
-      this.dataService.tracksPlaylist = this.tracks;
-      this.router.navigateByUrl('Playlist/Songs');
-    }
-  });
-}
-
-
-
+  getPlaylistTracks(url: any){
+    this.apiService.getPlaylistTracks(url, localStorage.getItem('access_token')!).subscribe({
+      next: (tracks) => {
+        this.tracks = tracks;
+      },
+      error: (error: any) => {
+        console.log(error);
+      },
+      complete: () => {
+        this.dataService.tracksPlaylist = this.tracks;
+        this.router.navigateByUrl('Playlist/Songs');
+      }
+    });
+  }
 }
