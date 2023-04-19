@@ -5,7 +5,7 @@
       Show Spotify Playlists
   </button>
 
-  <ol *ngIf= "!notAuthorizedText">
+  <ol *ngIf= "!notAuthorized">
     <!-- use of ng-container to NUMBER the list items -->
       <ng-container *ngFor="let item of playlists"> 
       <li>
@@ -17,6 +17,6 @@
       </ng-container>
   </ol>
 
-  <h3 *ngIf= "notAuthorizedText"> You are not part of the Spotify developer program</h3>
+  <h3 *ngIf= "notAuthorized"> You are not part of the Spotify developer program</h3>
 
 </body>

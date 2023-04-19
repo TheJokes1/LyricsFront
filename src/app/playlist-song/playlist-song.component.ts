@@ -61,17 +61,25 @@ export class PlaylistSongComponent {
   choice2: any = "ttt";
   choice3: any = "ttt";
   showArtist: boolean;
+  numberOfSongs: number;
+  random2: number;
+  random3: number;
 
   constructor(private renderer: Renderer2, public dataService: DataService, private apiService: ApiService) {
-    console.log("from datashare: ", this.dataService.tracksPlaylist);
     this.allTracks = this.dataService.tracksPlaylist; //Array
     for (let index = 0; index < this.dataService.tracksPlaylist.length; index++) {
         const element = this.dataService.tracksPlaylist[index];
         this.allTracks[index] = element;
+        //this.allTracks[index].artist = this.allTracks[index].artist.split("&")[0];
+        this.allTracks[index].artist = this.allTracks[index].artist.split("(")[0];
+        this.allTracks[index].title = this.allTracks[index].title.split("-")[0];
+        this.allTracks[index].title = this.allTracks[index].title.split("&")[0];
+        this.allTracks[index].title = this.allTracks[index].title.split("(")[0];
       }
-    console.log("full array: ", this.allTracks);
     this.titlePlaylist = this.dataService.chosenPlaylist.name; //Object.name
     this.allTracksCopy = [...this.allTracks];
+    console.log("copy 1: ", this.allTracksCopy);
+    this.numberOfSongs = this.allTracksCopy.length;
 
     if (localStorage.getItem('showArtist') == 'true'){
       this.showArtist = true;
@@ -137,45 +145,52 @@ export class PlaylistSongComponent {
 
   loadLyricsIf(){
     if (this.statusClass10 != "transparent"){
-      this.quote = "";
-      this.getLyrics();
-      this.activeChunk = 0;
-      this.p1 = "";
-      //document.getElementById('result')!.style.cssText = 'height:100px';
+      if (this.allTracks.length === 0) {
+        console.log("we need a RESET");
+        this.allTracks= [...this.allTracksCopy]; // reset the LyricList array to original state
+        this.chooseArtist();
+        this.getSongs3();
+      } else {
+        this.quote = "";
+        this.getLyrics();
+        this.activeChunk = 0;
+        this.p1 = "";
+        //document.getElementById('result')!.style.cssText = 'height:100px';
+      }
     }
   }
 
   makeGuesses(){
-    let aantalSongs = this.allTracks.length;
-    let random1 = Math.floor(Math.random() * aantalSongs);
-    while (random1 == this.randomNumber){
-      random1 = Math.floor(Math.random() * aantalSongs);
-    }
-    let random2 = Math.floor(Math.random() * aantalSongs);
-    while (random2 == this.randomNumber || random1 == random2){
-      random2 = Math.floor(Math.random() * aantalSongs);
-    }
-
-    // Create an array with the values
-    let values = [random1, random2, this.randomNumber];
-
-    // Shuffle the array randomly
-    values.sort(() => Math.random() - 0.5);
-
-    // Assign the shuffled values back to the variables
+    this.choice2 = "";
+    this.choice3 = "";
+    
     if (this.showArtist){
-      this.choice1 = this.allTracks[values[0]].title;
-      this.choice2 = this.allTracks[values[1]].title;
-      this.choice3 = this.allTracks[values[2]].title;
-    } else {
-      this.choice1 = this.allTracks[values[0]].artist;
-      this.choice2 = this.allTracks[values[1]].artist;
-      this.choice3 = this.allTracks[values[2]].artist;
+      this.random2 = Math.floor(Math.random() * this.numberOfSongs);
+      this.showArtist ? this.choice2 = this.allTracksCopy[this.random2].title : 
+        this.choice2 = this.allTracksCopy[this.random2].artist;
+      this.random3 = this.random2;
+      while (this.random3 == this.random2 || this.random3 == this.randomNumber){
+        this.random3 = Math.floor(Math.random() * this.numberOfSongs);
+        this.showArtist ? this.choice3 = this.allTracksCopy[this.random3].title : 
+        this.choice3 = this.allTracksCopy[this.random3].artist;
+      }
     }
-    this.allTracks.splice(this.randomNumber, 1); //remove the used object from the array
+    console.log(this.choice1.title, this.choice2, this.choice3);
+
+    // Create an array with the values of the variables
+    let choices = [this.choice1, this.choice2, this.choice3];
+    // Shuffle the array using the Fisher-Yates algorithm
+    for (let i = choices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [choices[i], choices[j]] = [choices[j], choices[i]];
+    }
+    // Assign the shuffled values back to the variables
+    [this.choice1, this.choice2, this.choice3] = choices;
+
+    this.allTracks.splice(this.randomNumber, 1);
   }
 
-  getLyrics() {
+  getLyrics() { //Choose a random song from the playlist + call the MM api to search lyrics.
     // SET ALL COLORS
     var colors = ["rgb(200, 162, 200)", "rgb(188, 127, 130)", "rgb(155, 191, 150)", "rgb(225, 158, 132)", "rgb(144, 166, 202)", "rgb(218, 191, 122)", "rgb(190, 190, 188)"]
     var titlesColors = [
@@ -196,38 +211,27 @@ export class PlaylistSongComponent {
     this.showArtist === false ? this.unblurTitle() : this.blurTitle();
 
     this.chooseArtist();
-    this.getSongs3();
-
-    if (this.allTracks.length === 0) {
-      console.log("we need a RESET");
-      alert("reset");
-      this.allTracks= [...this.allTracksCopy]; // reset the LyricList array to original state
-      this.chooseArtist();
-      this.getSongs3();
-    } 
-    
     //FORCE A CERTAIN SONG TO DISPLAY HERE :-)))))
     // this.titleToSearch = "wild live'";
     // this.artistToSearch = "Chris Isaak";
-    
+    this.getSongs3();
   }
   
   chooseArtist(){
     this.artistToSearch = undefined;
-    while (!this.artistToSearch) {
+    while (!this.artistToSearch) { // I built it in a WHILE loop because we had some undefineds..
       this.randomNumber = Math.floor(Math.random() * this.allTracks.length); //e.g. 36
       // SET the artist and title here (random choice from array)
       //console.log("deze willen we: ", this.allTracks[this.randomNumber].artist);
       this.artistToSearch = this.allTracks[this.randomNumber].artist;
       this.titleToSearch = this.allTracks[this.randomNumber].title;
-      this.titleToSearch = this.titleToSearch.split("-")[0];
-      this.titleToSearch = this.titleToSearch.split("&")[0];
-      this.titleToSearch = this.titleToSearch.split("(")[0];
-      this.choice1 = this.allTracks[this.randomNumber];
-      console.log("Uit While loop in getLyrics i.e. To Search: ", this.randomNumber, this.artistToSearch, this.titleToSearch);
-      console.log("gespicede array: ", this.allTracks);
+      this.showArtist ? this.choice1 = this.allTracks[this.randomNumber].title : this.choice1 = this.allTracks[this.randomNumber].artist;
+      if (this.artistToSearch && this.titleToSearch) {
+        this.makeGuesses();
+       //remove the used object from the array
+      } else this.chooseArtist();
+      console.log("To Search: ", this.randomNumber, this.artistToSearch, this.titleToSearch);
     }
-    this.makeGuesses();
   }
   
   formatLyrics (quote: string | undefined, title: string, chunkToShow: number){ //format quote for displaying it correctly
@@ -277,15 +281,24 @@ export class PlaylistSongComponent {
   }
 
   getSongs3(){
+    this.artist = "";
     this.apiService.GetMMTrackLyrics(this.titleToSearch, this.artistToSearch).subscribe({
       next: (response: any) => {
+        console.log("MMy response is: ", response);
         if (response.message.header.status_code == 404 || 
             response.message.body.lyrics.lyrics_body.length == 0){
-          console.log("404 on ", this.artistToSearch);
-          this.quote = "";
-          this.getLyrics();
+          console.log("404 on ", this.artistToSearch, this.titleToSearch);
+          if (this.allTracks.length === 0) {
+            console.log("we need a RESET");
+            this.allTracks= [...this.allTracksCopy]; // reset the LyricList array to original state
+            this.chooseArtist();
+            this.getSongs3();
+            } else {
+              this.quote = "";
+              this.getLyrics();
+            }
         } else {
-          console.log(response.message.body.lyrics.lyrics_body.substring(0, 40));
+          console.log("SUCCESS: ", response.message.body.lyrics.lyrics_body.substring(0, 40));
           this.quote = response.message.body.lyrics.lyrics_body;
         }},
       error: (err: any) => {

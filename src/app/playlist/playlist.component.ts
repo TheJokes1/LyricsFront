@@ -15,11 +15,6 @@ const PLAYLISTS = "https://api.spotify.com/v1/me/playlists";
   styleUrls: ['./playlist.component.scss'],
 })
 export class PlaylistComponent implements OnInit {
-  url: string;
-  spotifyUrl: string = `https://accounts.spotify.com/`;
-  //redirect_uri = "http://localhost:4200/Playlist";
-  redirect_uri = "https://thejokes1.github.io/LyricsFront/Playlist";
-  client_id= "4c51f7e54bd546e7a04d4141ff59ce8f";
   aToken: any = "";
   playlists: Array<{ name: string, url: string, id: string, img: string }> = [];
   userId : any;
@@ -27,7 +22,13 @@ export class PlaylistComponent implements OnInit {
   //tracks: Array<{artist: string, title: string}> = [];
   tracks: any;
   rToken: any;
-  notAuthorizedText: boolean = false;
+  notAuthorized: boolean = false;
+
+  url: string;
+  spotifyUrl: string = `https://accounts.spotify.com/`;
+  redirect_uri = "http://localhost:4200/Playlist";
+  //redirect_uri = "https://thejokes1.github.io/LyricsFront/Playlist";
+  client_id= "4c51f7e54bd546e7a04d4141ff59ce8f";
 
 
   constructor(private apiService: ApiService, private http: HttpClient, private router: Router, private dataService: DataService) { }
@@ -98,7 +99,7 @@ export class PlaylistComponent implements OnInit {
     this.aToken = localStorage.getItem('access_token');
     this.apiService.getSpotifyUserId(this.aToken).subscribe({
       next: (response: any) => {
-        console.log("UserId request: ", response);
+        //console.log("UserId request: ", response);
         this.userId = response.id;
         localStorage.setItem("spotify_userId", this.userId);
         this.getPlaylists(this.userId, this.aToken);
@@ -106,7 +107,7 @@ export class PlaylistComponent implements OnInit {
       error: (err) => { 
       console.log(err.status);
       if (err.status == 403) {
-        this.notAuthorizedText = true;
+        this.notAuthorized = true;
       }
     }
   });
@@ -144,7 +145,7 @@ getPlaylists(id: string, token: string){
     this.userId = localStorage.getItem('spotify_userId');
     this.apiService.GetRefreshToken(this.rToken).subscribe({
       next: (response: any) => {
-        console.log(response);
+        //console.log(response);
         if (response.access_token.length > 0){
           localStorage.setItem("access_token", response.access_token);
           this.aToken = response.access_token;

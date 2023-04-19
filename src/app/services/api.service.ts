@@ -15,10 +15,12 @@ import { DataService } from './data.service';
 @Injectable()
 export class ApiService {
 
-  //baseUrl: string = `https://localhost:5001/api/`;
-  baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
-  limit: number= 50;
+  baseUrl: string = `https://localhost:5001/api/`;
+  //baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
   baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
+  //url: string;
+  spotifyUrl: string = `https://accounts.spotify.com/`;
+  limit: number= 50;
   private tracks: Track[] = [];
 
   constructor(private http: HttpClient, private dataService: DataService) {
@@ -58,10 +60,6 @@ export class ApiService {
       , {name: _name},
       {observe: 'response'}
     )
-  }
-
-  AuthenticateWSpotify(url: string){
-    window.location.href = url;
   }
 
   AddSpotifyLinks = (_id: number, _spotLink: string, _imageUrl: string, 
@@ -159,7 +157,7 @@ export class ApiService {
     );
   }
 
-  getPlaylistTracks(link: string, token: string){
+  getPlaylistTracks(link: string, token: string){ //= the spotify playlist link
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
