@@ -1,11 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, Input, NgZone, OnInit, Pipe, PipeTransform, Renderer2 } from '@angular/core';
+import { Component, Pipe, PipeTransform, Renderer2 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from '../services/data.service';
 import { ApiService } from '../services/api.service';
 import { Lyric } from '../Shared/Lyric';
-import { Playlist } from '../Shared/Playlist';
-import { Track } from '../Shared/Track'
 
 @Pipe({ name: "safeHtml" })
 export class SafeHtmlPipe implements PipeTransform {
@@ -33,22 +30,16 @@ export class PlaylistSongComponent {
   statusClass10: any;
   randomNumber: number;
   lyricId: any;
-  LyricIdsCopy: any;
   lyricListIds: number[] = new Array();
   quote: string = "";
   showImage: any= false;
   loadedLyric: Lyric = {} as Lyric;  
-  formatted: boolean;
   lyrics: any;
   p1: any;
   //chosenPlaylist: Playlist = {} as Playlist;
   chosenPlaylist: string;
-  playlistUrl: any;
-  aToken: any;
   tracks: Array<{artist: string, title: string}> = [];
-  router: any;
   baseUrl: string = 'https://api.musixmatch.com/ws/1.1/';
-  dictionary = new Map<string, string>();
   artist: string;
   artistToSearch: any;
   title: string;
@@ -166,16 +157,24 @@ export class PlaylistSongComponent {
     
     if (this.showArtist){
       this.random2 = Math.floor(Math.random() * this.numberOfSongs);
-      this.showArtist ? this.choice2 = this.allTracksCopy[this.random2].title : 
-        this.choice2 = this.allTracksCopy[this.random2].artist;
+      this.choice2 = this.allTracksCopy[this.random2].title; 
       this.random3 = this.random2;
       while (this.random3 == this.random2 || this.random3 == this.randomNumber){
         this.random3 = Math.floor(Math.random() * this.numberOfSongs);
-        this.showArtist ? this.choice3 = this.allTracksCopy[this.random3].title : 
+        this.choice3 = this.allTracksCopy[this.random3].title;
+      }
+    } else { //CHANGE your checks: compare the strings/contents of choice1, 2, 3
+      this.random2 = Math.floor(Math.random() * this.numberOfSongs);
+      this.choice2 = this.allTracksCopy[this.random2].artist;
+
+      this.random3 = this.random2;
+      while (this.random3 == this.random2 || this.random3 == this.randomNumber){
+        this.random3 = Math.floor(Math.random() * this.numberOfSongs);
         this.choice3 = this.allTracksCopy[this.random3].artist;
       }
     }
-    console.log(this.choice1.title, this.choice2, this.choice3);
+
+    console.log("choices", this.choice1, this.choice2, this.choice3);
 
     // Create an array with the values of the variables
     let choices = [this.choice1, this.choice2, this.choice3];
@@ -235,7 +234,6 @@ export class PlaylistSongComponent {
   }
   
   formatLyrics (quote: string | undefined, title: string, chunkToShow: number){ //format quote for displaying it correctly
-    this.formatted = false;
     quote = quote?.split("******")[0];
 
     let lineFeedPositions = this.listUpLinefeeds();
@@ -297,18 +295,18 @@ export class PlaylistSongComponent {
               this.quote = "";
               this.getLyrics();
             }
-        } else {
-          console.log("SUCCESS: ", response.message.body.lyrics.lyrics_body.substring(0, 40));
-          this.quote = response.message.body.lyrics.lyrics_body;
+          } else {
+            console.log("SUCCESS: ", response.message.body.lyrics.lyrics_body.substring(0, 40));
+            this.quote = response.message.body.lyrics.lyrics_body;
+            this.formatLyrics(this.quote, this.titleToSearch, this.activeChunk);
+            this.title = this.titleToSearch;
+            this.artist = this.artistToSearch;
         }},
       error: (err: any) => {
         console.log(err);
         console.log("we are in error");
       },
       complete: () => {
-        this.formatLyrics(this.quote, this.titleToSearch, this.activeChunk);
-        this.title = this.titleToSearch;
-        this.artist = this.artistToSearch;
       }
     })
   }

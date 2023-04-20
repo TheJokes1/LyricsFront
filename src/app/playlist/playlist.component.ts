@@ -130,7 +130,7 @@ getPlaylists(id: string, token: string){
             //   ({ projectName: item['Project Name'], projectCode: item.PCode }); return data; })
           }
         }
-        console.log("PLAYLISTS: ", this.playlists);
+        //console.log("PLAYLISTS: ", this.playlists);
       },
       error: (err) => {
         console.log(err);

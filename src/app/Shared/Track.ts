@@ -6,4 +6,11 @@ export interface Track {
 export interface TrackData {
     artist: string[];
     title: string;
+    artistId: string;
+    spotifyLink: string;
+    previewLink: string;
+    popularity: number;
+    releaseDate: string;
+    imageUrl: string;
+    album: string;
 }

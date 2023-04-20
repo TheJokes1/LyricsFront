@@ -14,14 +14,12 @@ import { DataService } from './data.service';
 
 @Injectable()
 export class ApiService {
-
   baseUrl: string = `https://localhost:5001/api/`;
   //baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
+
   baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
-  //url: string;
   spotifyUrl: string = `https://accounts.spotify.com/`;
   limit: number= 50;
-  private tracks: Track[] = [];
 
   constructor(private http: HttpClient, private dataService: DataService) {
   }
@@ -170,21 +168,27 @@ export class ApiService {
     )
     .pipe(
       map((response: any) => {
-        //console.log(response);
+        console.log("complete response from one playlist: ", response);
         let counter = 1;
         const tracks: TrackData[] = [];
         response.items.forEach((item: any) => {
           if (item.track.artists[0].name.length > 0) {
             const track: TrackData = {
               artist: item.track.artists[0].name,
-              title: item.track.name
+              artistId: item.track.artists[0].id,
+              title: item.track.name,
+              spotifyLink: item.track.href,
+              previewLink: item.track.preview_url,
+              popularity: item.track.popularity,
+              releaseDate: item.track.album.release_date,
+              imageUrl: item.track.album.images[1].url,
+              album: item.track.album.external_urls.spotify
             };
             if (track.artist != undefined){
               //console.log(`${counter}. ${track.artist} - ${track.title}`); // log track with number
               tracks.push(track);
               counter++;
             }
-
           }
         });
         console.log("in api: ", tracks);
