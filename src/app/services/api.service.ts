@@ -14,8 +14,8 @@ import { DataService } from './data.service';
 
 @Injectable()
 export class ApiService {
-  baseUrl: string = `https://localhost:5001/api/`;
-  //baseUrl: string = `https://lyricslover.azurewebsites.net/api/`;
+  //baseUrl: string = `https://localhost:5001/api/`;
+  baseUrl: string = `https://lyrics-api-wlkl.onrender.com/api/`;
 
   baseUrlMM: string = 'https://api.musixmatch.com/ws/1.1/';
   spotifyUrl: string = `https://accounts.spotify.com/`;
