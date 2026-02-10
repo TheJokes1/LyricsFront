@@ -198,14 +198,18 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   getLyrics(language: string, era: string, text: string) { //based on the language/era filters it gets the list of lyrics
     this.lyricList$ = this.apiService.GetLyrics(language, era, text);
+    console.log(this.lyricList$)
+    console.log("in first component");
     this.lyricList$.subscribe({
       next: (response: any) => {
         if (response.length > 0) { //change observable to array
+          console.log("found something", response);
           this.lyricList = response.map((lyric: Lyric) => lyric.lyricId);
           this.LyricIdsCopy = [...this.lyricList]; // to reset the LyricList array later 
           this.loadLyrics();
         }
         else {
+          console.log("found nothing", response);
           this.loadedLyric.performer = "No titles found for this filter.";
           this.loadedLyric.songTitle = "Try something else.";
           this.unblurArtist();
@@ -253,12 +257,13 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     //choose an ID for TESTING if needed:
     //---------------------------------
-    //this.lyricId= 256;
+    //this.lyricId= 202;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
+    //console.log("quote ", this.quote$);
     this.quote$.subscribe({
       next: (response: any) => {
-        //console.log(response); SHOW RESPONSE HERE IN CONSOLE
-        this.loadedLyric.quote = this.formatLyrics(response.quote, response.songTitle!);
+        console.log("response in getlyricsby id", response); // SHOW RESPONSE HERE IN CONSOLE
+        this.loadedLyric.quote = this.formatLyrics(response.words, response.songTitle!);
         this.loadedLyric.lyricId = response.lyricId;
         this.loadedLyric.songTitle = response.songTitle;
         this.loadedLyric.performer = response.performer;
@@ -288,6 +293,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   formatLyrics (quote: string | undefined, title: string){ //format for displaying correctly
     this.formatted = false;
+    console.log("quote before formatting: ", quote);
     while (!this.formatted){ // remove points and spaces from the end of the string
       if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
         this.formattedLyrics = quote.substring(0,quote.length-1);
