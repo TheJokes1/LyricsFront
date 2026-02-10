@@ -257,7 +257,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     //choose an ID for TESTING if needed:
     //---------------------------------
-    //this.lyricId= 202;
+    //this.lyricId= 181;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
     //console.log("quote ", this.quote$);
     this.quote$.subscribe({
@@ -370,7 +370,7 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
   };
 
   toggleP(){ //show or hide album image
-    this.showImage = !this.showImage;
+    //this.showImage = !this.showImage;
   }
 
   ngOnDestroy(){
