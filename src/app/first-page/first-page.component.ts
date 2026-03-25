@@ -248,7 +248,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
       else {this.statusClass10 = this.titlesColor;}
     
     this.randomNumber = Math.floor(Math.random() * this.lyricList.length); //e.g. 36
-    //console.log(this.lyricList);
     this.lyricId = this.lyricList[this.randomNumber]; //e.g. 36e ID in the list = eg. id 45
     this.lyricList.splice(this.randomNumber, 1); //remove the used ID from the list
     if (this.lyricList.length == 0) {
@@ -257,12 +256,12 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
     //choose an ID for TESTING if needed:
     //---------------------------------
-    //this.lyricId= 181;
+    //this.lyricId= 132;
     this.quote$ = this.apiService.GetLyric(this.lyricId); // GET LYRIC
-    //console.log("quote ", this.quote$);
+    console.log("ID:  ", this.lyricId);
     this.quote$.subscribe({
       next: (response: any) => {
-        console.log("response in getlyricsby id", response); // SHOW RESPONSE HERE IN CONSOLE
+        console.log("response: ", response); // SHOW RESPONSE HERE IN CONSOLE
         this.loadedLyric.quote = this.formatLyrics(response.words, response.songTitle!);
         this.loadedLyric.lyricId = response.lyricId;
         this.loadedLyric.songTitle = response.songTitle;
@@ -293,7 +292,6 @@ export class FirstPageComponent implements OnDestroy, PipeTransform {
 
   formatLyrics (quote: string | undefined, title: string){ //format for displaying correctly
     this.formatted = false;
-    console.log("quote before formatting: ", quote);
     while (!this.formatted){ // remove points and spaces from the end of the string
       if (quote?.charAt(quote.length) == "." || quote?.charAt(quote.length) == " ") {
         this.formattedLyrics = quote.substring(0,quote.length-1);

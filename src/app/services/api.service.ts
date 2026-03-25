@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
-import { buffer, map, Observable, tap } from 'rxjs';
+import { buffer, map, Observable, tap, catchError } from 'rxjs';
 import { Performer } from '../second-page/second-page.component'; 
 import { HttpHeaders } from '@angular/common/http';
 import { Lyric } from '../Shared/Lyric';
@@ -26,7 +26,7 @@ export class ApiService {
 
   GetPerformers = (q : string) => {
     this.http.get<Performer[]>(
-      this.baseUrl + `lyrics/performers?SearchQuery=${q}`
+      this.baseUrl + `/performers?SearchQuery=${q}`
       )
    }
 
@@ -46,15 +46,30 @@ export class ApiService {
       )
    }
 
-  AddLyric = (_performerId: number, _words: string, _songTitle: string, _spotLink: string) => {
-    return this.http.post(
-      this.baseUrl + `lyrics/`
-      + _performerId, {words: _words, songTitle: _songTitle, spotLink: _spotLink}, )
-  }
+  AddLyric = (
+  _performerId: number, _words: string, _songTitle: string, _spotLink: string | null) => {
+  const body = {
+    performerId: _performerId,
+    words: _words,
+    songTitle: _songTitle,
+    spotLink: _spotLink ?? null
+  };
+  console.log('POST /api/lyrics body =', body); // <-- dit logt wat je écht verstuurt
+
+ 
+ return this.http.post(`${this.baseUrl}lyrics`, body).pipe(
+    tap((resp) => console.log('✅ POST /api/lyrics OK response =', resp)),
+    catchError((err) => {
+      console.error('❌ POST /api/lyrics FAILED =', err);
+      throw err;
+    })
+  );
+};
+
 
   AddPerformer = (_name: string) => {
     return this.http.post(
-      this.baseUrl + `lyrics/performers/`
+      this.baseUrl + `performers/`
       , {name: _name},
       {observe: 'response'}
     )

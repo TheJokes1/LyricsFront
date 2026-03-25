@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build:pages": "ng build --configuration production --base-href \"/LyricsFront/\"",
+    "prep:pages": "node -e \"const fs=require('fs'),p=require('path');function findIndex(dir,depth=0){if(depth>3)return null;for(const e of fs.readdirSync(dir,{withFileTypes:true})){const full=p.join(dir,e.name);if(e.isFile()&&e.name==='index.html')return dir;if(e.isDirectory()){const hit=findIndex(full,depth+1);if(hit)return hit;}}return null;}const out=findIndex('dist');if(!out){console.error('no dist/**/index.html');process.exit(1);}fs.copyFileSync(p.join(out,'index.html'),p.join(out,'404.html'));process.stdout.write(out);\"",
+    "deploy:pages": "npx angular-cli-ghpages --dir \"$(npm run -s prep:pages)\" --branch gh-pages --message \"deploy $(date -Iseconds)\"",
+    "deploy": "npm run build:pages && npm run deploy:pages"
   },
   "browser": {
     "crypto": false,

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { debounceTime, Observable, startWith, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Observable, startWith, map, switchMap, filter } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReviewLyricsDialogComponent } from '../reviewLyrics-dialog/review-lyrics-dialog/review-lyrics-dialog.component';
@@ -77,16 +77,20 @@ export class SecondPageComponent implements OnInit, AfterViewInit
   token: any;
   loadedLyric: Lyric = {} as Lyric;
   disableAddArtist : boolean = false;
+  errorMessage : string = '';
 
   constructor(public http: HttpClient, public apiService: ApiService, public dialog: MatDialog,
     public el: ElementRef, public renderer: Renderer2) {
     this.performers = this.makeFilter.valueChanges
       .pipe(
         startWith(''),
+        map(q => (q ?? '').toString().trim()), 
         debounceTime(200),
+        filter(q => q.length >= 2),
+        distinctUntilChanged(),
         switchMap(q =>
           this.http.get<Performer[]>(
-          `https://lyrics-api-wlkl.onrender.com/api//lyrics/performers?SearchQuery=${q}`
+          `https://lyrics-api-wlkl.onrender.com/api/performers?SearchQuery=${q}`
           //`https://localhost:5001/api/lyrics/performers?searchQuery=${q}`
           )));
 
@@ -130,39 +134,81 @@ export class SecondPageComponent implements OnInit, AfterViewInit
     else this.disableButton = true;
   }
   
-  onAddLyrics(lyrics: string, songTitle: string) {
-    this.newTitle = this.formatTitle(songTitle);
-    this.newLyric = this.formatLyric(lyrics);
-    this.disableButton = true;
-    this.disableAddArtist = true;
-    
-    this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
-      next: (response:any) => {
-        console.log("spotify says:" ,response);
-        this.loadedLyric.spotLink= response.tracks.items[0].external_urls.spotify;
-        this.loadedLyric.previewLink = response.tracks.items[0].preview_url;
-        this.loadedLyric.releaseDate = response.tracks.items[0].album.release_date;
-        this.loadedLyric.imageUrl = response.tracks.items[0].album.images[1].url;
-        this.loadedLyric.popularity = this.getPopularityAndDate(response);
-      },
-      error: error => {
-        this.loadedLyric.spotLink="";
-        console.log(error);
-      },
-      complete: () => {
-        this.apiService.AddLyric(this.idPerformer, this.newLyric, this.newTitle, 
-          this.loadedLyric.spotLink!).subscribe({
-            next: (response: any) => {
-              this.apiService.AddSpotifyLinks(response.lyricId!, this.loadedLyric.spotLink!, this.loadedLyric.imageUrl!, 
-              this.loadedLyric.previewLink, this.loadedLyric.popularity!, this.loadedLyric.releaseDate!)
-                .subscribe(data => {
-              });
-              this.reviewLyrics(this.newLyric, this.newTitle); //dialog box for user to review lyrics
-            }
-        });
-      }
-    })
-  }
+ onAddLyrics(lyrics: string, songTitle: string) {
+  this.newTitle = this.formatTitle(songTitle);
+  this.newLyric  = this.formatLyric(lyrics);
+
+  this.disableButton = true;
+  this.disableAddArtist = true;
+
+  // Forceer: geen spotify data voor nu
+  this.loadedLyric.spotLink = null as any;       // of: null (als type het toelaat)
+  this.loadedLyric.previewLink = null as any;
+  this.loadedLyric.releaseDate = null as any;
+  this.loadedLyric.imageUrl = null as any;
+  this.loadedLyric.popularity = null as any;
+
+  /*
+  // TEMP OFF: Spotify/Musixmatch API changed
+  this.apiService.getSpotifyInfo(this.token, this.performerName, this.songTitle).subscribe({
+    next: (response: any) => {
+      console.log("spotify says:", response);
+      this.loadedLyric.spotLink     = response.tracks.items[0].external_urls.spotify;
+      this.loadedLyric.previewLink  = response.tracks.items[0].preview_url;
+      this.loadedLyric.releaseDate  = response.tracks.items[0].album.release_date;
+      this.loadedLyric.imageUrl     = response.tracks.items[0].album.images[1].url;
+      this.loadedLyric.popularity   = this.getPopularityAndDate(response);
+    },
+    error: error => {
+      this.loadedLyric.spotLink = null;
+      console.log(error);
+    },
+    complete: () => {
+      // moved below
+    }
+  });
+  */
+
+  // Ga meteen lyrics opslaan zonder spotify links
+  this.apiService.AddLyric(
+    this.idPerformer,
+    this.newLyric,
+    this.newTitle,
+    "" // 👈 spotLink: stuur expliciet NULL
+  ).subscribe({
+    next: (response: any) => {
+      // TEMP OFF: geen AddSpotifyLinks call
+      /*
+      this.apiService.AddSpotifyLinks(
+        response.lyricId!,
+        this.loadedLyric.spotLink!,
+        this.loadedLyric.imageUrl!,
+        this.loadedLyric.previewLink,
+        this.loadedLyric.popularity!,
+        this.loadedLyric.releaseDate!
+      ).subscribe();
+      */
+
+      // ✅ Dit moet blijven
+      this.reviewLyrics(this.newLyric, this.newTitle);
+    },
+    error: (err) => {
+      console.log(err);
+      this.errorMessage = '❌ Opslaan mislukt. Probeer opnieuw.';
+      this.disableButton = false;
+      this.disableAddArtist = false;
+
+      /*<p *ngIf="statusMessage" class="success">
+        {{ statusMessage }}
+      </p>
+
+      <p *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+      </p>
+      */
+    }
+  });
+}
 
   getPopularityAndDate (response: any) : number {
     var highest = 2;
