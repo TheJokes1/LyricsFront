@@ -1,10 +1,8 @@
-import { AfterContentChecked, Component, Inject } from '@angular/core';
+import { AfterContentChecked, Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { DOCUMENT } from '@angular/common';
-import { DataService } from '../services/data.service';
-
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'my-nav',
@@ -13,10 +11,10 @@ import { DataService } from '../services/data.service';
 })
 export class NavigationComponent implements AfterContentChecked {
   url: string;
-  auth: any;
   title: string;
+  logoutError = '';
         
-  constructor( @Inject(DOCUMENT) private doc: Document,private data: DataService, private breakpointObserver: BreakpointObserver) {
+  constructor(public authService: AuthService, private breakpointObserver: BreakpointObserver) {
   }
   
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -25,12 +23,13 @@ export class NavigationComponent implements AfterContentChecked {
       shareReplay()
     );
 
-  logout() {
-    this.auth.logout({ returnTo: this.doc.location.origin });
-  }
-
-  loginWithPopup() : void {
-    this.auth.loginWithRedirect();
+  async logout(): Promise<void> {
+    this.logoutError = '';
+    try {
+      await this.authService.signOut();
+    } catch (error) {
+      this.logoutError = error instanceof Error ? error.message : 'Unable to log out. Please try again.';
+    }
   }
 
   ngAfterContentChecked(): void {

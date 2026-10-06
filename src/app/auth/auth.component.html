@@ -1,0 +1,47 @@
+<mat-card class="auth-card">
+  <mat-card-header>
+    <mat-card-title>{{ isRegistering ? 'Create an account' : 'Log in' }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p *ngIf="!authService.isConfigured" class="message error">
+      Supabase Auth needs configuration. Add the public project URL and anon key to the Angular environment files.
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="email" required>
+        <mat-error *ngIf="form.controls['email'].invalid">Enter a valid email address.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          type="password"
+          formControlName="password"
+          [attr.autocomplete]="isRegistering ? 'new-password' : 'current-password'"
+          required>
+        <mat-error *ngIf="form.controls['password'].invalid">Password must be at least 6 characters.</mat-error>
+      </mat-form-field>
+
+      <p *ngIf="errorMessage" class="message error" role="alert">{{ errorMessage }}</p>
+      <p *ngIf="statusMessage" class="message" role="status">{{ statusMessage }}</p>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="isSubmitting || form.invalid || !authService.isConfigured">
+        {{ isSubmitting ? 'Please wait...' : (isRegistering ? 'Register' : 'Log in') }}
+      </button>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-button type="button" (click)="toggleMode()">
+      {{ isRegistering ? 'Already registered? Log in' : 'Need an account? Register' }}
+    </button>
+  </mat-card-actions>
+</mat-card>

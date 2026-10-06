@@ -31,6 +31,7 @@
     "@angular/platform-browser-dynamic": "^14.1.0",
     "@angular/router": "^14.1.0",
     "@auth0/auth0-angular": "^1.11.0",
+    "@supabase/supabase-js": "2.49.1",
     "bootstrap": "^5.3.0-alpha1",
     "buffer": "^6.0.3",
     "Buffer": "^0.0.0",

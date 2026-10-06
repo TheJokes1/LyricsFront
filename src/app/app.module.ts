@@ -39,12 +39,14 @@ import { SettingsComponent } from './settings/settings.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { PrettyjsonPipe } from './prettyjson.pipe';
 import { PlaylistSongComponent } from './playlist-song/playlist-song.component';
+import { AuthComponent } from './auth/auth.component';
 
 @NgModule({
   declarations: [
     AppComponent, ReviewLyricsDialogComponent, NavigationComponent, SplashComponent,
     FirstPageComponent, SecondPageComponent, ThirdPageComponent, LandingPageComponent, 
-    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent, 
+    AddPerformerDialogComponent, FilterComponent, SafeHtmlPipe, AudioPlayerComponent,
+    AuthComponent,
     SettingsComponent, PlaylistComponent, PrettyjsonPipe, PlaylistSongComponent
   ],
   imports: [

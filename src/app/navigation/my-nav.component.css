@@ -24,6 +24,23 @@
   justify-content: center;
 }
 
+.auth-controls {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.user-email {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-error {
+  color: #b00020;
+  font-size: 12px;
+}
+
 .logons{
   visibility: hidden;
   margin-left: 100px;
